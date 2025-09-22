@@ -1,0 +1,324 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "submit": "Submit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "view": "View",
+    "download": "Download",
+    "upload": "Upload",
+    "refresh": "Refresh"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "books": "Books",
+    "users": "Users",
+    "borrowing": "Borrowing & Returns",
+    "announcements": "Announcements",
+    "events": "Events",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "signup": "Sign Up"
+  },
+  "header": {
+    "libraryName": "Yeka Sub City Library",
+    "searchPlaceholder": "Search books, authors, or categories...",
+    "languageSwitch": "Language",
+    "themeSwitch": "Theme",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode"
+  },
+  "home": {
+    "hero": {
+      "title": "Welcome to Yeka Sub City Library",
+      "subtitle": "Discover knowledge, explore new worlds, and expand your horizons with our extensive collection of books and digital resources.",
+      "cta": "Explore Books",
+      "membershipCta": "Become a Member"
+    },
+    "search": {
+      "title": "Find Your Next Great Read",
+      "placeholder": "Search by title, author, or ISBN...",
+      "categories": {
+        "all": "All Categories",
+        "fiction": "Fiction",
+        "nonfiction": "Non-Fiction",
+        "science": "Science",
+        "history": "History",
+        "biography": "Biography",
+        "children": "Children's Books",
+        "academic": "Academic",
+        "reference": "Reference"
+      }
+    },
+    "announcements": {
+      "title": "Latest Announcements",
+      "viewAll": "View All Announcements"
+    },
+    "events": {
+      "title": "Upcoming Events",
+      "viewAll": "View All Events"
+    },
+    "featured": {
+      "title": "Featured Books",
+      "newArrivals": "New Arrivals",
+      "popular": "Popular Books",
+      "recommended": "Recommended for You"
+    },
+    "services": {
+      "title": "Library Services",
+      "membership": {
+        "title": "Membership",
+        "description": "Join our library community and enjoy unlimited access to books and resources."
+      },
+      "borrowing": {
+        "title": "Borrowing & Returns",
+        "description": "Easy borrowing process with flexible return policies and renewal options."
+      },
+      "digital": {
+        "title": "Digital Library",
+        "description": "Access e-books, audiobooks, and digital resources from anywhere."
+      },
+      "events": {
+        "title": "Events & Programs",
+        "description": "Participate in reading clubs, workshops, and educational programs."
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "overview": "Overview",
+      "stats": {
+        "totalBooks": "Total Books",
+        "totalMembers": "Total Members",
+        "borrowedToday": "Borrowed Today",
+        "overdueReturns": "Overdue Returns",
+        "activeMembers": "Active Members",
+        "newMembersThisMonth": "New Members This Month",
+        "popularCategory": "Most Popular Category",
+        "averageBorrowTime": "Average Borrow Time"
+      },
+      "charts": {
+        "monthlyActivity": "Monthly Activity",
+        "categoryDistribution": "Category Distribution",
+        "membershipGrowth": "Membership Growth",
+        "borrowingTrends": "Borrowing Trends"
+      },
+      "recentActivity": {
+        "title": "Recent Activity",
+        "newMember": "New member registered",
+        "bookBorrowed": "Book borrowed",
+        "bookReturned": "Book returned",
+        "bookAdded": "New book added",
+        "overdueNotice": "Overdue notice sent"
+      }
+    },
+    "books": {
+      "title": "Manage Books",
+      "addBook": "Add New Book",
+      "editBook": "Edit Book",
+      "deleteBook": "Delete Book",
+      "bookDetails": "Book Details",
+      "availability": "Availability",
+      "categories": "Categories",
+      "authors": "Authors",
+      "isbn": "ISBN",
+      "publisher": "Publisher",
+      "publicationDate": "Publication Date",
+      "pages": "Pages",
+      "language": "Language",
+      "description": "Description",
+      "location": "Location",
+      "status": "Status",
+      "available": "Available",
+      "borrowed": "Borrowed",
+      "maintenance": "Under Maintenance",
+      "lost": "Lost"
+    },
+    "users": {
+      "title": "Manage Users",
+      "addUser": "Add New User",
+      "editUser": "Edit User",
+      "deleteUser": "Delete User",
+      "userDetails": "User Details",
+      "membershipInfo": "Membership Information",
+      "borrowingHistory": "Borrowing History",
+      "activeLoans": "Active Loans",
+      "membershipType": "Membership Type",
+      "joinDate": "Join Date",
+      "lastActive": "Last Active",
+      "contactInfo": "Contact Information",
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "status": "Status",
+      "active": "Active",
+      "suspended": "Suspended",
+      "expired": "Expired"
+    },
+    "borrowing": {
+      "title": "Borrowing & Returns",
+      "newLoan": "New Loan",
+      "returnBook": "Return Book",
+      "renewLoan": "Renew Loan",
+      "overdueItems": "Overdue Items",
+      "dueToday": "Due Today",
+      "recentReturns": "Recent Returns",
+      "borrowDate": "Borrow Date",
+      "dueDate": "Due Date",
+      "returnDate": "Return Date",
+      "fine": "Fine",
+      "status": "Status",
+      "borrowed": "Borrowed",
+      "returned": "Returned",
+      "overdue": "Overdue",
+      "renewed": "Renewed"
+    },
+    "settings": {
+      "title": "Settings",
+      "general": "General Settings",
+      "library": "Library Settings",
+      "notifications": "Notifications",
+      "security": "Security",
+      "backup": "Backup & Restore",
+      "libraryName": "Library Name",
+      "address": "Address",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "workingHours": "Working Hours",
+      "loanPeriod": "Default Loan Period",
+      "maxRenewals": "Maximum Renewals",
+      "finePerDay": "Fine Per Day",
+      "emailNotifications": "Email Notifications",
+      "smsNotifications": "SMS Notifications",
+      "overdueReminders": "Overdue Reminders",
+      "changePassword": "Change Password",
+      "twoFactorAuth": "Two-Factor Authentication",
+      "sessionTimeout": "Session Timeout"
+    }
+  },
+  "userDashboard": {
+    "welcome": "Welcome back",
+    "tabs": {
+      "overview": "Overview",
+      "borrowed": "Borrowed Books",
+      "reserved": "Reserved Books",
+      "history": "Reading History",
+      "profile": "Profile"
+    },
+    "stats": {
+      "borrowedBooks": "Borrowed Books",
+      "reservedBooks": "Reserved Books",
+      "booksRead": "Books Read",
+      "favoriteBooks": "Favorite Books"
+    },
+    "sections": {
+      "currentBooks": "Current Books",
+      "recentNotifications": "Recent Notifications",
+      "personalInfo": "Personal Information",
+      "accountSettings": "Account Settings",
+      "notificationPreferences": "Notification Preferences"
+    },
+    "actions": {
+      "renew": "Renew",
+      "view": "View",
+      "cancel": "Cancel",
+      "borrowAgain": "Borrow Again",
+      "updateInfo": "Update Information",
+      "changePassword": "Change Password"
+    },
+    "messages": {
+      "noBorrowedBooks": "No books currently borrowed",
+      "noReservedBooks": "No reserved books",
+      "noReadingHistory": "No reading history",
+      "startBrowsing": "Start exploring our collection!",
+      "loadingDashboard": "Loading your dashboard..."
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "phone": "Please enter a valid phone number",
+      "minLength": "Minimum {{count}} characters required",
+      "maxLength": "Maximum {{count}} characters allowed",
+      "numeric": "Please enter a valid number",
+      "date": "Please enter a valid date"
+    },
+    "placeholders": {
+      "enterTitle": "Enter book title",
+      "enterAuthor": "Enter author name",
+      "enterISBN": "Enter ISBN",
+      "enterDescription": "Enter description",
+      "selectCategory": "Select category",
+      "selectStatus": "Select status",
+      "enterName": "Enter full name",
+      "enterEmail": "Enter email address",
+      "enterPhone": "Enter phone number",
+      "enterAddress": "Enter address",
+      "selectMembershipType": "Select membership type"
+    }
+  },
+  "messages": {
+    "success": {
+      "bookAdded": "Book added successfully",
+      "bookUpdated": "Book updated successfully",
+      "bookDeleted": "Book deleted successfully",
+      "userAdded": "User added successfully",
+      "userUpdated": "User updated successfully",
+      "userDeleted": "User deleted successfully",
+      "loanCreated": "Loan created successfully",
+      "bookReturned": "Book returned successfully",
+      "settingsSaved": "Settings saved successfully"
+    },
+    "error": {
+      "bookNotFound": "Book not found",
+      "userNotFound": "User not found",
+      "loanNotFound": "Loan not found",
+      "bookUnavailable": "Book is not available",
+      "userSuspended": "User account is suspended",
+      "overdueBooks": "User has overdue books",
+      "maxLoansReached": "Maximum loan limit reached",
+      "networkError": "Network error. Please try again.",
+      "serverError": "Server error. Please contact support."
+    },
+    "confirm": {
+      "deleteBook": "Are you sure you want to delete this book?",
+      "deleteUser": "Are you sure you want to delete this user?",
+      "returnBook": "Confirm book return?",
+      "suspendUser": "Are you sure you want to suspend this user?"
+    }
+  },
+  "footer": {
+    "about": "About Us",
+    "contact": "Contact",
+    "location": "Location",
+    "hours": "Opening Hours",
+    "services": "Services",
+    "policies": "Policies",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "copyright": "© 2024 Yeka Sub City Library. All rights reserved.",
+    "address": "Yeka Sub City, Addis Ababa, Ethiopia",
+    "phone": "+251 11 123 4567",
+    "email": "info@yekalibrary.gov.et"
+  }
+}
