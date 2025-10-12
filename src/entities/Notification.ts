@@ -1,8 +1,8 @@
 import { Schema, model, Document } from 'mongoose';
-import { User } from './User';
+import { IUser } from './User';
 
 export interface Notification extends Document {
-  user: User['_id'];
+  user: IUser['_id'];
   message: string;
   read: boolean;
   createdAt: Date;

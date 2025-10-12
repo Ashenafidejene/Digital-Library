@@ -7,7 +7,7 @@ export class JWTUtil {
     return jwt.sign(
       { ...payload, tokenType: 'access' },
       env.JWT_ACCESS_SECRET,
-      { expiresIn: env.JWT_ACCESS_EXPIRES_IN as string | number }
+      { expiresIn: env.JWT_ACCESS_EXPIRES_IN }
     );
   }
 
@@ -15,7 +15,7 @@ export class JWTUtil {
     return jwt.sign(
       { ...payload, tokenType: 'refresh' },
       env.JWT_REFRESH_SECRET,
-      { expiresIn: env.JWT_REFRESH_EXPIRES_IN as string | number }
+      { expiresIn: env.JWT_REFRESH_EXPIRES_IN }
     );
   }
 

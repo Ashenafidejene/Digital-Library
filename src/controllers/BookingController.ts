@@ -73,7 +73,7 @@ export class BookingController {
 
     ResponseUtil.paginated(
       res,
-      result.bookings,
+      result.records,
       result.pagination,
       'Bookings retrieved successfully'
     );
@@ -90,7 +90,7 @@ export class BookingController {
 
     ResponseUtil.paginated(
       res,
-      result.bookings,
+      result.records,
       result.pagination,
       'User bookings retrieved successfully'
     );
@@ -107,7 +107,7 @@ export class BookingController {
 
     ResponseUtil.paginated(
       res,
-      result.bookings,
+      result.records,
       result.pagination,
       'User booking history retrieved successfully'
     );
@@ -118,7 +118,7 @@ export class BookingController {
 
     ResponseUtil.paginated(
       res,
-      result.bookings,
+      result.records,
       result.pagination,
       'Pending bookings retrieved successfully'
     );
@@ -129,7 +129,7 @@ export class BookingController {
 
     ResponseUtil.paginated(
       res,
-      result.bookings,
+      result.records,
       result.pagination,
       'Overdue bookings retrieved successfully'
     );

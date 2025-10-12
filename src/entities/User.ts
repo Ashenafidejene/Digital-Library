@@ -23,6 +23,7 @@ export interface IUser extends Document {
     smsNotifications: boolean;
     favoriteCategories: string[];
   };
+  favorites: mongoose.Types.ObjectId[];
   favoriteBooks: mongoose.Types.ObjectId[];
   lastLogin?: Date;
   refreshTokens: string[];
@@ -94,6 +95,7 @@ const userSchema = new Schema<IUser>(
       smsNotifications: { type: Boolean, default: false },
       favoriteCategories: [{ type: String, trim: true }],
     },
+    favorites: [{ type: Schema.Types.ObjectId, ref: 'Book' }],
     favoriteBooks: [{ type: Schema.Types.ObjectId, ref: 'Book' }],
     lastLogin: {
       type: Date,

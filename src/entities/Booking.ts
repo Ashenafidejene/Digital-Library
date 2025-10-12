@@ -200,7 +200,7 @@ bookingSchema.virtual('book', {
 });
 
 // Pre-save middleware
-bookingSchema.pre('save', function(next) {
+bookingSchema.pre<IBooking>('save', function(next) {
   // Set due date when status changes to approved
   if (this.isModified('status') && this.status === BookingStatus.APPROVED && !this.dueDate) {
     this.borrowDate = new Date();
@@ -295,13 +295,15 @@ bookingSchema.methods.markAsReturned = async function(): Promise<void> {
   await this.save();
 };
 
-bookingSchema.methods.renew = async function(days: number = this.borrowPeriodDays): Promise<void> {
+bookingSchema.methods.renew = async function(days?: number): Promise<void> {
   if (!this.canBeRenewed()) {
     throw new Error('Booking cannot be renewed');
   }
   
+  const renewalDays = days || this.borrowPeriodDays;
+  
   this.renewalCount += 1;
-  this.dueDate = new Date(this.dueDate!.getTime() + days * 24 * 60 * 60 * 1000);
+  this.dueDate = new Date(this.dueDate!.getTime() + renewalDays * 24 * 60 * 60 * 1000);
   
   await this.save();
 };
