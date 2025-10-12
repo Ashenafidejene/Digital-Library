@@ -36,10 +36,8 @@ export interface ApiResponse<T> {
   success: boolean;
   message: string;
   data?: T;
-  error?: {
-    code: number;
-    details?: string;
-  };
+  error?: string;
+  timestamp: string;
 }
 
 export interface PaginatedResponse<T> extends ApiResponse<T> {

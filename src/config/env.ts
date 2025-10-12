@@ -9,8 +9,8 @@ export interface EnvConfig {
   MONGODB_TEST_URI: string;
   JWT_ACCESS_SECRET: string;
   JWT_REFRESH_SECRET: string;
-  JWT_ACCESS_EXPIRES_IN: string;
-  JWT_REFRESH_EXPIRES_IN: string;
+  JWT_ACCESS_EXPIRES_IN: number;
+  JWT_REFRESH_EXPIRES_IN: number;
   CORS_ORIGIN: string;
   RATE_LIMIT_WINDOW_MS: number;
   RATE_LIMIT_MAX_REQUESTS: number;
@@ -52,8 +52,8 @@ export const env: EnvConfig = {
   // JWT
   JWT_ACCESS_SECRET: getEnvVar('JWT_ACCESS_SECRET'),
   JWT_REFRESH_SECRET: getEnvVar('JWT_REFRESH_SECRET'),
-  JWT_ACCESS_EXPIRES_IN: getEnvVar('JWT_ACCESS_EXPIRES_IN', '15m'),
-  JWT_REFRESH_EXPIRES_IN: getEnvVar('JWT_REFRESH_EXPIRES_IN', '7d'),
+  JWT_ACCESS_EXPIRES_IN: getEnvNumber('JWT_ACCESS_EXPIRES_IN', 900),
+  JWT_REFRESH_EXPIRES_IN: getEnvNumber('JWT_REFRESH_EXPIRES_IN', 604800),
   
   // CORS
   CORS_ORIGIN: getEnvVar('CORS_ORIGIN', 'http://localhost:3000'),

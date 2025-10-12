@@ -18,17 +18,18 @@ export class ResponseUtil {
     return res.status(statusCode).json(response);
   }
 
-  static error(
+  static error<T>(
     res: Response,
     message: string = 'An error occurred',
     statusCode: number = 500,
     error?: string
   ): Response {
-    const response: ApiResponse = {
+    const response: ApiResponse<T | null> = {
       success: false,
       message,
       error,
       timestamp: new Date().toISOString(),
+      data: null,
     };
 
     return res.status(statusCode).json(response);
@@ -48,13 +49,11 @@ export class ResponseUtil {
     message: string = 'Success',
     statusCode: number = 200
   ): Response {
-    const response: ApiResponse<PaginatedResponse<T>> = {
+    const response: PaginatedResponse<T[]> = {
       success: true,
       message,
-      data: {
-        data,
-        pagination,
-      },
+      data,
+      pagination,
       timestamp: new Date().toISOString(),
     };
 
