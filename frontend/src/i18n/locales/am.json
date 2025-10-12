@@ -1,0 +1,286 @@
+{
+  "common": {
+    "loading": "በመጫን ላይ...",
+    "error": "ስህተት",
+    "success": "ተሳክቷል",
+    "cancel": "ሰርዝ",
+    "save": "አስቀምጥ",
+    "edit": "አርም",
+    "delete": "ሰርዝ",
+    "add": "አክል",
+    "search": "ፈልግ",
+    "filter": "ማጣሪያ",
+    "clear": "አጽዳ",
+    "submit": "ላክ",
+    "close": "ዝጋ",
+    "back": "ተመለስ",
+    "next": "ቀጣይ",
+    "previous": "ቀዳሚ",
+    "yes": "አዎ",
+    "no": "አይ",
+    "confirm": "አረጋግጥ",
+    "view": "ተመልከት",
+    "download": "አውርድ",
+    "upload": "አስገባ",
+    "refresh": "አድስ"
+  },
+  "navigation": {
+    "home": "መነሻ",
+    "dashboard": "ዳሽቦርድ",
+    "books": "መጻሕፍት",
+    "users": "ተጠቃሚዎች",
+    "borrowing": "መበደር እና መመለስ",
+    "announcements": "ማስታወቂያዎች",
+    "events": "ዝግጅቶች",
+    "settings": "ቅንብሮች",
+    "profile": "መገለጫ",
+    "logout": "ውጣ",
+    "login": "ግባ",
+    "signup": "ተመዝገብ"
+  },
+  "header": {
+    "libraryName": "የየካ ክፍለ ከተማ ቤተ መጻሕፍት",
+    "searchPlaceholder": "መጻሕፍት፣ ደራሲዎች ወይም ምድቦችን ፈልግ...",
+    "languageSwitch": "ቋንቋ",
+    "themeSwitch": "ገጽታ",
+    "lightMode": "ብሩህ ገጽታ",
+    "darkMode": "ጨለማ ገጽታ"
+  },
+  "home": {
+    "hero": {
+      "title": "ወደ የየካ ክፍለ ከተማ ቤተ መጻሕፍት እንኳን በደህና መጡ",
+      "subtitle": "እውቀትን ያግኙ፣ አዳዲስ አለሞችን ያስሱ እና በሰፊው የመጻሕፍት እና ዲጂታል ሀብቶች ስብስባችን አድማስዎን ያስፋፉ።",
+      "cta": "መጻሕፍትን ያስሱ",
+      "membershipCta": "አባል ይሁኑ"
+    },
+    "search": {
+      "title": "የሚቀጥለውን ታላቅ ንባብዎን ያግኙ",
+      "placeholder": "በርዕስ፣ በደራሲ ወይም በISBN ይፈልጉ...",
+      "categories": {
+        "all": "ሁሉም ምድቦች",
+        "fiction": "ልብወለድ",
+        "nonfiction": "ልብወለድ ያልሆነ",
+        "science": "ሳይንስ",
+        "history": "ታሪክ",
+        "biography": "የሕይወት ታሪክ",
+        "children": "የህጻናት መጻሕፍት",
+        "academic": "አካዳሚክ",
+        "reference": "ማጣቀሻ"
+      }
+    },
+    "announcements": {
+      "title": "የቅርብ ጊዜ ማስታወቂያዎች",
+      "viewAll": "ሁሉንም ማስታወቂያዎች ተመልከት"
+    },
+    "events": {
+      "title": "የሚመጡ ዝግጅቶች",
+      "viewAll": "ሁሉንም ዝግጅቶች ተመልከት"
+    },
+    "featured": {
+      "title": "ተመራጭ መጻሕፍት",
+      "newArrivals": "አዳዲስ መጻሕፍት",
+      "popular": "ተወዳጅ መጻሕፍት",
+      "recommended": "ለእርስዎ የሚመከሩ"
+    },
+    "services": {
+      "title": "የቤተ መጻሕፍት አገልግሎቶች",
+      "membership": {
+        "title": "አባልነት",
+        "description": "የቤተ መጻሕፍት ማህበረሰባችንን ይቀላቀሉ እና ላልተገደበ የመጻሕፍት እና ሀብቶች መዳረሻ ይደሰቱ።"
+      },
+      "borrowing": {
+        "title": "መበደር እና መመለስ",
+        "description": "ተለዋዋጭ የመመለሻ ፖሊሲዎች እና የማደስ አማራጮች ያለው ቀላል የመበደር ሂደት።"
+      },
+      "digital": {
+        "title": "ዲጂታል ቤተ መጻሕፍት",
+        "description": "ከየትኛውም ቦታ ኢ-መጻሕፍት፣ የድምጽ መጻሕፍት እና ዲጂታል ሀብቶችን ያግኙ።"
+      },
+      "events": {
+        "title": "ዝግጅቶች እና ፕሮግራሞች",
+        "description": "በንባብ ክበቦች፣ ወርክሾፖች እና ትምህርታዊ ፕሮግራሞች ይሳተፉ።"
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "የአስተዳዳሪ ዳሽቦርድ",
+      "overview": "አጠቃላይ እይታ",
+      "stats": {
+        "totalBooks": "ጠቅላላ መጻሕፍት",
+        "totalMembers": "ጠቅላላ አባላት",
+        "borrowedToday": "ዛሬ የተበደሩ",
+        "overdueReturns": "ዘግይተው የሚመለሱ",
+        "activeMembers": "ንቁ አባላት",
+        "newMembersThisMonth": "በዚህ ወር አዳዲስ አባላት",
+        "popularCategory": "በጣም ተወዳጅ ምድብ",
+        "averageBorrowTime": "አማካይ የመበደር ጊዜ"
+      },
+      "charts": {
+        "monthlyActivity": "ወርሃዊ እንቅስቃሴ",
+        "categoryDistribution": "የምድብ ስርጭት",
+        "membershipGrowth": "የአባልነት እድገት",
+        "borrowingTrends": "የመበደር አዝማሚያዎች"
+      },
+      "recentActivity": {
+        "title": "የቅርብ ጊዜ እንቅስቃሴ",
+        "newMember": "አዲስ አባል ተመዝግቧል",
+        "bookBorrowed": "መጽሐፍ ተበድሯል",
+        "bookReturned": "መጽሐፍ ተመልሷል",
+        "bookAdded": "አዲስ መጽሐፍ ተጨምሯል",
+        "overdueNotice": "የዘግይቶ መመለስ ማስታወቂያ ተልኳል"
+      }
+    },
+    "books": {
+      "title": "መጻሕፍትን አስተዳድር",
+      "addBook": "አዲስ መጽሐፍ አክል",
+      "editBook": "መጽሐፍ አርም",
+      "deleteBook": "መጽሐፍ ሰርዝ",
+      "bookDetails": "የመጽሐፍ ዝርዝሮች",
+      "availability": "ተገኝነት",
+      "categories": "ምድቦች",
+      "authors": "ደራሲዎች",
+      "isbn": "ISBN",
+      "publisher": "አሳታሚ",
+      "publicationDate": "የህትመት ቀን",
+      "pages": "ገጾች",
+      "language": "ቋንቋ",
+      "description": "መግለጫ",
+      "location": "አካባቢ",
+      "status": "ሁኔታ",
+      "available": "ተገኝ",
+      "borrowed": "ተበድሯል",
+      "maintenance": "በጥገና ላይ",
+      "lost": "ጠፍቷል"
+    },
+    "users": {
+      "title": "ተጠቃሚዎችን አስተዳድር",
+      "addUser": "አዲስ ተጠቃሚ አክል",
+      "editUser": "ተጠቃሚ አርም",
+      "deleteUser": "ተጠቃሚ ሰርዝ",
+      "userDetails": "የተጠቃሚ ዝርዝሮች",
+      "membershipInfo": "የአባልነት መረጃ",
+      "borrowingHistory": "የመበደር ታሪክ",
+      "activeLoans": "ንቁ ብድሮች",
+      "membershipType": "የአባልነት አይነት",
+      "joinDate": "የመቀላቀል ቀን",
+      "lastActive": "መጨረሻ ንቁ",
+      "contactInfo": "የመገናኛ መረጃ",
+      "address": "አድራሻ",
+      "phone": "ስልክ",
+      "email": "ኢሜይል",
+      "status": "ሁኔታ",
+      "active": "ንቁ",
+      "suspended": "ታግዷል",
+      "expired": "ጊዜው አልፏል"
+    },
+    "borrowing": {
+      "title": "መበደር እና መመለስ",
+      "newLoan": "አዲስ ብድር",
+      "returnBook": "መጽሐፍ መልስ",
+      "renewLoan": "ብድር አድስ",
+      "overdueItems": "ዘግይተው የሚመለሱ",
+      "dueToday": "ዛሬ የሚመለሱ",
+      "recentReturns": "የቅርብ ጊዜ መመለሻዎች",
+      "borrowDate": "የመበደር ቀን",
+      "dueDate": "የመመለሻ ቀን",
+      "returnDate": "የተመለሰበት ቀን",
+      "fine": "ቅጣት",
+      "status": "ሁኔታ",
+      "borrowed": "ተበድሯል",
+      "returned": "ተመልሷል",
+      "overdue": "ዘግይቷል",
+      "renewed": "ታድሷል"
+    },
+    "settings": {
+      "title": "ቅንብሮች",
+      "general": "አጠቃላይ ቅንብሮች",
+      "library": "የቤተ መጻሕፍት ቅንብሮች",
+      "notifications": "ማሳወቂያዎች",
+      "security": "ደህንነት",
+      "backup": "መጠባበቂያ እና መመለስ",
+      "libraryName": "የቤተ መጻሕፍት ስም",
+      "address": "አድራሻ",
+      "phone": "ስልክ ቁጥር",
+      "email": "ኢሜይል አድራሻ",
+      "workingHours": "የስራ ሰዓቶች",
+      "loanPeriod": "ነባሪ የብድር ጊዜ",
+      "maxRenewals": "ከፍተኛ ታዳሽ",
+      "finePerDay": "በቀን ቅጣት",
+      "emailNotifications": "የኢሜይል ማሳወቂያዎች",
+      "smsNotifications": "የSMS ማሳወቂያዎች",
+      "overdueReminders": "የዘግይቶ መመለስ ማስታወሻዎች",
+      "changePassword": "የይለፍ ቃል ቀይር",
+      "twoFactorAuth": "ባለሁለት ደረጃ ማረጋገጫ",
+      "sessionTimeout": "የክፍለ ጊዜ ማብቂያ"
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "ይህ መስክ ያስፈልጋል",
+      "email": "እባክዎ ትክክለኛ ኢሜይል አድራሻ ያስገቡ",
+      "phone": "እባክዎ ትክክለኛ ስልክ ቁጥር ያስገቡ",
+      "minLength": "ቢያንስ {{count}} ቁምፊዎች ያስፈልጋሉ",
+      "maxLength": "ከፍተኛው {{count}} ቁምፊዎች ተፈቅደዋል",
+      "numeric": "እባክዎ ትክክለኛ ቁጥር ያስገቡ",
+      "date": "እባክዎ ትክክለኛ ቀን ያስገቡ"
+    },
+    "placeholders": {
+      "enterTitle": "የመጽሐፍ ርዕስ ያስገቡ",
+      "enterAuthor": "የደራሲ ስም ያስገቡ",
+      "enterISBN": "ISBN ያስገቡ",
+      "enterDescription": "መግለጫ ያስገቡ",
+      "selectCategory": "ምድብ ይምረጡ",
+      "selectStatus": "ሁኔታ ይምረጡ",
+      "enterName": "ሙሉ ስም ያስገቡ",
+      "enterEmail": "ኢሜይል አድራሻ ያስገቡ",
+      "enterPhone": "ስልክ ቁጥር ያስገቡ",
+      "enterAddress": "አድራሻ ያስገቡ",
+      "selectMembershipType": "የአባልነት አይነት ይምረጡ"
+    }
+  },
+  "messages": {
+    "success": {
+      "bookAdded": "መጽሐፍ በተሳካ ሁኔታ ተጨምሯል",
+      "bookUpdated": "መጽሐፍ በተሳካ ሁኔታ ታድሷል",
+      "bookDeleted": "መጽሐፍ በተሳካ ሁኔታ ተሰርዟል",
+      "userAdded": "ተጠቃሚ በተሳካ ሁኔታ ተጨምሯል",
+      "userUpdated": "ተጠቃሚ በተሳካ ሁኔታ ታድሷል",
+      "userDeleted": "ተጠቃሚ በተሳካ ሁኔታ ተሰርዟል",
+      "loanCreated": "ብድር በተሳካ ሁኔታ ተፈጠረ",
+      "bookReturned": "መጽሐፍ በተሳካ ሁኔታ ተመልሷል",
+      "settingsSaved": "ቅንብሮች በተሳካ ሁኔታ ተቀምጠዋል"
+    },
+    "error": {
+      "bookNotFound": "መጽሐፍ አልተገኘም",
+      "userNotFound": "ተጠቃሚ አልተገኘም",
+      "loanNotFound": "ብድር አልተገኘም",
+      "bookUnavailable": "መጽሐፍ አይገኝም",
+      "userSuspended": "የተጠቃሚ መለያ ታግዷል",
+      "overdueBooks": "ተጠቃሚ ዘግይተው የሚመለሱ መጻሕፍት አሉት",
+      "maxLoansReached": "ከፍተኛ የብድር ገደብ ተደርሷል",
+      "networkError": "የኔትወርክ ስህተት። እባክዎ እንደገና ይሞክሩ።",
+      "serverError": "የአገልጋይ ስህተት። እባክዎ ድጋፍን ያነጋግሩ።"
+    },
+    "confirm": {
+      "deleteBook": "እርግጠኛ ነዎት ይህን መጽሐፍ መሰረዝ ይፈልጋሉ?",
+      "deleteUser": "እርግጠኛ ነዎት ይህን ተጠቃሚ መሰረዝ ይፈልጋሉ?",
+      "returnBook": "የመጽሐፍ መመለስ ያረጋግጡ?",
+      "suspendUser": "እርግጠኛ ነዎት ይህን ተጠቃሚ ማግድ ይፈልጋሉ?"
+    }
+  },
+  "footer": {
+    "about": "ስለ እኛ",
+    "contact": "ያነጋግሩን",
+    "location": "አካባቢ",
+    "hours": "የመክፈቻ ሰዓቶች",
+    "services": "አገልግሎቶች",
+    "policies": "ፖሊሲዎች",
+    "privacy": "የግላዊነት ፖሊሲ",
+    "terms": "የአገልግሎት ውሎች",
+    "copyright": "© 2024 የየካ ክፍለ ከተማ ቤተ መጻሕፍት። ሁሉም መብቶች የተጠበቁ ናቸው።",
+    "address": "የየካ ክፍለ ከተማ፣ አዲስ አበባ፣ ኢትዮጵያ",
+    "phone": "+251 11 123 4567",
+    "email": "info@yekalibrary.gov.et"
+  }
+}

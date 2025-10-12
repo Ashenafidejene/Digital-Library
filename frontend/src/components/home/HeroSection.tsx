@@ -1,0 +1,211 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRightIcon, BookOpenIcon, UsersIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import { useLanguage } from '../../contexts/LanguageContext';
+
+const HeroSection: React.FC = () => {
+  const { t } = useLanguage();
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut',
+      },
+    },
+  };
+
+  const floatingVariants = {
+    animate: {
+      y: [0, -10, 0],
+      transition: {
+        duration: 3,
+        repeat: Infinity,
+        ease: 'easeInOut',
+      },
+    },
+  };
+
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-neutral-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5 dark:opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ef4444' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+        >
+          {/* Left Content */}
+          <div className="text-center lg:text-left">
+            <motion.div variants={itemVariants}>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-neutral-100 leading-tight">
+                <span className="block">{t('home.hero.title').split(' ').slice(0, 3).join(' ')}</span>
+                <span className="block text-gradient">
+                  {t('home.hero.title').split(' ').slice(3).join(' ')}
+                </span>
+              </h1>
+            </motion.div>
+
+            <motion.p
+              variants={itemVariants}
+              className="mt-6 text-lg sm:text-xl text-neutral-600 dark:text-neutral-300 leading-relaxed max-w-2xl mx-auto lg:mx-0"
+            >
+              {t('home.hero.subtitle')}
+            </motion.p>
+
+            <motion.div
+              variants={itemVariants}
+              className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+            >
+              <button className="btn-primary text-lg px-8 py-3 group">
+                {t('home.hero.cta')}
+                <ArrowRightIcon className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+              </button>
+              <button className="btn-outline text-lg px-8 py-3">
+                {t('home.hero.membershipCta')}
+              </button>
+            </motion.div>
+
+            {/* Stats */}
+            <motion.div
+              variants={itemVariants}
+              className="mt-12 grid grid-cols-3 gap-6 text-center lg:text-left"
+            >
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                  15K+
+                </div>
+                <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                  Books Available
+                </div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                  2.8K+
+                </div>
+                <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                  Active Members
+                </div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                  50+
+                </div>
+                <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                  Categories
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Content - Illustration */}
+          <div className="relative">
+            <motion.div
+              variants={itemVariants}
+              className="relative z-10"
+            >
+              {/* Main Illustration Container */}
+              <div className="relative w-full max-w-lg mx-auto">
+                {/* Background Circle */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-full transform rotate-6"></div>
+                
+                {/* Floating Elements */}
+                <motion.div
+                  variants={floatingVariants}
+                  animate="animate"
+                  className="absolute top-4 right-4 w-16 h-16 bg-white dark:bg-neutral-800 rounded-xl shadow-lg flex items-center justify-center"
+                >
+                  <BookOpenIcon className="w-8 h-8 text-primary-500" />
+                </motion.div>
+
+                <motion.div
+                  variants={floatingVariants}
+                  animate="animate"
+                  style={{ animationDelay: '1s' }}
+                  className="absolute bottom-8 left-4 w-14 h-14 bg-white dark:bg-neutral-800 rounded-xl shadow-lg flex items-center justify-center"
+                >
+                  <UsersIcon className="w-7 h-7 text-success-500" />
+                </motion.div>
+
+                <motion.div
+                  variants={floatingVariants}
+                  animate="animate"
+                  style={{ animationDelay: '2s' }}
+                  className="absolute top-1/2 left-0 w-12 h-12 bg-white dark:bg-neutral-800 rounded-xl shadow-lg flex items-center justify-center"
+                >
+                  <GlobeAltIcon className="w-6 h-6 text-warning-500" />
+                </motion.div>
+
+                {/* Central Image Placeholder */}
+                <div className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl p-8 mx-8">
+                  <div className="aspect-square bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl flex items-center justify-center">
+                    <div className="text-center">
+                      <BookOpenIcon className="w-20 h-20 text-primary-500 mx-auto mb-4" />
+                      <div className="space-y-2">
+                        <div className="h-3 bg-primary-200 dark:bg-primary-700 rounded w-3/4 mx-auto"></div>
+                        <div className="h-3 bg-primary-200 dark:bg-primary-700 rounded w-1/2 mx-auto"></div>
+                        <div className="h-3 bg-primary-200 dark:bg-primary-700 rounded w-2/3 mx-auto"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Decorative Elements */}
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-500 rounded-full opacity-20"></div>
+                <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-success-500 rounded-full opacity-30"></div>
+                <div className="absolute top-1/4 -right-6 w-4 h-4 bg-warning-500 rounded-full opacity-25"></div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Bottom Wave */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg
+          className="w-full h-12 text-white dark:text-neutral-900"
+          preserveAspectRatio="none"
+          viewBox="0 0 1200 120"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+            opacity=".25"
+            fill="currentColor"
+          />
+          <path
+            d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+            opacity=".5"
+            fill="currentColor"
+          />
+          <path
+            d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+            fill="currentColor"
+          />
+        </svg>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;
