@@ -10,6 +10,7 @@ const LanguageToggle: React.FC = () => {
   const languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'am', name: 'አማርኛ', flag: '🇪🇹' },
+    { code: 'om', name: 'Afaan Oromoo', flag: '🇪🇹' },
   ];
 
   const currentLanguage = languages.find(lang => lang.code === language);
@@ -78,7 +79,7 @@ const LanguageToggle: React.FC = () => {
                   <button
                     key={lang.code}
                     onClick={() => {
-                      changeLanguage(lang.code as 'en' | 'am');
+                      changeLanguage(lang.code as 'en' | 'am' | 'om');
                       setIsOpen(false);
                     }}
                     className={`w-full flex items-center space-x-3 px-4 py-2 text-sm transition-colors duration-200 ${

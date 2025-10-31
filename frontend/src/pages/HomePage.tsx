@@ -3,6 +3,8 @@ import Header from '../components/home/Header';
 import HeroSection from '../components/home/HeroSection';
 import SearchSection from '../components/home/SearchSection';
 import FeaturedBooks from '../components/home/FeaturedBooks';
+import FeaturedEvents from '../components/home/FeaturedEvents';
+import FeaturedAnnouncements from '../components/home/FeaturedAnnouncements';
 import Footer from '../components/common/Footer';
 
 const HomePage: React.FC = () => {
@@ -18,7 +20,8 @@ const HomePage: React.FC = () => {
         <HeroSection />
         <SearchSection onSearch={handleSearch} />
         <FeaturedBooks />
-        {/* Add more sections here */}
+        <FeaturedEvents />
+        <FeaturedAnnouncements />
       </main>
       <Footer />
     </div>

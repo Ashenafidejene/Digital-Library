@@ -8,9 +8,10 @@ import {
   ClockIcon,
 } from '@heroicons/react/24/outline';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const footerSections = [
     {
@@ -25,19 +26,19 @@ const Footer: React.FC = () => {
     {
       title: t('footer.services'),
       links: [
-        { name: 'Book Borrowing', href: '/services/borrowing' },
-        { name: 'Digital Library', href: '/services/digital' },
-        { name: 'Research Support', href: '/services/research' },
-        { name: 'Events & Programs', href: '/events' },
+        { name: t('footer.services'), href: '/services' },
+        { name: t('navigation.events'), href: '/events' },
+        { name: t('navigation.announcements'), href: '/announcements' },
+        { name: t('navigation.books'), href: '/books' },
       ],
     },
     {
-      title: 'Quick Links',
+      title: t('footer.policies'),
       links: [
-        { name: 'Catalog Search', href: '/books' },
-        { name: 'New Arrivals', href: '/books/new' },
-        { name: 'Popular Books', href: '/books/popular' },
-        { name: 'Member Portal', href: '/member' },
+        { name: t('footer.policies'), href: '/policies' },
+        { name: t('footer.privacy'), href: '/privacy' },
+        { name: t('footer.terms'), href: '/terms' },
+        { name: t('footer.contact'), href: '/contact' },
       ],
     },
   ];
@@ -89,7 +90,7 @@ const Footer: React.FC = () => {
               </div>
             </div>
             <p className="text-neutral-400 mb-6 leading-relaxed">
-              Serving the Yeka Sub City community with knowledge, resources, and educational programs since 1995.
+              {language === 'am' ? 'ከ 1995 ዓም ጀምሮ የየካ ክፍለ ከተማ ህዝብን በእውቀም፣ በሀብቶች እና በትምህርታዊ ፕሮግራሞች እናገልግላለን።' : language === 'om' ? 'Bara 1995 jalqabee hawaasa Aanaa Magaalaa Yeekaa beekumsa, qabeenya fi sagantaalee barnootaan tajaajilaa jirra.' : 'Serving the Yeka Sub City community with knowledge, resources, and educational programs since 1995.'}
             </p>
             
             {/* Contact Info */}
@@ -108,7 +109,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center">
                 <ClockIcon className="w-5 h-5 text-primary-400 mr-3 flex-shrink-0" />
-                <span className="text-sm">Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM</span>
+                <span className="text-sm">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
               </div>
             </div>
           </motion.div>
@@ -122,12 +123,12 @@ const Footer: React.FC = () => {
               <ul className="space-y-2">
                 {section.links.map((link) => (
                   <li key={link.name}>
-                    <a
-                      href={link.href}
+                    <Link
+                      to={link.href}
                       className="text-neutral-400 hover:text-primary-400 transition-colors duration-200 text-sm"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

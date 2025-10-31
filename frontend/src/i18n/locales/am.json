@@ -82,6 +82,14 @@
       "popular": "ተወዳጅ መጻሕፍት",
       "recommended": "ለእርስዎ የሚመከሩ"
     },
+    "stats": {
+      "booksAvailable": "ተገኝ መጻሕፍት",
+      "activeMembers": "ንቁ አባላት",
+      "categories": "ምድቦች",
+      "totalBooks": "ጠቅላላ መጻሕፍት",
+      "newThisMonth": "በዚህ ወር አዳዲስ",
+      "digitalAccess": "ዲጂታል መዳረሻ"
+    },
     "services": {
       "title": "የቤተ መጻሕፍት አገልግሎቶች",
       "membership": {

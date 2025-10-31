@@ -41,7 +41,7 @@ async function startServer(): Promise<void> {
     app.use(`/api/${env.API_VERSION}/bookings`, bookingRoutes);
     app.use(`/api/${env.API_VERSION}/socket`, socketRoutes);
     app.use(`/api/${env.API_VERSION}/dashboard`, dashboardRoutes);
-    app.use(`/api/${env.API_VERSION}`, eventsAndAnnouncementsRoutes);
+    app.use(`/api/${env.API_VERSION}/events-announcements`, eventsAndAnnouncementsRoutes);
 
     // Serve frontend static files
     app.use(express.static(path.join(__dirname, '../frontend/build')));

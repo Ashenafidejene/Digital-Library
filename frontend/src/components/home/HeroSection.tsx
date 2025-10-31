@@ -124,7 +124,7 @@ const HeroSection: React.FC = () => {
                   {stats ? `${(stats.totalBooks / 1000).toFixed(1)}K+` : '...'}
                 </div>
                 <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                  Books Available
+                  {t('home.stats.booksAvailable')}
                 </div>
               </div>
               <div>
@@ -132,7 +132,7 @@ const HeroSection: React.FC = () => {
                   {stats ? `${(stats.totalMembers / 1000).toFixed(1)}K+` : '...'}
                 </div>
                 <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                  Active Members
+                  {t('home.stats.activeMembers')}
                 </div>
               </div>
               <div>
@@ -140,7 +140,7 @@ const HeroSection: React.FC = () => {
                   {stats ? `${stats.totalCategories}+` : '...'}
                 </div>
                 <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                  Categories
+                  {t('home.stats.categories')}
                 </div>
               </div>
             </motion.div>

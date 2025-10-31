@@ -82,6 +82,14 @@
       "popular": "Popular Books",
       "recommended": "Recommended for You"
     },
+    "stats": {
+      "booksAvailable": "Books Available",
+      "activeMembers": "Active Members",
+      "categories": "Categories",
+      "totalBooks": "Total Books",
+      "newThisMonth": "New This Month",
+      "digitalAccess": "Digital Access"
+    },
     "services": {
       "title": "Library Services",
       "membership": {
@@ -319,6 +327,75 @@
     "copyright": "© 2024 Yeka Sub City Library. All rights reserved.",
     "address": "Yeka Sub City, Addis Ababa, Ethiopia",
     "phone": "+251 11 123 4567",
-    "email": "info@yekalibrary.gov.et"
+    "email": "info@yekalibrary.gov.et",
+    "quickLinks": "Quick Links",
+    "bookBorrowing": "Book Borrowing",
+    "digitalLibrary": "Digital Library",
+    "researchSupport": "Research Support",
+    "eventsPrograms": "Events & Programs",
+    "catalogSearch": "Catalog Search",
+    "newArrivals": "New Arrivals",
+    "popularBooks": "Popular Books",
+    "memberPortal": "Member Portal",
+    "workingHours": "Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM",
+    "description": "Serving the Yeka Sub City community with knowledge, resources, and educational programs since 1995."
+  },
+  "pages": {
+    "about": {
+      "title": "About Yeka Sub City Library",
+      "mission": "Our Mission",
+      "missionText": "To provide free and equal access to information, knowledge, and cultural resources for all members of our community.",
+      "vision": "Our Vision",
+      "visionText": "To be a leading community library that empowers individuals through learning and fosters a love for reading.",
+      "history": "Our History",
+      "historyText": "Established in 1995, Yeka Sub City Library has been serving the community for over 25 years. We started with a small collection of 500 books and have grown to house over 15,000 titles across various categories.",
+      "values": "Our Values",
+      "value1": "Access for All",
+      "value2": "Community Focus",
+      "value3": "Lifelong Learning",
+      "value4": "Innovation"
+    },
+    "services": {
+      "title": "Our Services",
+      "borrowing": "Book Borrowing",
+      "borrowingDesc": "Borrow books for up to 2 weeks with renewal options. Free membership for all residents.",
+      "digital": "Digital Library",
+      "digitalDesc": "Access e-books, audiobooks, and digital resources 24/7 from anywhere.",
+      "research": "Research Support",
+      "researchDesc": "Get assistance with research projects, academic papers, and information literacy.",
+      "events": "Events & Programs",
+      "eventsDesc": "Join reading clubs, workshops, author talks, and educational programs.",
+      "children": "Children's Programs",
+      "childrenDesc": "Story time, homework help, and educational activities for children.",
+      "computer": "Computer Access",
+      "computerDesc": "Free internet access and computer workstations for members."
+    },
+    "policies": {
+      "title": "Library Policies",
+      "membership": "Membership Policy",
+      "membershipText": "Free membership available to all Yeka Sub City residents. Valid ID required for registration.",
+      "borrowing": "Borrowing Policy",
+      "borrowingText": "Members can borrow up to 5 books for 14 days. Renewals allowed if no holds exist.",
+      "fines": "Fines & Fees",
+      "finesText": "Late returns: 5 Birr per day. Lost books: Replacement cost plus 50 Birr processing fee.",
+      "conduct": "Code of Conduct",
+      "conductText": "Maintain quiet atmosphere, respect others, no food or drinks in reading areas.",
+      "privacy": "Privacy Policy",
+      "privacyText": "We protect your personal information and reading history. Data used only for library services."
+    },
+    "contact": {
+      "title": "Contact Us",
+      "getInTouch": "Get In Touch",
+      "visitUs": "Visit Us",
+      "callUs": "Call Us",
+      "emailUs": "Email Us",
+      "followUs": "Follow Us",
+      "sendMessage": "Send us a Message",
+      "name": "Your Name",
+      "email": "Your Email",
+      "subject": "Subject",
+      "message": "Message",
+      "send": "Send Message"
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate, authorize, validateObjectId, handleValidationErrors } from '../middleware';
+import { authenticate, authorize, validateObjectId, handleValidationErrors, optionalAuth } from '../middleware';
 import { EventRepository } from '../repositories/EventRepository';
 import { createEvent, getAllEvents } from '../controllers/EventController';
 import {
@@ -15,15 +15,8 @@ import { UserRole } from '../types';
 const router = Router();
 const eventRepository = new EventRepository();
 
-// All routes require authentication
-router.use(authenticate);
-
-// Event routes
+// Public routes (no authentication required)
 router.get('/events', getAllEvents);
-
-router.post('/events', authorize(UserRole.ADMIN), upload.single('image'), createEvent);
-
-// Announcement routes
 router.get('/announcements', getAllAnnouncements);
 router.get(
   '/announcements/:id',
@@ -31,6 +24,11 @@ router.get(
   handleValidationErrors,
   getAnnouncementById
 );
+
+// Protected routes (authentication required)
+router.use(authenticate);
+
+router.post('/events', authorize(UserRole.ADMIN), upload.single('image'), createEvent);
 router.post(
   '/announcements',
   authorize(UserRole.ADMIN),

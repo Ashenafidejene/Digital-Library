@@ -10,6 +10,11 @@ import './i18n';
 import HomePage from './pages/HomePage';
 import BooksPage from './pages/BooksPage';
 import EventsPage from './pages/EventsPage';
+import AnnouncementsPage from './pages/AnnouncementsPage';
+import AboutPage from './pages/AboutPage';
+import ServicesPage from './pages/ServicesPage';
+import PoliciesPage from './pages/PoliciesPage';
+import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import UserDashboard from './pages/user/UserDashboard';
@@ -39,7 +44,11 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/books" element={<BooksPage />} />
                 <Route path="/events" element={<EventsPage />} />
-                <Route path="/announcements" element={<div>Announcements Page</div>} />
+                <Route path="/announcements" element={<AnnouncementsPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/services" element={<ServicesPage />} />
+                <Route path="/policies" element={<PoliciesPage />} />
+                <Route path="/contact" element={<ContactPage />} />
 
                 {/* Auth Routes */}
                 <Route path="/login" element={<LoginPage />} />

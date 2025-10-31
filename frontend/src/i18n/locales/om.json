@@ -1,0 +1,332 @@
+{
+  "common": {
+    "loading": "Fe'aa jira...",
+    "error": "Dogoggora",
+    "success": "Milkaa'ina",
+    "cancel": "Haqii",
+    "save": "Olkaa'i",
+    "edit": "Gulaali",
+    "delete": "Haqii",
+    "add": "Ida'ii",
+    "search": "Barbaadi",
+    "filter": "Calaluu",
+    "clear": "Qulqulleessi",
+    "submit": "Ergi",
+    "close": "Cufi",
+    "back": "Duubatti deebi'i",
+    "next": "Itti aanuu",
+    "previous": "Dura",
+    "yes": "Eeyyee",
+    "no": "Lakki",
+    "confirm": "Mirkaneessi",
+    "view": "Ilaali",
+    "download": "Buufadhu",
+    "upload": "Fe'i",
+    "refresh": "Haaromsi"
+  },
+  "navigation": {
+    "home": "Mana",
+    "dashboard": "Gabatee",
+    "books": "Kitaabota",
+    "users": "Fayyadamtoota",
+    "borrowing": "Liqeessuu fi Deebisuu",
+    "announcements": "Beeksisaawwan",
+    "events": "Taateewwan",
+    "settings": "Qindaa'inoota",
+    "profile": "Ibsa",
+    "logout": "Ba'i",
+    "login": "Seeni",
+    "signup": "Galmaa'i"
+  },
+  "header": {
+    "libraryName": "Mana Kitaabaa Aanaa Magaalaa Yeekaa",
+    "searchPlaceholder": "Kitaabota, barreessitootaa ykn ramaddii barbaadi...",
+    "languageSwitch": "Afaan",
+    "themeSwitch": "Bifaa",
+    "lightMode": "Bifaa Ifa",
+    "darkMode": "Bifaa Dukkanaa"
+  },
+  "home": {
+    "hero": {
+      "title": "Gara Mana Kitaabaa Aanaa Magaalaa Yeekaa Baga Nagaan Dhuftan",
+      "subtitle": "Beekumsa argadhu, addunyaa haaraa qoradhu, akkasumas walitti qabama kitaabotaa fi qabeenya dijitaalaa bal'aa keenyaan mul'ata kee bal'isi.",
+      "cta": "Kitaabota Qoradhu",
+      "membershipCta": "Miseensa Ta'i"
+    },
+    "search": {
+      "title": "Dubbisa Guddaa Itti Aanu Kee Argadhu",
+      "placeholder": "Mataduree, barreessitaa ykn ISBN'n barbaadi...",
+      "categories": {
+        "all": "Ramaddii Hunda",
+        "fiction": "Oduu Tolfamaa",
+        "nonfiction": "Oduu Hin Tolfamne",
+        "science": "Saayinsii",
+        "history": "Seenaa",
+        "biography": "Seenaa Jireenyaa",
+        "children": "Kitaabota Daa'immanii",
+        "academic": "Barnootaa",
+        "reference": "Wabii"
+      }
+    },
+    "announcements": {
+      "title": "Beeksisaawwan Haaraa",
+      "viewAll": "Beeksisaawwan Hunda Ilaali"
+    },
+    "events": {
+      "title": "Taateewwan Dhufan",
+      "viewAll": "Taateewwan Hunda Ilaali"
+    },
+    "featured": {
+      "title": "Kitaabota Filatamoo",
+      "newArrivals": "Kitaabota Haaraa",
+      "popular": "Kitaabota Jaallatamoo",
+      "recommended": "Siif Gorfaman"
+    },
+    "stats": {
+      "booksAvailable": "Kitaabota Jiran",
+      "activeMembers": "Miseensota Sochii",
+      "categories": "Ramaddiiwwan",
+      "totalBooks": "Kitaabota Waliigalaa",
+      "newThisMonth": "Ji'a Kana Haaraa",
+      "digitalAccess": "Argannaa Dijitaalaa"
+    },
+    "services": {
+      "title": "Tajaajilaalee Mana Kitaabaa",
+      "membership": {
+        "title": "Miseensummaa",
+        "description": "Hawaasa mana kitaabaa keenyatti makamuu fi kitaabotaa fi qabeenya daangaa hin qabne argachuun gammadi."
+      },
+      "borrowing": {
+        "title": "Liqeessuu fi Deebisuu",
+        "description": "Adeemsa liqeessuu salphaa imaammata deebisuu jijjiiramaa fi filannoo haaromsuu qabu."
+      },
+      "digital": {
+        "title": "Mana Kitaabaa Dijitaalaa",
+        "description": "Bakka kamirraayyuu e-kitaabota, kitaabota sagalee fi qabeenya dijitaalaa argadhu."
+      },
+      "events": {
+        "title": "Taateewwan fi Sagantaalee",
+        "description": "Garee dubbisaa, workshop fi sagantaalee barnootaa keessatti hirmaadhu."
+      }
+    }
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Gabatee Bulchaa",
+      "overview": "Ilaalcha Waliigalaa",
+      "stats": {
+        "totalBooks": "Kitaabota Waliigalaa",
+        "totalMembers": "Miseensota Waliigalaa",
+        "borrowedToday": "Har'a Liqeeffaman",
+        "overdueReturns": "Yeroo Darbanii Deebisan",
+        "activeMembers": "Miseensota Sochii",
+        "newMembersThisMonth": "Ji'a Kana Miseensota Haaraa",
+        "popularCategory": "Ramaddii Baay'ee Jaallatamaa",
+        "averageBorrowTime": "Yeroo Liqeessuu Giddu Galeessaa"
+      },
+      "charts": {
+        "monthlyActivity": "Sochii Ji'aa",
+        "categoryDistribution": "Raabsa Ramaddii",
+        "membershipGrowth": "Guddinaa Miseensummaa",
+        "borrowingTrends": "Adeemsa Liqeessuu"
+      },
+      "recentActivity": {
+        "title": "Sochii Dhiyoo",
+        "newMember": "Miseensi haaraan galmaa'e",
+        "bookBorrowed": "Kitaabni liqeeffame",
+        "bookReturned": "Kitaabni deebifame",
+        "bookAdded": "Kitaabni haaraan ida'ame",
+        "overdueNotice": "Beeksisni yeroo darbee ergame"
+      }
+    },
+    "books": {
+      "title": "Kitaabota Bulchi",
+      "addBook": "Kitaaba Haaraa Ida'i",
+      "editBook": "Kitaaba Gulaali",
+      "deleteBook": "Kitaaba Haqii",
+      "bookDetails": "Ibsa Kitaabaa",
+      "availability": "Argamuu",
+      "categories": "Ramaddiiwwan",
+      "authors": "Barreessitootaa",
+      "isbn": "ISBN",
+      "publisher": "Maxxansituu",
+      "publicationDate": "Guyyaa Maxxansuu",
+      "pages": "Fuulota",
+      "language": "Afaan",
+      "description": "Ibsa",
+      "location": "Bakka",
+      "status": "Haala",
+      "available": "Jira",
+      "borrowed": "Liqeeffame",
+      "maintenance": "Suphaa Jala",
+      "lost": "Bade"
+    },
+    "users": {
+      "title": "Fayyadamtoota Bulchi",
+      "addUser": "Fayyadamaa Haaraa Ida'i",
+      "editUser": "Fayyadamaa Gulaali",
+      "deleteUser": "Fayyadamaa Haqii",
+      "userDetails": "Ibsa Fayyadamaa",
+      "membershipInfo": "Odeeffannoo Miseensummaa",
+      "borrowingHistory": "Seenaa Liqeessuu",
+      "activeLoans": "Liqii Sochii",
+      "membershipType": "Gosa Miseensummaa",
+      "joinDate": "Guyyaa Makamuu",
+      "lastActive": "Yeroo Dhumaa Sochii",
+      "contactInfo": "Odeeffannoo Quunnamtii",
+      "address": "Teessoo",
+      "phone": "Bilbilaa",
+      "email": "Imeelii",
+      "status": "Haala",
+      "active": "Sochii",
+      "suspended": "Dhaabame",
+      "expired": "Yeroon Darbee"
+    },
+    "borrowing": {
+      "title": "Liqeessuu fi Deebisuu",
+      "newLoan": "Liqii Haaraa",
+      "returnBook": "Kitaaba Deebisi",
+      "renewLoan": "Liqii Haaromsi",
+      "overdueItems": "Wantoota Yeroo Darban",
+      "dueToday": "Har'a Deebisan",
+      "recentReturns": "Deebii Dhiyoo",
+      "borrowDate": "Guyyaa Liqeessuu",
+      "dueDate": "Guyyaa Deebisuu",
+      "returnDate": "Guyyaa Deebifame",
+      "fine": "Adabbii",
+      "status": "Haala",
+      "borrowed": "Liqeeffame",
+      "returned": "Deebifame",
+      "overdue": "Yeroon Darbe",
+      "renewed": "Haaromfame"
+    },
+    "settings": {
+      "title": "Qindaa'inoota",
+      "general": "Qindaa'inoota Waliigalaa",
+      "library": "Qindaa'inoota Mana Kitaabaa",
+      "notifications": "Beeksisaawwan",
+      "security": "Nageenyaa",
+      "backup": "Kuufamaa fi Deebisuu",
+      "libraryName": "Maqaa Mana Kitaabaa",
+      "address": "Teessoo",
+      "phone": "Lakkoofsa Bilbilaa",
+      "email": "Teessoo Imeelii",
+      "workingHours": "Sa'aatii Hojii",
+      "loanPeriod": "Yeroo Liqii Durtii",
+      "maxRenewals": "Haaromsuu Olaanaa",
+      "finePerDay": "Adabbii Guyyaatti",
+      "emailNotifications": "Beeksisaawwan Imeelii",
+      "smsNotifications": "Beeksisaawwan SMS",
+      "overdueReminders": "Yaadachiisaawwan Yeroo Darbee",
+      "changePassword": "Jecha Icciitii Jijjiiri",
+      "twoFactorAuth": "Mirkaneessaa Sadarkaa Lamaa",
+      "sessionTimeout": "Yeroo Xumuraa Qunnamtii"
+    }
+  },
+  "userDashboard": {
+    "welcome": "Baga nagaan deebitan",
+    "tabs": {
+      "overview": "Ilaalcha Waliigalaa",
+      "borrowed": "Kitaabota Liqeeffaman",
+      "reserved": "Kitaabota Qabaman",
+      "history": "Seenaa Dubbisaa",
+      "profile": "Ibsa"
+    },
+    "stats": {
+      "borrowedBooks": "Kitaabota Liqeeffaman",
+      "reservedBooks": "Kitaabota Qabaman",
+      "booksRead": "Kitaabota Dubbifaman",
+      "favoriteBooks": "Kitaabota Jaallatamoo"
+    },
+    "sections": {
+      "currentBooks": "Kitaabota Ammaa",
+      "recentNotifications": "Beeksisaawwan Dhiyoo",
+      "personalInfo": "Odeeffannoo Dhuunfaa",
+      "accountSettings": "Qindaa'inoota Herregaa",
+      "notificationPreferences": "Filannoo Beeksisaa"
+    },
+    "actions": {
+      "renew": "Haaromsi",
+      "view": "Ilaali",
+      "cancel": "Haqii",
+      "borrowAgain": "Ammas Liqeessi",
+      "updateInfo": "Odeeffannoo Haaromsi",
+      "changePassword": "Jecha Icciitii Jijjiiri"
+    },
+    "messages": {
+      "noBorrowedBooks": "Kitaabni ammaa liqeeffame hin jiru",
+      "noReservedBooks": "Kitaabni qabame hin jiru",
+      "noReadingHistory": "Seenaan dubbisaa hin jiru",
+      "startBrowsing": "Walitti qabama keenya qorachuu jalqabi!",
+      "loadingDashboard": "Gabatee kee fe'aa jira..."
+    }
+  },
+  "forms": {
+    "validation": {
+      "required": "Dirreen kun barbaachisaa dha",
+      "email": "Maaloo teessoo imeelii sirrii ta'e galchi",
+      "phone": "Maaloo lakkoofsa bilbilaa sirrii ta'e galchi",
+      "minLength": "Yoo xiqqaate arfiilee {{count}} barbaachisu",
+      "maxLength": "Hanga arfiilee {{count}} hayyamamu",
+      "numeric": "Maaloo lakkoofsa sirrii ta'e galchi",
+      "date": "Maaloo guyyaa sirrii ta'e galchi"
+    },
+    "placeholders": {
+      "enterTitle": "Mataduree kitaabaa galchi",
+      "enterAuthor": "Maqaa barreessituu galchi",
+      "enterISBN": "ISBN galchi",
+      "enterDescription": "Ibsa galchi",
+      "selectCategory": "Ramaddii filadhu",
+      "selectStatus": "Haala filadhu",
+      "enterName": "Maqaa guutuu galchi",
+      "enterEmail": "Teessoo imeelii galchi",
+      "enterPhone": "Lakkoofsa bilbilaa galchi",
+      "enterAddress": "Teessoo galchi",
+      "selectMembershipType": "Gosa miseensummaa filadhu"
+    }
+  },
+  "messages": {
+    "success": {
+      "bookAdded": "Kitaabni milkaa'inaan ida'ame",
+      "bookUpdated": "Kitaabni milkaa'inaan haaromfame",
+      "bookDeleted": "Kitaabni milkaa'inaan haqame",
+      "userAdded": "Fayyadamaan milkaa'inaan ida'ame",
+      "userUpdated": "Fayyadamaan milkaa'inaan haaromfame",
+      "userDeleted": "Fayyadamaan milkaa'inaan haqame",
+      "loanCreated": "Liqiin milkaa'inaan uumame",
+      "bookReturned": "Kitaabni milkaa'inaan deebifame",
+      "settingsSaved": "Qindaa'inoonni milkaa'inaan olkaa'aman"
+    },
+    "error": {
+      "bookNotFound": "Kitaabni hin argamne",
+      "userNotFound": "Fayyadamaan hin argamne",
+      "loanNotFound": "Liqiin hin argamne",
+      "bookUnavailable": "Kitaabni hin argamu",
+      "userSuspended": "Herregni fayyadamaa dhaabameera",
+      "overdueBooks": "Fayyadamaan kitaabota yeroo darban qaba",
+      "maxLoansReached": "Daangaan liqii olaanaa ga'ameera",
+      "networkError": "Dogoggora networkii. Maaloo ammas yaali.",
+      "serverError": "Dogoggora serveraa. Maaloo deeggarsa quunnamaa."
+    },
+    "confirm": {
+      "deleteBook": "Kitaaba kana haquu barbaaddaa mirkaneessitaa?",
+      "deleteUser": "Fayyadamaa kana haquu barbaaddaa mirkaneessitaa?",
+      "returnBook": "Deebii kitaabaa mirkaneessii?",
+      "suspendUser": "Fayyadamaa kana dhaabuu barbaaddaa mirkaneessitaa?"
+    }
+  },
+  "footer": {
+    "about": "Waa'ee Keenya",
+    "contact": "Nu Quunnamaa",
+    "location": "Bakka",
+    "hours": "Sa'aatii Banuu",
+    "services": "Tajaajilaalee",
+    "policies": "Imaammataawwan",
+    "privacy": "Imaammata Dhuunfachisummaa",
+    "terms": "Haala Tajaajilaa",
+    "copyright": "© 2024 Mana Kitaabaa Aanaa Magaalaa Yeekaa. Mirgi hundi eegameera.",
+    "address": "Aanaa Magaalaa Yeekaa, Finfinnee, Itoophiyaa",
+    "phone": "+251 11 123 4567",
+    "email": "info@yekalibrary.gov.et"
+  }
+}

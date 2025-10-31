@@ -158,7 +158,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                 15,420
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                Total Books
+                {t('home.stats.totalBooks')}
               </div>
             </div>
             <div className="text-center">
@@ -166,7 +166,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                 156
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                New This Month
+                {t('home.stats.newThisMonth')}
               </div>
             </div>
             <div className="text-center">
@@ -174,7 +174,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                 50+
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                Categories
+                {t('home.stats.categories')}
               </div>
             </div>
             <div className="text-center">
@@ -182,7 +182,7 @@ const SearchSection: React.FC<SearchSectionProps> = ({ onSearch }) => {
                 24/7
               </div>
               <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                Digital Access
+                {t('home.stats.digitalAccess')}
               </div>
             </div>
           </motion.div>
