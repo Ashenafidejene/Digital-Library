@@ -22,13 +22,19 @@ const api: AxiosInstance = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
+    console.log('--- Request Interceptor ---');
     const token = localStorage.getItem('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Token added to request headers.');
+    } else {
+      console.log('No token found in localStorage.');
     }
+    console.log('Request Config:', config);
     return config;
   },
   (error) => {
+    console.error('Request Interceptor Error:', error);
     return Promise.reject(error);
   }
 );
@@ -36,29 +42,44 @@ api.interceptors.request.use(
 // Response interceptor for error handling and token refresh
 api.interceptors.response.use(
   (response: AxiosResponse) => {
+    console.log('--- Response Interceptor ---');
+    console.log('Response:', response);
     return response;
   },
   async (error) => {
+    console.log('--- Response Interceptor Error ---');
+    console.error('Response Error:', error.response);
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      console.log('401 Error: Attempting to refresh token.');
 
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
+          console.log('Found refreshToken, sending to /auth/refresh.');
           const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
             refreshToken,
           });
+          console.log('Token refresh response:', response);
 
-          const { accessToken } = response.data.data;
+          const { accessToken, refreshToken: newRefreshToken } = response.data.data;
           localStorage.setItem('accessToken', accessToken);
+          if (newRefreshToken) {
+            localStorage.setItem('refreshToken', newRefreshToken);
+          }
+          console.log('New accessToken and refreshToken stored.');
 
           // Retry the original request with new token
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          console.log('Retrying original request with new token.');
           return api(originalRequest);
+        } else {
+          console.log('No refreshToken found. Redirecting to login.');
         }
       } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
         // Refresh failed, redirect to login
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
@@ -125,7 +146,11 @@ export const apiService = {
   // POST request
   async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     try {
-      const response = await api.post<ApiResponse<T>>(url, data, config);
+      const headers: any = { ...config?.headers };
+      if (data instanceof FormData) {
+        headers['Content-Type'] = 'multipart/form-data';
+      }
+      const response = await api.post<ApiResponse<T>>(url, data, { ...config, headers });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -135,7 +160,11 @@ export const apiService = {
   // PUT request
   async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
     try {
-      const response = await api.put<ApiResponse<T>>(url, data, config);
+      const headers: any = { ...config?.headers };
+      if (data instanceof FormData) {
+        headers['Content-Type'] = 'multipart/form-data';
+      }
+      const response = await api.put<ApiResponse<T>>(url, data, { ...config, headers });
       return response.data;
     } catch (error: any) {
       throw this.handleError(error);
@@ -190,10 +219,10 @@ export const apiRequest = async <T>(
         response = await api.get<ApiResponse<T>>(url);
         break;
       case 'POST':
-        response = await api.post<ApiResponse<T>>(url, body ? JSON.parse(body) : undefined);
+        response = await api.post<ApiResponse<T>>(url, body ? body : undefined);
         break;
       case 'PUT':
-        response = await api.put<ApiResponse<T>>(url, body ? JSON.parse(body) : undefined);
+        response = await api.put<ApiResponse<T>>(url, body ? body : undefined);
         break;
       case 'DELETE':
         response = await api.delete<ApiResponse<T>>(url);

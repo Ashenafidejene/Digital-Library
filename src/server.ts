@@ -6,6 +6,7 @@ import { logger } from './utils/logger';
 import { AuthService } from './services/AuthService';
 import { SocketService } from './services/SocketService';
 import { initializeSocket } from './config/socket';
+import './utils/createUploadsDir';
 import path from 'path';
 import express from 'express';
 

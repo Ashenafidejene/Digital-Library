@@ -16,9 +16,17 @@ export class SocketManager {
   private connectedUsers: Map<string, string> = new Map(); // userId -> socketId
 
   constructor(httpServer: HttpServer) {
+    const allowedOrigins = env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim());
+
     this.io = new SocketIOServer(httpServer, {
       cors: {
-        origin: env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim()),
+        origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+          if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            callback(new Error('Not allowed by CORS'));
+          }
+        },
         methods: ['GET', 'POST'],
         credentials: true,
       },

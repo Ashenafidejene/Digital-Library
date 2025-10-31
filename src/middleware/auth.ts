@@ -7,25 +7,37 @@ import { catchAsync } from './errorHandler';
 
 export const authenticate = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log('--- Authenticate Middleware ---');
     // 1) Getting token and check if it's there
     let token: string | undefined;
     
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
+    console.log('Token:', token);
 
     if (!token) {
+      console.log('Authentication failed: No token provided.');
       return next(new AppError('You are not logged in! Please log in to get access.', 401));
     }
 
     // 2) Verification token
-    const decoded = jwt.verify(token, env.JWT_ACCESS_SECRET) as TokenPayload;
+    let decoded: TokenPayload;
+    try {
+      decoded = jwt.verify(token, env.JWT_ACCESS_SECRET) as TokenPayload;
+      console.log('Decoded Token:', decoded);
+    } catch (error) {
+      console.log('Authentication failed: Token verification failed.', error);
+      return next(new AppError('Invalid token. Please log in again.', 401));
+    }
 
     // 3) Check if user still exists
     const currentUser = await User.findById(decoded.userId).select('+refreshTokens');
     if (!currentUser) {
+      console.log(`Authentication failed: User with ID ${decoded.userId} not found.`);
       return next(new AppError('The user belonging to this token does no longer exist.', 401));
     }
+    console.log('Current User:', currentUser._id, currentUser.email, currentUser.role);
 
     // 4) Check if user is active
     if (currentUser.status !== 'active') {
@@ -39,6 +51,7 @@ export const authenticate = catchAsync(
       role: currentUser.role,
       status: currentUser.status,
     };
+    console.log('Authentication successful. User set:', req.user);
 
     next();
   }

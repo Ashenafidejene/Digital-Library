@@ -9,6 +9,7 @@ export interface IEvent extends Document {
   status: 'upcoming' | 'past' | 'cancelled';
   authorId: string;
   authorName: string;
+  image?: string;
 }
 
 const EventSchema = new Schema<IEvent>(
@@ -25,6 +26,7 @@ const EventSchema = new Schema<IEvent>(
     },
     authorId: { type: String, required: true },
     authorName: { type: String, required: true },
+    image: { type: String },
   },
   {
     timestamps: true,

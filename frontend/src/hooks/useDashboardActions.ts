@@ -80,6 +80,11 @@ export const useDashboardActions = () => {
     }
   };
 
+  const handleToggleAnnouncementStatus = (announcementId: string, currentStatus: 'draft' | 'published' | 'archived' | 'active') => {
+    const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+    alert(`Toggling status of announcement ${announcementId} to ${newStatus}`);
+  };
+
   return {
     actionLoading,
     handleSendReminder,
@@ -89,6 +94,7 @@ export const useDashboardActions = () => {
     handleIssueBook,
     handleCreateAnnouncement,
     handleEditAnnouncement,
-    handleDeleteAnnouncement
+    handleDeleteAnnouncement,
+    handleToggleAnnouncementStatus
   };
 };

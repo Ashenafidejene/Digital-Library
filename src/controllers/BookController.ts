@@ -54,15 +54,23 @@ export class BookController {
   });
 
   getAllBooks = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const query = req.query;
-    const result = await this.bookService.getAllBooks(query);
+    console.log('[User Book Controller] Getting all books. Query:', req.query);
+    try {
+      const query = req.query;
+      const result = await this.bookService.getAllBooks(query);
+      console.log(`[User Book Controller] Found ${result.books.length} books.`);
+      console.log('[User Book Controller] Sample book data:', result.books.length > 0 ? result.books[0] : 'No books found');
 
-    ResponseUtil.paginated(
-      res,
-      result.books,
-      result.pagination,
-      'Books retrieved successfully'
-    );
+      ResponseUtil.paginated(
+        res,
+        result.books,
+        'Books retrieved successfully',
+        result.pagination
+      );
+    } catch (error) {
+      console.error('[User Book Controller] Error in getAllBooks:', error);
+      next(error);
+    }
   });
 
   getAvailableBooks = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -72,8 +80,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      result.pagination,
-      'Available books retrieved successfully'
+      'Available books retrieved successfully',
+      result.pagination
     );
   });
 
@@ -84,8 +92,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      result.pagination,
-      'Popular books retrieved successfully'
+      'Popular books retrieved successfully',
+      result.pagination
     );
   });
 
@@ -96,8 +104,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      result.pagination,
-      'Recently added books retrieved successfully'
+      'Recently added books retrieved successfully',
+      result.pagination
     );
   });
 
@@ -113,8 +121,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      result.pagination,
-      'Book search completed successfully'
+      'Book search completed successfully',
+      result.pagination
     );
   });
 
@@ -125,8 +133,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      result.pagination,
-      `Books in category ${category} retrieved successfully`
+      `Books in category ${category} retrieved successfully`,
+      result.pagination
     );
   });
 
@@ -142,8 +150,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      result.pagination,
-      `Books with status ${status} retrieved successfully`
+      `Books with status ${status} retrieved successfully`,
+      result.pagination
     );
   });
 
@@ -186,5 +194,10 @@ export class BookController {
     const book = await this.bookService.getBookByISBN(isbn);
 
     ResponseUtil.success(res, book, 'Book retrieved by ISBN successfully');
+  });
+
+  getFeaturedBooks = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await this.bookService.getFeaturedBooks(req.query);
+    ResponseUtil.success(res, result, 'Featured books retrieved successfully');
   });
 }

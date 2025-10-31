@@ -1,94 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeftIcon, ChevronRightIcon, StarIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { getFeaturedBooks, Book } from '../../services/bookService';
 
-interface Book {
-  id: string;
-  title: string;
-  author: string;
-  category: string;
-  rating: number;
-  coverImage: string;
-  isAvailable: boolean;
-  isFavorite: boolean;
-}
-
-interface FeaturedBooksProps {
-  books?: Book[];
-}
-
-const FeaturedBooks: React.FC<FeaturedBooksProps> = ({ books = [] }) => {
+const FeaturedBooks: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { t } = useLanguage();
+  const [books, setBooks] = useState<Book[]>([]);
+  const [activeTab, setActiveTab] = useState('popular');
 
-  // Mock data if no books provided
-  const mockBooks: Book[] = [
-    {
-      id: '1',
-      title: 'The Great Gatsby',
-      author: 'F. Scott Fitzgerald',
-      category: 'Fiction',
-      rating: 4.5,
-      coverImage: '/api/placeholder/200/300',
-      isAvailable: true,
-      isFavorite: false,
-    },
-    {
-      id: '2',
-      title: 'To Kill a Mockingbird',
-      author: 'Harper Lee',
-      category: 'Fiction',
-      rating: 4.8,
-      coverImage: '/api/placeholder/200/300',
-      isAvailable: true,
-      isFavorite: false,
-    },
-    {
-      id: '3',
-      title: '1984',
-      author: 'George Orwell',
-      category: 'Dystopian Fiction',
-      rating: 4.7,
-      coverImage: '/api/placeholder/200/300',
-      isAvailable: false,
-      isFavorite: false,
-    },
-    {
-      id: '4',
-      title: 'Pride and Prejudice',
-      author: 'Jane Austen',
-      category: 'Romance',
-      rating: 4.6,
-      coverImage: '/api/placeholder/200/300',
-      isAvailable: true,
-      isFavorite: false,
-    },
-    {
-      id: '5',
-      title: 'The Catcher in the Rye',
-      author: 'J.D. Salinger',
-      category: 'Fiction',
-      rating: 4.3,
-      coverImage: '/api/placeholder/200/300',
-      isAvailable: true,
-      isFavorite: false,
-    },
-    {
-      id: '6',
-      title: 'Lord of the Flies',
-      author: 'William Golding',
-      category: 'Fiction',
-      rating: 4.4,
-      coverImage: '/api/placeholder/200/300',
-      isAvailable: true,
-      isFavorite: false,
-    },
-  ];
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const data = await getFeaturedBooks({ limit: 12 });
+        if (activeTab === 'popular') {
+          setBooks(data.popularBooks);
+        } else if (activeTab === 'newArrivals') {
+          setBooks(data.recentlyAddedBooks);
+        } else {
+          setBooks(data.recommendedBooks);
+        }
+      } catch (error) {
+        console.error('Error fetching featured books:', error);
+      }
+    };
 
-  const displayBooks = books.length > 0 ? books : mockBooks;
+    fetchBooks();
+  }, [activeTab]);
+
+  const displayBooks = books;
   const booksPerSlide = 4;
   const totalSlides = Math.ceil(displayBooks.length / booksPerSlide);
 
@@ -112,12 +55,13 @@ const FeaturedBooks: React.FC<FeaturedBooksProps> = ({ books = [] }) => {
     });
   };
 
-  const renderStars = (rating: number) => {
+  const renderStars = (rating?: { average: number; count: number }) => {
+    const avgRating = rating?.average || 0;
     return Array.from({ length: 5 }, (_, index) => (
       <StarIcon
         key={index}
         className={`w-4 h-4 ${
-          index < Math.floor(rating)
+          index < Math.floor(avgRating)
             ? 'text-yellow-400 fill-current'
             : 'text-neutral-300 dark:text-neutral-600'
         }`}
@@ -171,13 +115,34 @@ const FeaturedBooks: React.FC<FeaturedBooksProps> = ({ books = [] }) => {
           {/* Category Tabs */}
           <motion.div variants={itemVariants} className="flex justify-center mb-8">
             <div className="flex space-x-1 bg-white dark:bg-neutral-700 rounded-lg p-1 shadow-soft">
-              <button className="px-4 py-2 text-sm font-medium rounded-md bg-primary-500 text-white">
+              <button
+                onClick={() => setActiveTab('popular')}
+                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                  activeTab === 'popular'
+                    ? 'bg-primary-500 text-white'
+                    : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600'
+                } transition-colors duration-200`}
+              >
                 {t('home.featured.popular')}
               </button>
-              <button className="px-4 py-2 text-sm font-medium rounded-md text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors duration-200">
+              <button
+                onClick={() => setActiveTab('newArrivals')}
+                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                  activeTab === 'newArrivals'
+                    ? 'bg-primary-500 text-white'
+                    : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600'
+                } transition-colors duration-200`}
+              >
                 {t('home.featured.newArrivals')}
               </button>
-              <button className="px-4 py-2 text-sm font-medium rounded-md text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600 transition-colors duration-200">
+              <button
+                onClick={() => setActiveTab('recommended')}
+                className={`px-4 py-2 text-sm font-medium rounded-md ${
+                  activeTab === 'recommended'
+                    ? 'bg-primary-500 text-white'
+                    : 'text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-600'
+                } transition-colors duration-200`}
+              >
                 {t('home.featured.recommended')}
               </button>
             </div>
@@ -227,29 +192,28 @@ const FeaturedBooks: React.FC<FeaturedBooksProps> = ({ books = [] }) => {
                           <div className="card-hover relative overflow-hidden">
                             {/* Book Cover */}
                             <div className="relative aspect-[3/4] bg-neutral-200 dark:bg-neutral-700 rounded-lg overflow-hidden mb-4">
-                              <div className="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 flex items-center justify-center">
-                                <div className="text-center p-4">
-                                  <div className="w-16 h-16 bg-primary-500 rounded-lg flex items-center justify-center mx-auto mb-2">
-                                    <span className="text-white font-bold text-xl">
-                                      {book.title.charAt(0)}
-                                    </span>
-                                  </div>
-                                  <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                                    Book Cover
-                                  </div>
+                              {book.coverImage ? (
+                                <img
+                                  src={book.coverImage}
+                                  alt={book.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-neutral-400 dark:text-neutral-500">
+                                  <span className="text-4xl">📚</span>
                                 </div>
-                              </div>
+                              )}
 
                               {/* Availability Badge */}
                               <div className="absolute top-2 left-2">
                                 <span
                                   className={`px-2 py-1 text-xs font-medium rounded-full ${
-                                    book.isAvailable
+                                    book.availability.availableCopies > 0
                                       ? 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400'
                                       : 'bg-error-100 text-error-800 dark:bg-error-900/30 dark:text-error-400'
                                   }`}
                                 >
-                                  {book.isAvailable ? 'Available' : 'Borrowed'}
+                                  {book.availability.availableCopies > 0 ? 'Available' : 'Borrowed'}
                                 </span>
                               </div>
 
@@ -281,7 +245,7 @@ const FeaturedBooks: React.FC<FeaturedBooksProps> = ({ books = [] }) => {
                                 <div className="flex items-center space-x-1">
                                   {renderStars(book.rating)}
                                   <span className="text-sm text-neutral-600 dark:text-neutral-400 ml-1">
-                                    {book.rating}
+                                    {book.rating?.average?.toFixed(1) || 'N/A'}
                                   </span>
                                 </div>
                                 <span className="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700 px-2 py-1 rounded-full">

@@ -10,11 +10,10 @@ import {
   ExclamationCircleIcon,
   CheckCircleIcon,
 } from '@heroicons/react/24/outline';
-import { ReservedBook, ReadingHistory, Notification } from '../../services/userDashboardService';
-import { Booking } from '../../services/bookingService';
+import { BorrowedBook, ReservedBook, ReadingHistory, Notification } from '../../services/userDashboardService';
 
 interface OverviewTabProps {
-  borrowedBooks: Booking[];
+  borrowedBooks: BorrowedBook[];
   reservedBooks: ReservedBook[];
   readingHistory: ReadingHistory[];
   notifications: Notification[];

@@ -1,32 +1,65 @@
-import { Announcement } from '../pages/admin/AdminAnnouncementsPage';
 import { apiService, ApiResponse } from './api';
+
+export interface Announcement {
+  id: string;
+  title: string;
+  content: string;
+  type: 'info' | 'warning' | 'success' | 'error';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status: 'draft' | 'published' | 'archived';
+  publishDate: string;
+  expiryDate?: string;
+  authorId: string;
+  authorName: string;
+  targetAudience: 'all' | 'members' | 'staff';
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const API_URL = '/admin'; // `apiService` already has baseURL, so we can shorten this
 
 export const AdminAnnouncementService = {
   // ✅ Get announcements with query params
-  async getAnnouncements(params: Record<string, string>): Promise<Announcement[]> {
+  async getAnnouncements(params: Record<string, string>): Promise<ApiResponse<Announcement[]>> {
     const queryString = new URLSearchParams(params).toString();
     const endpoint = `${API_URL}/announcements${queryString ? `?${queryString}` : ''}`;
 
-    const response = await apiService.get<Announcement[]>(endpoint);
-    if (!response.success) {
-      throw new Error(response.message || 'Failed to fetch announcements');
-    }
-    return response.data;
+    return apiService.get(endpoint);
   },
 
   // ✅ Add a new announcement
-  async addAnnouncement(announcementData: Partial<Announcement>): Promise<Announcement> {
-    const response = await apiService.post<Announcement>(
-      `${API_URL}/announcements`,
-      announcementData
-    );
+  async addAnnouncement(announcementData: Omit<Announcement, 'id' | 'status' | 'publishDate' | 'image'> & { image?: File }): Promise<ApiResponse<Announcement>> {
+    const formData = new FormData();
+    Object.entries(announcementData).forEach(([key, value]) => {
+      if (key === 'image' && value) {
+        formData.append('image', value as File);
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value as string);
+      }
+    });
+    return apiService.post(`${API_URL}/announcements`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
 
-    if (!response.success) {
-      throw new Error(response.message || 'Failed to create announcement');
-    }
-    return response.data;
+  // ✅ Update an announcement
+  async updateAnnouncement(announcementId: string, announcementData: Omit<Partial<Announcement>, 'image'> & { image?: File }): Promise<ApiResponse<Announcement>> {
+    const formData = new FormData();
+    Object.entries(announcementData).forEach(([key, value]) => {
+      if (key === 'image' && value) {
+        formData.append('image', value as File);
+      } else if (value !== undefined && value !== null) {
+        formData.append(key, value as string);
+      }
+    });
+    return apiService.put(`${API_URL}/announcements/${announcementId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 
   // ✅ Delete announcement

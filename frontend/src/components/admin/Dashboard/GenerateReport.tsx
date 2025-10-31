@@ -24,6 +24,8 @@ const GenerateReport: React.FC = () => {
     fetchReportData();
   }, []);
 
+  console.log('GenerateReport data:', reportData);
+
   const generatePdf = () => {
     if (!reportData) return;
 

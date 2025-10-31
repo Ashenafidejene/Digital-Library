@@ -12,8 +12,11 @@ import {
   ClockIcon,
 } from '@heroicons/react/24/outline';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { AdminEventService, Event } from '../../services/AdminEventService';
 import AddEventModal from '../../components/admin/AddEventModal';
+import EditEventModal from '../../components/admin/EditEventModal';
+import ViewEventModal from '../../components/admin/ViewEventModal';
 
 const AdminEventsPage: React.FC = () => {
   // State management
@@ -22,7 +25,11 @@ const AdminEventsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const { t } = useLanguage();
+  const { user } = useAuth();
 
   /**
    * Fetch events from backend with search and filter parameters
@@ -33,6 +40,7 @@ const AdminEventsPage: React.FC = () => {
       setLoading(true);
       const response = await AdminEventService.getAllEvents();
       if (response.success) {
+        console.log('Fetched events:', response.data);
         setEvents(response.data);
       } else {
         throw new Error(response.message || 'Failed to fetch events');
@@ -46,9 +54,18 @@ const AdminEventsPage: React.FC = () => {
     }
   }, []);
 
-  const handleAddEvent = async (eventData: Omit<Event, 'id' | 'status'>) => {
+  const handleAddEvent = async (eventData: Omit<Event, 'id' | 'status' | 'image' | 'authorId' | 'authorName'> & { image?: File }) => {
+    if (!user) {
+      alert('You must be logged in to create an event.');
+      return;
+    }
     try {
-      const response = await AdminEventService.createEvent(eventData);
+      const newEventData = {
+        ...eventData,
+        authorId: user.id,
+        authorName: user.name,
+      };
+      const response = await AdminEventService.createEvent(newEventData);
       if (response.success) {
         setEvents(prevEvents => [response.data, ...prevEvents]);
         setIsAddModalOpen(false);
@@ -59,6 +76,28 @@ const AdminEventsPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to create event:', error);
       alert(`Failed to create event: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleUpdateEvent = async (eventData: Event & { imageFile?: File }) => {
+    try {
+      const { id, image, ...rest } = eventData;
+      const dataToUpdate: Partial<Omit<Event, 'id' | 'image'>> & { image?: File } = rest;
+      if (eventData.imageFile) {
+        dataToUpdate.image = eventData.imageFile;
+      }
+
+      const response = await AdminEventService.updateEvent(id, dataToUpdate);
+      if (response.success) {
+        setEvents(events.map(event => (event.id === id ? response.data : event)));
+        setIsEditModalOpen(false);
+        alert('Event updated successfully');
+      } else {
+        throw new Error(response.message || 'Failed to update event');
+      }
+    } catch (error) {
+      console.error('Failed to update event:', error);
+      alert(`Failed to update event: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -192,125 +231,149 @@ const AdminEventsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Events Table */}
-      <div className="card overflow-hidden">
+      {/* Events Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="p-8 text-center">
+          <div className="p-8 text-center col-span-full">
             <div className="spinner mx-auto mb-4"></div>
             <p className="text-neutral-600 dark:text-neutral-400">Loading events...</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
-              <thead className="bg-neutral-50 dark:bg-neutral-800">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Event
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Organizer
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-neutral-900 divide-y divide-neutral-200 dark:divide-neutral-700">
-                <AnimatePresence>
-                  {events?.map((event) => (
-                    <motion.tr
-                      key={event.id}
-                      variants={itemVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="hidden"
-                      className="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200"
+          <AnimatePresence>
+            {events?.map((event) => (
+              <motion.div
+                key={event.id}
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                className="card flex flex-col justify-between"
+              >
+                <div>
+                  {event.image && (
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-40 object-cover rounded-t-lg mb-4"
+                    />
+                  )}
+                  <div className="p-4">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                        {event.title}
+                      </h3>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getStatusColor(
+                          event.status
+                        )}`}
+                      >
+                        {event.status}
+                      </span>
+                    </div>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
+                      {truncateDescription(event.description, 120)}
+                    </p>
+                    <div className="flex items-center mt-4">
+                      <CalendarDaysIcon className="w-4 h-4 mr-2 text-neutral-400" />
+                      <span className="text-sm text-neutral-900 dark:text-neutral-100">
+                        {formatDateTime(event.date)}
+                      </span>
+                    </div>
+                    <div className="flex items-center mt-2">
+                      <MapPinIcon className="w-4 h-4 mr-2 text-neutral-400" />
+                      <span className="text-sm text-neutral-900 dark:text-neutral-100">
+                        {event.location}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex justify-between items-center">
+                  <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                    by {event.organizer}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => {
+                        setSelectedEvent(event);
+                        setIsViewModalOpen(true);
+                      }}
+                      className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                      title="View Details"
                     >
-                      <td className="px-6 py-4">
-                        <div className="flex items-start">
-                          <div className="flex-shrink-0 h-10 w-10">
-                            <div className="h-10 w-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
-                              <CalendarDaysIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                            </div>
-                          </div>
-                          <div className="ml-4 min-w-0 flex-1">
-                            <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                              {event.title}
-                            </div>
-                            <div className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-                              {truncateDescription(event.description)}
-                            </div>
-                            <div className="flex items-center text-xs text-neutral-400 dark:text-neutral-500 mt-1">
-                              <MapPinIcon className="w-3 h-3 mr-1" />
-                              {event.location}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getStatusColor(event.status)}`}>
-                          {event.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-neutral-100">
-                        <div className="flex items-center">
-                          <ClockIcon className="w-4 h-4 mr-2 text-neutral-400" />
-                          <div>{formatDateTime(event.date)}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-neutral-100">
-                        {event.organizer}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-2">
-                          <button
-                            className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-                            title="View Details"
-                          >
-                            <EyeIcon className="w-5 h-5" />
-                          </button>
-                          <button
-                            className="text-neutral-600 dark:text-neutral-400 hover:text-warning-600 dark:hover:text-warning-400 transition-colors duration-200"
-                            title="Edit Event"
-                          >
-                            <PencilIcon className="w-5 h-5" />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteEvent(event.id)}
-                            className="text-neutral-600 dark:text-neutral-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-200"
-                            title="Delete Event"
-                          >
-                            <TrashIcon className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              </tbody>
-            </table>
-
-            {(events?.length === 0) && !loading && (
-              <div className="text-center py-12">
-                <FunnelIcon className="w-16 h-16 text-neutral-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
-                  No events found
-                </h3>
-            <p className="text-neutral-600 dark:text-neutral-400">
-              {searchQuery || selectedStatus
-                ? 'Try adjusting your search criteria'
-                : 'Start by creating your first event'}
-            </p>
-              </div>
-            )}
-          </div>
+                      <EyeIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedEvent(event);
+                        setIsEditModalOpen(true);
+                      }}
+                      className="text-neutral-600 dark:text-neutral-400 hover:text-warning-600 dark:hover:text-warning-400 transition-colors duration-200"
+                      title="Edit Event"
+                    >
+                      <PencilIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteEvent(event.id)}
+                      className="text-neutral-600 dark:text-neutral-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-200"
+                      title="Delete Event"
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
+      </div>
+      {(events?.length === 0) && !loading && (
+        <div className="text-center py-12">
+          <FunnelIcon className="w-16 h-16 text-neutral-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+            No events found
+          </h3>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            {searchQuery || selectedStatus
+              ? 'Try adjusting your search criteria'
+              : 'Start by creating your first event'}
+          </p>
+        </div>
+      )}
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="card">
+          <div className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+            {events?.length || 0}
+          </div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            Total Events
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-2xl font-bold text-info-600 dark:text-info-400">
+            {events?.filter(event => event.status === 'upcoming').length || 0}
+          </div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            Upcoming
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-2xl font-bold text-neutral-600 dark:text-neutral-400">
+            {events?.filter(event => event.status === 'past').length || 0}
+          </div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            Past
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-2xl font-bold text-error-600 dark:text-error-400">
+            {events?.filter(event => event.status === 'cancelled').length || 0}
+          </div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            Cancelled
+          </div>
+        </div>
       </div>
 
       <AddEventModal
@@ -318,6 +381,21 @@ const AdminEventsPage: React.FC = () => {
         onClose={() => setIsAddModalOpen(false)}
         onAddEvent={handleAddEvent}
       />
+      {selectedEvent && (
+        <>
+          <EditEventModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            onUpdateEvent={handleUpdateEvent}
+            event={selectedEvent}
+          />
+          <ViewEventModal
+            isOpen={isViewModalOpen}
+            onClose={() => setIsViewModalOpen(false)}
+            event={selectedEvent}
+          />
+        </>
+      )}
     </div>
   );
 };

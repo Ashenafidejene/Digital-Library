@@ -1,6 +1,6 @@
 import React from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Announcement } from '../../pages/admin/AdminAnnouncementsPage';
+import { Announcement } from '../../services/AdminAnnouncementService';
 
 interface ViewAnnouncementModalProps {
   isOpen: boolean;
@@ -98,6 +98,12 @@ const ViewAnnouncementModal: React.FC<ViewAnnouncementModalProps> = ({
               {announcement.targetAudience}
             </span>
           </div>
+
+          {announcement.image && (
+            <div className="my-4">
+              <img src={announcement.image} alt={announcement.title} className="w-full h-auto rounded-lg" />
+            </div>
+          )}
 
           <div>
             <h3 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">Content</h3>

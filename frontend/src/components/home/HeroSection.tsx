@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon, BookOpenIcon, UsersIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { getHomePageStats, HomePageStats } from '../../services/homeService';
+import { useNavigate } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [stats, setStats] = useState<HomePageStats | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await getHomePageStats();
+        setStats(data);
+      } catch (error) {
+        console.error('Error fetching home page stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,11 +94,22 @@ const HeroSection: React.FC = () => {
               variants={itemVariants}
               className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
-              <button className="btn-primary text-lg px-8 py-3 group">
+              <button
+                className="btn-primary text-lg px-8 py-3 group"
+                onClick={() => {
+                  const searchSection = document.getElementById('search-section');
+                  if (searchSection) {
+                    searchSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
                 {t('home.hero.cta')}
                 <ArrowRightIcon className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
               </button>
-              <button className="btn-outline text-lg px-8 py-3">
+              <button
+                className="btn-outline text-lg px-8 py-3"
+                onClick={() => navigate('/login')}
+              >
                 {t('home.hero.membershipCta')}
               </button>
             </motion.div>
@@ -93,7 +121,7 @@ const HeroSection: React.FC = () => {
             >
               <div>
                 <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
-                  15K+
+                  {stats ? `${(stats.totalBooks / 1000).toFixed(1)}K+` : '...'}
                 </div>
                 <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
                   Books Available
@@ -101,7 +129,7 @@ const HeroSection: React.FC = () => {
               </div>
               <div>
                 <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
-                  2.8K+
+                  {stats ? `${(stats.totalMembers / 1000).toFixed(1)}K+` : '...'}
                 </div>
                 <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
                   Active Members
@@ -109,7 +137,7 @@ const HeroSection: React.FC = () => {
               </div>
               <div>
                 <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
-                  50+
+                  {stats ? `${stats.totalCategories}+` : '...'}
                 </div>
                 <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
                   Categories

@@ -31,6 +31,8 @@ const AdminBooksPage: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [sortField, setSortField] = useState<SortField>('title');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { t } = useLanguage();
 
   // Sorting function
@@ -75,33 +77,33 @@ const AdminBooksPage: React.FC = () => {
     try {
       setLoading(true);
       const response = await bookService.getAdminBooks({
+        page,
+        limit: 500, // A sufficiently large number to fetch all books
         search: searchQuery,
         category: selectedCategory,
-       // limit: 100,
       });
+      console.log('Fetched books data:', response.data);
 
       console.log('📚 Books API Response:', response);
 
-      // Handle both paginated and non-paginated response structures
-      let booksData: Book[] = [];
-      if (response.data && typeof response.data === 'object' && 'data' in response.data && Array.isArray((response.data as any).data)) {
-        // Paginated response: response.data.data contains the books array
-        booksData = (response.data as any).data;
-      } else if (Array.isArray(response.data)) {
-        // Non-paginated response: response.data is directly the books array
-        booksData = response.data;
-      }
+      const responseData = response.data as any;
+      const booksData = responseData.books || responseData.data || responseData;
+      const normalizedBooks = (booksData || []).map((book: Book) => ({
+        ...book,
+        id: book.id || book._id,
+      })).filter((book: Book) => book.id);
 
       console.log('📚 Extracted books data:', booksData);
       console.log('📚 First book sample:', booksData[0]);
       console.log('📚 First book ID:', booksData[0]?.id, 'Type:', typeof booksData[0]?.id);
 
       // Apply sorting to the fetched books
-      const sortedBooks = sortBooks(booksData);
+      const sortedBooks = sortBooks(normalizedBooks);
       console.log('📚 Sorted books:', sortedBooks);
       console.log('📚 First sorted book ID:', sortedBooks[0]?.id, 'Type:', typeof sortedBooks[0]?.id);
-      console.log('📚 All book IDs:', sortedBooks.map(b => ({ id: b.id, title: b.title })));
+      console.log('📚 All book IDs:', sortedBooks.map((b:Book) => ({ id: b.id, title: b.title })));
       setBooks(sortedBooks);
+      setTotalPages(responseData.pagination?.totalPages || 1);
     } catch (error) {
       console.error('Failed to fetch books:', error);
       // Set empty array on error to prevent map errors
@@ -122,6 +124,10 @@ const AdminBooksPage: React.FC = () => {
 
     return () => clearTimeout(timeoutId);
   }, [fetchBooks]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, selectedCategory]);
 
   const fetchCategories = async () => {
     try {
@@ -426,7 +432,7 @@ const AdminBooksPage: React.FC = () => {
 
                     return (
                       <motion.tr
-                        key={book.id}
+                        key={book.id || book._id || index}
                         variants={itemVariants}
                         initial="hidden"
                         animate="visible"
@@ -495,7 +501,10 @@ const AdminBooksPage: React.FC = () => {
                               console.log('🔍 Book object keys:', Object.keys(book));
                               console.log('🔍 Book.id exists?', 'id' in book);
                               console.log('🔍 Book.id value:', JSON.stringify(book.id));
-                              handleDeleteBook(book.id);
+                              const bookId = book.id || book._id;
+                              if (bookId) {
+                                handleDeleteBook(bookId);
+                              }
                             }}
                             className="text-neutral-600 dark:text-neutral-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-200"
                             title="Delete Book"
@@ -525,6 +534,25 @@ const AdminBooksPage: React.FC = () => {
                 </p>
               </div>
             )}
+          </div>
+        )}
+        {!loading && books.length > 0 && (
+          <div className="flex justify-center items-center space-x-4 mt-6">
+            <button
+              onClick={() => setPage(p => Math.max(p - 1, 1))}
+              disabled={page === 1}
+              className="btn-secondary"
+            >
+              Previous
+            </button>
+            <span>Page {page} of {totalPages}</span>
+            <button
+              onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+              disabled={page === totalPages}
+              className="btn-secondary"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>

@@ -107,6 +107,18 @@ router.get('/recent', validatePaginationQuery, bookController.getRecentlyAddedBo
 
 /**
  * @swagger
+ * /api/v1/books/featured:
+ *   get:
+ *     summary: Get featured books
+ *     tags: [Books]
+ *     responses:
+ *       200:
+ *         description: Featured books retrieved successfully
+ */
+router.get('/featured', bookController.getFeaturedBooks);
+
+/**
+ * @swagger
  * /api/v1/books/search:
  *   get:
  *     summary: Search books

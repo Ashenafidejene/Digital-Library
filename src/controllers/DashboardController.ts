@@ -32,12 +32,12 @@ export class DashboardController {
     if (user.role === UserRole.ADMIN) {
       const result = await this.adminService.getDashboardStats();
       const stats = {
-        totalMembers: Number(result?.users?.total ?? 0),
-        totalBooks: Number(result?.books?.total ?? 0),
-        borrowedBooks: Number(result?.books?.booked ?? 0),
-        overdueBooks: Number(result?.bookings?.overdue ?? 0),
-        reservedBooks: Number(result?.bookings?.pending ?? 0),
-        newMembersThisMonth: Number(result?.users?.newThisMonth ?? 0),
+        totalMembers: result.users.total,
+        totalBooks: result.books.total,
+        borrowedBooks: result.books.booked,
+        overdueBooks: result.bookings.overdue,
+        reservedBooks: result.bookings.pending,
+        newMembersThisMonth: result.users.newThisMonth,
       };
       const recentBookings = await this.bookingService.getAllBookings({
         limit: 5,
@@ -86,12 +86,13 @@ export class DashboardController {
         })),
       ];
 
+      const userWithFavorites = await this.userService.getUserById(user.id);
       const userDashboardData = {
         borrowedBooks: borrowedBooks.records,
         reservedBooks: reservedBooks.records,
         readingHistory: readingHistory.records,
         notifications,
-        favoriteBooks: [], // Placeholder
+        favoriteBooks: userWithFavorites?.favoriteBooks || [],
       };
       ResponseUtil.success(res, userDashboardData, 'Dashboard overview retrieved successfully');
     }
@@ -163,8 +164,8 @@ export class DashboardController {
     if (!user) {
       return next(new AppError('User not found', 404));
     }
-    console.log('Favorite books data from service:', JSON.stringify(user.favorites, null, 2));
-    ResponseUtil.success(res, user.favorites, 'Favorite books retrieved successfully');
+    console.log('Favorite books data from service:', JSON.stringify(user.favoriteBooks, null, 2));
+    ResponseUtil.success(res, user.favoriteBooks, 'Favorite books retrieved successfully');
   });
 
   // POST /api/v1/dashboard/send-reminder/:bookingId
@@ -228,5 +229,20 @@ export class DashboardController {
 
     const reportData = await this.adminService.generateReport();
     ResponseUtil.success(res, reportData, 'Report generated successfully');
+  });
+
+  // GET /api/v1/dashboard/home-stats
+  getHomePageStats = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const totalBooks = await this.bookService.getBookCount();
+    const totalMembers = await this.userService.getUserCount();
+    const totalCategories = await this.bookService.getCategoryCount();
+
+    const stats = {
+      totalBooks,
+      totalMembers,
+      totalCategories,
+    };
+
+    ResponseUtil.success(res, stats, 'Home page stats retrieved successfully');
   });
 }

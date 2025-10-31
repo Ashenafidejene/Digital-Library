@@ -30,11 +30,14 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setError('');
     setLoading(true);
+    console.log('[Login Page] Submitting with:', { email, password });
 
     try {
       await login({ email, password });
+      console.log('[Login Page] Login successful, navigating to:', from);
       navigate(from, { replace: true });
     } catch (error: any) {
+      console.error('[Login Page] Login failed:', error);
       setError(error.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AdminAnnouncementService } from '../../services/AdminAnnouncementService';
+import { AdminAnnouncementService, Announcement } from '../../services/AdminAnnouncementService';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   PlusIcon,
   MagnifyingGlassIcon,
@@ -17,23 +18,6 @@ import AddAnnouncementModal from '../../components/admin/AddAnnouncementModal';
 import ViewAnnouncementModal from '../../components/admin/ViewAnnouncementModal';
 import EditAnnouncementModal from '../../components/admin/EditAnnouncementModal';
 
-// Announcement interface
-export interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  type: 'info' | 'warning' | 'success' | 'error';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'draft' | 'published' | 'archived';
-  publishDate: string;
-  expiryDate?: string;
-  authorId: string;
-  authorName: string;
-  targetAudience: 'all' | 'members' | 'staff';
-  createdAt: string;
-  updatedAt: string;
-}
-
 const AdminAnnouncementsPage: React.FC = () => {
   // State management
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -43,6 +27,7 @@ const AdminAnnouncementsPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const { t } = useLanguage();
+  const { user } = useAuth();
 
   /**
    * Fetch announcements from backend with search and filter parameters
@@ -57,7 +42,11 @@ const AdminAnnouncementsPage: React.FC = () => {
       if (selectedType) params.type = selectedType;
 
       const announcementsData = await AdminAnnouncementService.getAnnouncements(params);
-      setAnnouncements(announcementsData);
+      if (announcementsData.success) {
+        setAnnouncements(announcementsData.data);
+      } else {
+        setAnnouncements([]);
+      }
     } catch (error) {
       console.error('Failed to fetch announcements:', error);
       setAnnouncements([]);
@@ -70,21 +59,29 @@ const AdminAnnouncementsPage: React.FC = () => {
   /**
    * Add new announcement
    */
-  const handleAddAnnouncement = async (title: string, content: string) => {
+  const handleAddAnnouncement = async (announcementData: Omit<Announcement, 'id' | 'status' | 'publishDate' | 'createdAt' | 'updatedAt' | 'authorId' | 'authorName' | 'image'> & { image?: File }) => {
+    if (!user) {
+      alert('You must be logged in to create an announcement.');
+      return;
+    }
+
     try {
-      // You might want to add more fields here based on your backend requirements
-      const announcementData = {
-        title,
-        content,
-        type: 'info' as 'info', // Default value
-        priority: 'medium' as 'medium', // Default value
-        status: 'draft' as 'draft', // Default value
-        targetAudience: 'all' as 'all', // Default value
+      const fullAnnouncementData = {
+        ...announcementData,
+        authorId: user.id,
+        authorName: user.name,
       };
-      const newAnnouncement = await AdminAnnouncementService.addAnnouncement(announcementData);
-      setAnnouncements(prevAnnouncements => [newAnnouncement, ...prevAnnouncements]);
-      setIsAddModalOpen(false);
-      alert('Announcement created successfully');
+
+      const newAnnouncementResponse = await AdminAnnouncementService.addAnnouncement(
+        fullAnnouncementData as Omit<Announcement, 'id' | 'status' | 'publishDate' | 'image'> & { image?: File }
+      );
+      if (newAnnouncementResponse.success) {
+        setAnnouncements(prevAnnouncements => [newAnnouncementResponse.data, ...prevAnnouncements]);
+        setIsAddModalOpen(false);
+        alert('Announcement created successfully');
+      } else {
+        alert(`Failed to create announcement: ${newAnnouncementResponse.message}`);
+      }
     } catch (error) {
       console.error('Failed to create announcement:', error);
       alert(`Failed to create announcement: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -115,7 +112,7 @@ const AdminAnnouncementsPage: React.FC = () => {
       const updatedAnnouncement = await AdminAnnouncementService.toggleAnnouncementStatus(announcementId, currentStatus);
       setAnnouncements(prevAnnouncements =>
         prevAnnouncements.map(announcement =>
-          announcement.id === announcementId ? updatedAnnouncement : announcement
+          announcement.id === announcementId ? { ...announcement, status: updatedAnnouncement.status } : announcement
         )
       );
       alert(`Announcement ${updatedAnnouncement.status === 'published' ? 'published' : 'unpublished'} successfully`);
@@ -277,160 +274,112 @@ const AdminAnnouncementsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Announcements Table */}
-      <div className="card overflow-hidden">
+      {/* Announcements Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="p-8 text-center">
+          <div className="p-8 text-center col-span-full">
             <div className="spinner mx-auto mb-4"></div>
             <p className="text-neutral-600 dark:text-neutral-400">Loading announcements...</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-neutral-200 dark:divide-neutral-700">
-              <thead className="bg-neutral-50 dark:bg-neutral-800">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Announcement
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Priority
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-neutral-900 divide-y divide-neutral-200 dark:divide-neutral-700">
-                <AnimatePresence>
-                  {announcements?.map((announcement) => {
-                    const PriorityIcon = getPriorityIcon(announcement.priority);
-                    
-                    return (
-                      <motion.tr
-                        key={announcement.id}
-                        variants={itemVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
-                        className="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200"
+          <AnimatePresence>
+            {announcements?.map((announcement) => {
+              const PriorityIcon = getPriorityIcon(announcement.priority);
+              return (
+                <motion.div
+                  key={announcement.id}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  className="card flex flex-col justify-between"
+                >
+                  <div>
+                    {announcement.image && (
+                      <img
+                        src={announcement.image}
+                        alt={announcement.title}
+                        className="w-full h-40 object-cover rounded-t-lg mb-4"
+                      />
+                    )}
+                    <div className="p-4">
+                      <div className="flex justify-between items-start">
+                        <h3 className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                          {announcement.title}
+                        </h3>
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getStatusColor(
+                            announcement.status
+                          )}`}
+                        >
+                          {announcement.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
+                        {truncateContent(announcement.content, 120)}
+                      </p>
+                      <div className="flex items-center mt-4">
+                        <PriorityIcon
+                          className={`w-4 h-4 mr-2 ${
+                            announcement.priority === 'urgent'
+                              ? 'text-error-500'
+                              : announcement.priority === 'high'
+                              ? 'text-warning-500'
+                              : 'text-neutral-400'
+                          }`}
+                        />
+                        <span className="text-sm text-neutral-900 dark:text-neutral-100 capitalize">
+                          {announcement.priority}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 flex justify-between items-center">
+                    <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                      by {announcement.authorName}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
+                        title="View Details"
                       >
-                        <td className="px-6 py-4">
-                          <div className="flex items-start">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
-                                <SpeakerWaveIcon className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                              </div>
-                            </div>
-                            <div className="ml-4 min-w-0 flex-1">
-                              <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                                {announcement.title}
-                              </div>
-                              <div className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-                                {truncateContent(announcement.content)}
-                              </div>
-                              <div className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">
-                                by {announcement.authorName}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getTypeColor(announcement.type)}`}>
-                            {announcement.type}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full capitalize ${getStatusColor(announcement.status)}`}>
-                            {announcement.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <PriorityIcon className={`w-4 h-4 mr-2 ${
-                              announcement.priority === 'urgent' ? 'text-error-500' :
-                              announcement.priority === 'high' ? 'text-warning-500' :
-                              'text-neutral-400'
-                            }`} />
-                            <span className="text-sm text-neutral-900 dark:text-neutral-100 capitalize">
-                              {announcement.priority}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 dark:text-neutral-100">
-                          <div>Published: {formatDate(announcement.publishDate)}</div>
-                          {announcement.expiryDate && (
-                            <div className="text-xs text-neutral-500">
-                              Expires: {formatDate(announcement.expiryDate)}
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex items-center justify-end space-x-2">
-                            <button
-                              className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
-                              title="View Details"
-                            >
-                              <EyeIcon className="w-5 h-5" />
-                            </button>
-                            <button
-                              className="text-neutral-600 dark:text-neutral-400 hover:text-warning-600 dark:hover:text-warning-400 transition-colors duration-200"
-                              title="Edit Announcement"
-                            >
-                              <PencilIcon className="w-5 h-5" />
-                            </button>
-                            <button
-                              onClick={() => handleToggleStatus(announcement.id, announcement.status)}
-                              className={`transition-colors duration-200 ${
-                                announcement.status === 'published'
-                                  ? 'text-warning-600 hover:text-warning-700'
-                                  : 'text-success-600 hover:text-success-700'
-                              }`}
-                              title={announcement.status === 'published' ? 'Unpublish' : 'Publish'}
-                            >
-                              <CalendarDaysIcon className="w-5 h-5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteAnnouncement(announcement.id)}
-                              className="text-neutral-600 dark:text-neutral-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-200"
-                              title="Delete Announcement"
-                            >
-                              <TrashIcon className="w-5 h-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    );
-                  })}
-                </AnimatePresence>
-              </tbody>
-            </table>
-
-            {(announcements?.length === 0) && !loading && (
-              <div className="text-center py-12">
-                <FunnelIcon className="w-16 h-16 text-neutral-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
-                  No announcements found
-                </h3>
-                <p className="text-neutral-600 dark:text-neutral-400">
-                  {searchQuery || selectedStatus || selectedType
-                    ? 'Try adjusting your search criteria'
-                    : 'Start by creating your first announcement'
-                  }
-                </p>
-              </div>
-            )}
-          </div>
+                        <EyeIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        className="text-neutral-600 dark:text-neutral-400 hover:text-warning-600 dark:hover:text-warning-400 transition-colors duration-200"
+                        title="Edit Announcement"
+                      >
+                        <PencilIcon className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAnnouncement(announcement.id)}
+                        className="text-neutral-600 dark:text-neutral-400 hover:text-error-600 dark:hover:text-error-400 transition-colors duration-200"
+                        title="Delete Announcement"
+                      >
+                        <TrashIcon className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
         )}
       </div>
+      {(announcements?.length === 0) && !loading && (
+        <div className="text-center py-12">
+          <FunnelIcon className="w-16 h-16 text-neutral-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+            No announcements found
+          </h3>
+          <p className="text-neutral-600 dark:text-neutral-400">
+            {searchQuery || selectedStatus || selectedType
+              ? 'Try adjusting your search criteria'
+              : 'Start by creating your first announcement'
+            }
+          </p>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

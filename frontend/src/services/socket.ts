@@ -5,7 +5,7 @@ let socket: Socket;
 export const getSocket = (): Socket => {
   if (!socket) {
     const token = localStorage.getItem('token');
-    socket = io(process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000', {
+    socket = io(process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000', {
       auth: {
         token: token,
       },

@@ -24,6 +24,7 @@ export const useDashboardData = (activeTab: TabType) => {
       try {
         switch (activeTab) {
           case 'overview':
+            // Add a cache-busting parameter to the API call
             const overview = await dashboardService.getOverview();
             setOverviewData(overview);
             break;

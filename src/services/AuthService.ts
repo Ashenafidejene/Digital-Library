@@ -148,8 +148,14 @@ export class AuthService {
       ]);
 
       return tokens;
-    } catch (error) {
-      throw new AppError('Invalid refresh token', 401);
+    } catch (error: any) {
+      if (error.name === 'TokenExpiredError') {
+        throw new AppError('Refresh token expired. Please log in again.', 401);
+      }
+      if (error.name === 'JsonWebTokenError') {
+        throw new AppError('Invalid refresh token.', 401);
+      }
+      throw error;
     }
   }
 

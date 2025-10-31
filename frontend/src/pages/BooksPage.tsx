@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { toast } from 'react-hot-toast';
-import { bookingService } from '../services/bookingService';
 import {
   MagnifyingGlassIcon,
   FunnelIcon,
@@ -10,28 +8,24 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   StarIcon,
-  HeartIcon,
 } from '@heroicons/react/24/outline';
-import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Header from '../components/home/Header';
 import Footer from '../components/common/Footer';
 import { useLanguage } from '../contexts/LanguageContext';
 import { bookService, Book, BookQuery } from '../services/bookService';
-import { userService } from '../services/userService';
 
 const BooksPage: React.FC = () => {
-  const [books, setBooks] = useState<Book[] | null>(null);
+  const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
   
   const [filters, setFilters] = useState<BookQuery>({
     page: 1,
-    limit: 12,
+    limit: 12, // A sufficiently large number to fetch all books
     search: '',
     category: '',
     sortBy: 'title',
@@ -40,72 +34,37 @@ const BooksPage: React.FC = () => {
 
   const { t } = useLanguage();
 
-  useEffect(() => {
-    fetchBooks();
-    fetchCategories();
-    fetchFavoriteBooks();
-  }, [filters]);
-
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     try {
       setLoading(true);
       const response = await bookService.getBooks(filters);
-
-      console.log('📚 Public Books API Response:', response);
-
-      // Handle paginated response structure
-      // The backend returns: { success: true, data: { data: [books], pagination: {...} } }
-      // But TypeScript expects: { success: true, data: [books] }
-      let booksData: Book[] = [];
-      let paginationData = null;
-
-      // Check if response has the paginated structure
-      if (response.data && typeof response.data === 'object' && 'data' in response.data) {
-        // Paginated response: response.data.data contains the books array
-        const paginatedData = response.data as any;
-        if (Array.isArray(paginatedData.data)) {
-          booksData = paginatedData.data;
-          paginationData = paginatedData.pagination;
-        }
-      } else if (Array.isArray(response.data)) {
-        // Direct response: response.data is the books array
-        booksData = response.data;
-        paginationData = (response as any).pagination;
-      }
-
-      console.log('📚 Extracted books data:', booksData);
+      const booksData = response.data || [];
       setBooks(booksData);
-      setTotalPages(paginationData?.totalPages || 1);
-      setCurrentPage(paginationData?.currentPage || paginationData?.page || 1);
+      setTotalPages(response.pagination?.totalPages || 1);
+      setCurrentPage(response.pagination?.page || 1);
     } catch (error: any) {
       setError(error.message || 'Failed to fetch books');
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
-  const fetchFavoriteBooks = async () => {
-    try {
-      const response = await userService.getFavoriteBooks();
-      const favoriteBookIds = response.data.favoriteBooks.map((book: any) => book.id);
-      setFavorites(new Set(favoriteBookIds));
-    } catch (error) {
-      console.error('Failed to fetch favorite books:', error);
-    }
-  };
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await bookService.getCategories();
-      console.log('📂 Categories API Response:', response);
-
-      // Categories endpoint returns data directly (not paginated)
-      const categoriesData = Array.isArray(response.data) ? response.data : [];
-      setCategories(categoriesData);
+      setCategories(response.data || []);
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [fetchBooks]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const handleSearch = (searchTerm: string) => {
     setFilters(prev => ({
@@ -128,36 +87,13 @@ const BooksPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const toggleFavorite = async (bookId: string) => {
-    try {
-      if (favorites.has(bookId)) {
-        await userService.removeFavoriteBook(bookId);
-        setFavorites(prev => {
-          const newFavorites = new Set(prev);
-          newFavorites.delete(bookId);
-          return newFavorites;
-        });
-        toast.success('Removed from favorites');
-      } else {
-        await userService.addFavoriteBook(bookId);
-        setFavorites(prev => {
-          const newFavorites = new Set(prev);
-          newFavorites.add(bookId);
-          return newFavorites;
-        });
-        toast.success('Added to favorites');
-      }
-    } catch (error) {
-      toast.error('Failed to update favorites');
-    }
-  };
-
-  const renderStars = (rating: number = 0) => {
+  const renderStars = (rating?: { average: number; count: number }) => {
+    const avgRating = rating?.average || 0;
     return Array.from({ length: 5 }, (_, index) => (
       <StarIcon
         key={index}
         className={`w-4 h-4 ${
-          index < Math.floor(rating)
+          index < Math.floor(avgRating)
             ? 'text-yellow-400 fill-current'
             : 'text-neutral-300 dark:text-neutral-600'
         }`}
@@ -387,20 +323,6 @@ const BooksPage: React.FC = () => {
                       </span>
                     </div>
 
-                    {/* Favorite Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFavorite(book.id);
-                      }}
-                      className="absolute top-2 right-2 p-2 rounded-full bg-white/80 dark:bg-neutral-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-neutral-800 transition-colors duration-200"
-                    >
-                      {favorites.has(book.id) ? (
-                        <HeartSolidIcon className="w-4 h-4 text-primary-500" />
-                      ) : (
-                        <HeartIcon className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
-                      )}
-                    </button>
                   </div>
 
                   {/* Book Info */}
@@ -429,7 +351,7 @@ const BooksPage: React.FC = () => {
                         {renderStars(book.rating)}
                         {book.rating && (
                           <span className="text-sm text-neutral-600 dark:text-neutral-400 ml-1">
-                            {book.rating.toFixed(1)}
+                            {book.rating.average.toFixed(1)}
                           </span>
                         )}
                       </div>
@@ -443,21 +365,6 @@ const BooksPage: React.FC = () => {
                         <div className="text-sm text-neutral-600 dark:text-neutral-400">
                           <span>Available: {book.availability.availableCopies}/{book.availability.totalCopies}</span>
                         </div>
-                        <button
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            try {
-                              await bookingService.createBooking(book.id);
-                              toast.success('Borrow request sent!');
-                            } catch (error) {
-                              toast.error('Failed to send borrow request.');
-                            }
-                          }}
-                          className="btn-primary text-sm px-4 py-2"
-                          disabled={book.availability.availableCopies === 0}
-                        >
-                          Borrow
-                        </button>
                       </div>
                     )}
                   </div>

@@ -20,6 +20,8 @@ const NewMembersChart: React.FC<NewMembersChartProps> = ({ data }) => {
     newMembers: item.count,
   }));
 
+  console.log('NewMembersChart data:', chartData);
+
   return (
     <div className="card">
       <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">

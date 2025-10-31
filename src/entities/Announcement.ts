@@ -11,6 +11,7 @@ export interface IAnnouncement extends Document {
   authorId: string;
   authorName: string;
   targetAudience: 'all' | 'members' | 'staff';
+  image?: string;
 }
 
 const AnnouncementSchema = new Schema<IAnnouncement>(
@@ -41,6 +42,7 @@ const AnnouncementSchema = new Schema<IAnnouncement>(
       enum: ['all', 'members', 'staff'],
       default: 'all',
     },
+    image: { type: String },
   },
   {
     timestamps: true,

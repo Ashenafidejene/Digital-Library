@@ -52,7 +52,7 @@ export interface RawBorrowingRecord {
   borrowDate: string | null;
   dueDate: string | null;
   returnDate: string | null;
-  status: 'active' | 'borrowed' | 'pending' | 'returned' | 'overdue';
+  status: 'active' | 'borrowed' | 'pending' | 'returned' | 'overdue' | 'approved';
   renewalCount: number;
   maxRenewals: number;
   requestDate: string;

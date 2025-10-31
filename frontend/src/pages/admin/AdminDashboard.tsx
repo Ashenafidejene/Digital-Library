@@ -44,7 +44,8 @@ const AdminDashboard: React.FC = () => {
     handleIssueBook,
     handleCreateAnnouncement,
     handleEditAnnouncement,
-    handleDeleteAnnouncement
+    handleDeleteAnnouncement,
+    handleToggleAnnouncementStatus
   } = useDashboardActions();
 
   // Helper functions
@@ -253,6 +254,7 @@ const AdminDashboard: React.FC = () => {
             onCreateAnnouncement={handleCreateAnnouncement}
             onEditAnnouncement={handleEditAnnouncement}
             onDeleteAnnouncement={handleDeleteAnnouncement}
+            onToggleStatus={handleToggleAnnouncementStatus}
           />
         )}
 

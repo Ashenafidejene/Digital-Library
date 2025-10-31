@@ -21,7 +21,7 @@ export class AuthController {
       role,
     });
 
-    ResponseUtil.created(res, result, 'User registered successfully');
+    ResponseUtil.success(res, result, 'User registered successfully', 201);
   });
 
   login = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -42,9 +42,9 @@ export class AuthController {
       return next(new AppError('Refresh token is required', 400));
     }
 
-    const tokens = await this.authService.refreshToken(refreshToken);
+    const { accessToken, refreshToken: newRefreshToken } = await this.authService.refreshToken(refreshToken);
 
-    ResponseUtil.success(res, { tokens }, 'Token refreshed successfully');
+    ResponseUtil.success(res, { accessToken, refreshToken: newRefreshToken }, 'Token refreshed successfully');
   });
 
   logout = catchAsync(async (req: Request, res: Response, next: NextFunction) => {

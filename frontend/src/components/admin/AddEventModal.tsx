@@ -5,7 +5,7 @@ import { Event } from '../../services/AdminEventService';
 interface AddEventModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddEvent: (eventData: Omit<Event, 'id' | 'status'>) => void;
+  onAddEvent: (eventData: Omit<Event, 'id' | 'status' | 'image'> & { image?: File }) => void;
 }
 
 const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, onAddEvent }) => {
@@ -14,10 +14,11 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, onAddEve
   const [date, setDate] = useState('');
   const [location, setLocation] = useState('');
   const [organizer, setOrganizer] = useState('');
+  const [image, setImage] = useState<File | undefined>(undefined);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAddEvent({ title, description, date, location, organizer });
+    onAddEvent({ title, description, date, location, organizer, image });
     onClose();
   };
 
@@ -96,6 +97,17 @@ const AddEventModal: React.FC<AddEventModalProps> = ({ isOpen, onClose, onAddEve
                 onChange={(e) => setOrganizer(e.target.value)}
                 className="input-field"
                 required
+              />
+            </div>
+            <div>
+              <label htmlFor="image" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                Image
+              </label>
+              <input
+                type="file"
+                id="image"
+                onChange={(e) => setImage(e.target.files?.[0])}
+                className="input-field"
               />
             </div>
           </div>

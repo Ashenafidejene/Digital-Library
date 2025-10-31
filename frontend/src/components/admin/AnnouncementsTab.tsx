@@ -9,6 +9,7 @@ interface AnnouncementsTabProps {
   onCreateAnnouncement: () => void;
   onEditAnnouncement: (announcementId: string) => void;
   onDeleteAnnouncement: (announcementId: string) => void;
+  onToggleStatus: (announcementId: string, currentStatus: 'draft' | 'published' | 'archived' | 'active') => void;
 }
 
 const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
@@ -16,7 +17,8 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
   loading,
   onCreateAnnouncement,
   onEditAnnouncement,
-  onDeleteAnnouncement
+  onDeleteAnnouncement,
+  onToggleStatus
 }) => {
   if (loading) {
     return (
@@ -118,6 +120,12 @@ const AnnouncementsTab: React.FC<AnnouncementsTabProps> = ({
                   >
                     <TrashIcon className="w-3 h-3" />
                     <span>Delete</span>
+                  </button>
+                  <button
+                    onClick={() => onToggleStatus(announcement.id, announcement.status)}
+                    className="btn-secondary text-xs px-3 py-1 flex items-center space-x-1"
+                  >
+                    <span>{announcement.status === 'published' ? 'Unpublish' : 'Publish'}</span>
                   </button>
                 </div>
               </div>

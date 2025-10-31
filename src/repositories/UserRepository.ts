@@ -13,7 +13,7 @@ export class UserRepository {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null;
     }
-    return await User.findById(id);
+    return await User.findById(id).populate('favoriteBooks');
   }
 
   async findByEmail(email: string): Promise<IUser | null> {
@@ -177,5 +177,9 @@ export class UserRepository {
 
   public async aggregate(pipeline: any[]): Promise<any[]> {
     return await (User as any).aggregate(pipeline);
+  }
+
+  async countDocuments(filter: any = {}): Promise<number> {
+    return await User.countDocuments(filter);
   }
 }

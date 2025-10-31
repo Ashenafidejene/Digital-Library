@@ -65,7 +65,7 @@ const AdminUsersPage: React.FC = () => {
     if (selectedRole) query.role = selectedRole;
     if (selectedStatus) query.status = selectedStatus;
     if (selectedClearance) query.clearance = selectedClearance;
-    query.limit = '50';
+    query.limit = '10';
     query.includeBorrowing = 'true';
 
     // ✅ 1. Fetch users through the service
@@ -149,6 +149,7 @@ const AdminUsersPage: React.FC = () => {
     });
 
     // ✅ 4. Update state
+    console.log('Enhanced Users:', enhancedUsers);
     setUsers(enhancedUsers);
 
     // ✅ 5. Compute stats

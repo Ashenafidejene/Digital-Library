@@ -253,4 +253,18 @@ export class SocketService {
       logger.error('Error sending emergency notification:', error);
     }
   }
+
+  // Announcement events
+  async notifyNewAnnouncement(announcement: any): Promise<void> {
+    try {
+      this.socketManager.getIO().emit('announcement:new', {
+        type: 'new_announcement',
+        data: announcement,
+        message: `New announcement: ${announcement.title}`,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      logger.error('Error emitting new announcement event:', error);
+    }
+  }
 }

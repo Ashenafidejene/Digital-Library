@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Booking } from '../../services/bookingService';
+import { BorrowedBook } from '../../services/userDashboardService';
 import { ClockIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 
 interface BorrowedBooksTabProps {
-  borrowedBooks: Booking[];
+  borrowedBooks: BorrowedBook[];
   renewBook: (bookingId: string) => void;
 }
 
@@ -86,13 +86,13 @@ const BorrowedBooksTab: React.FC<BorrowedBooksTabProps> = ({ borrowedBooks, rene
                         <div className="flex-shrink-0 h-10 w-10">
                           <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
                             <span className="text-lg font-bold text-primary-600 dark:text-primary-400">
-                              {book.book?.title ? book.book.title.charAt(0) : ''}
+                              {book.title ? book.title.charAt(0) : ''}
                             </span>
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{book.book?.title}</div>
-                          <div className="text-sm text-neutral-500 dark:text-neutral-400">{book.book?.author}</div>
+                          <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{book.title}</div>
+                          <div className="text-sm text-neutral-500 dark:text-neutral-400">{book.author}</div>
                         </div>
                       </div>
                     </td>

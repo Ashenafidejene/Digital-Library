@@ -86,45 +86,19 @@ export class BookRepository {
     const sort = PaginationUtil.buildSortObject(sortBy, sortOrder);
 
     // Execute queries
-    const [books, totalItems] = await Promise.all([
-      Book.aggregate([
-        { $match: filter },
-        { $sort: sort },
-        { $skip: skip },
-        { $limit: limit },
-        {
-          $lookup: {
-            from: 'bookings',
-            localField: '_id',
-            foreignField: 'book',
-            as: 'bookingInfo',
-          },
-        },
-        {
-          $addFields: {
-            dueDate: { $arrayElemAt: ['$bookingInfo.dueDate', 0] },
-          },
-        },
-        {
-          $project: {
-            bookingInfo: 0,
-          },
-        },
-      ]),
+    const [books, totalBooks] = await Promise.all([
+      Book.find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .populate('metadata.addedBy', 'name email'),
       Book.countDocuments(filter),
     ]);
 
-    const formattedBooks = books.map(book => ({
-      id: book._id.toString(),
-      ...book,
-      _id: undefined,
-      __v: undefined,
-    }));
-
-    const pagination = PaginationUtil.calculatePagination(totalItems, page, limit);
+    const pagination = PaginationUtil.calculatePagination(totalBooks, page, limit);
 
     return {
-      books: formattedBooks,
+      books,
       pagination,
     };
   }
@@ -172,8 +146,7 @@ export class BookRepository {
         .sort(sort)
         .skip(skip)
         .limit(limit)
-        .populate('metadata.addedBy', 'name email')
-        .lean(),
+        .populate('metadata.addedBy', 'name email'),
       Book.countDocuments(filter),
     ]);
 
@@ -196,8 +169,7 @@ export class BookRepository {
         .sort(sort)
         .skip(skip)
         .limit(limit)
-        .populate('metadata.addedBy', 'name email')
-        .lean(),
+        .populate('metadata.addedBy', 'name email'),
       Book.countDocuments(filter),
     ]);
 
@@ -287,5 +259,22 @@ export class BookRepository {
   async exists(isbn: string): Promise<boolean> {
     const book = await Book.findOne({ isbn });
     return !!book;
+  }
+
+  async countDocuments(filter: any = {}): Promise<number> {
+    return await Book.countDocuments(filter);
+  }
+
+  async getFeaturedBooks(query: any) {
+    const popularBooks = await this.findPopular(query);
+    const recentlyAddedBooks = await this.findRecentlyAdded(query);
+    // Assuming you have a method for recommended books
+    const recommendedBooks = await this.findPopular(query); // Placeholder
+
+    return {
+      popularBooks: popularBooks.books,
+      recentlyAddedBooks: recentlyAddedBooks.books,
+      recommendedBooks: recommendedBooks.books,
+    };
   }
 }

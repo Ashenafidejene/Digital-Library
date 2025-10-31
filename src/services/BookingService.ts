@@ -3,6 +3,7 @@ import { BookService } from './BookService';
 import { SocketService } from './SocketService';
 import { IBooking } from '../entities/Booking';
 import { AppError, BookingStatus, PaginationQuery } from '../types';
+import { Types } from 'mongoose';
 
 export interface CreateBookingData {
   userId: string;
@@ -68,8 +69,8 @@ export class BookingService {
 
     // Create booking
     const bookingData = {
-      user: data.userId,
-      book: data.bookId,
+      userId: new Types.ObjectId(data.userId),
+      bookId: new Types.ObjectId(data.bookId),
       borrowPeriodDays: data.borrowPeriodDays || 14,
       notes: data.notes,
       metadata: {
@@ -79,7 +80,7 @@ export class BookingService {
       },
     };
 
-    const booking = await this.bookingRepository.create(bookingData);
+    const booking = await this.bookingRepository.create(bookingData as any);
 
     // Reserve the book (decrease available copies)
     await this.bookService.reserveBook(data.bookId);
@@ -141,7 +142,7 @@ export class BookingService {
 
   async getUserBookings(userId: string, query: BookingQuery) {
     console.log(`Fetching bookings for userId: ${userId}`);
-    const bookings = await this.bookingRepository.findByUserId(userId, query);
+    const bookings = await this.bookingRepository.findByUserId(userId, { ...query, status: BookingStatus.APPROVED });
     console.log(`Found bookings for userId ${userId}:`, bookings);
     return bookings;
   }

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Announcement } from '../../pages/admin/AdminAnnouncementsPage';
+import { Announcement } from '../../services/AdminAnnouncementService';
 
 interface EditAnnouncementModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpdateAnnouncement: (id: string, data: Partial<Announcement>) => Promise<void>;
+  onUpdateAnnouncement: (id: string, data: Omit<Partial<Announcement>, 'image'> & { image?: File }) => Promise<void>;
   announcement: Announcement | null;
 }
 
@@ -24,8 +24,11 @@ const EditAnnouncementModal: React.FC<EditAnnouncementModalProps> = ({
     targetAudience: 'all' as Announcement['targetAudience'],
     publishDate: '',
     expiryDate: '',
+    image: '',
   });
 
+  const [image, setImage] = useState<File | undefined>(undefined);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -39,7 +42,11 @@ const EditAnnouncementModal: React.FC<EditAnnouncementModalProps> = ({
         targetAudience: announcement.targetAudience,
         publishDate: announcement.publishDate ? new Date(announcement.publishDate).toISOString().slice(0, 16) : '',
         expiryDate: announcement.expiryDate ? new Date(announcement.expiryDate).toISOString().slice(0, 16) : '',
+        image: announcement.image || '',
       });
+      if (announcement.image) {
+        setImagePreview(announcement.image);
+      }
     }
   }, [announcement]);
 
@@ -49,12 +56,17 @@ const EditAnnouncementModal: React.FC<EditAnnouncementModalProps> = ({
 
     setLoading(true);
     try {
-      const updateData: Partial<Announcement> = {
-        ...formData,
+      const { image: _, ...restFormData } = formData;
+      const updateData: Omit<Partial<Announcement>, 'image'> & { image?: File } = {
+        ...restFormData,
         publishDate: formData.publishDate ? new Date(formData.publishDate).toISOString() : undefined,
         expiryDate: formData.expiryDate ? new Date(formData.expiryDate).toISOString() : undefined,
       };
       
+      if (image) {
+        updateData.image = image;
+      }
+
       await onUpdateAnnouncement(announcement.id, updateData);
       onClose();
     } catch (error) {
@@ -67,6 +79,14 @@ const EditAnnouncementModal: React.FC<EditAnnouncementModalProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   if (!isOpen || !announcement) return null;
@@ -217,6 +237,24 @@ const EditAnnouncementModal: React.FC<EditAnnouncementModalProps> = ({
                 className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-neutral-700 dark:text-neutral-100"
               />
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="image" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              Image
+            </label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleImageChange}
+              className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-neutral-700 dark:text-neutral-100"
+            />
+            {imagePreview && (
+              <div className="mt-4">
+                <img src={imagePreview} alt="Preview" className="w-full h-auto rounded-md" />
+              </div>
+            )}
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">

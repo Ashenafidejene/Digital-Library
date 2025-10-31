@@ -322,4 +322,26 @@ async createBook(data: CreateBookData, addedBy: string): Promise<IBook> {
     }
     return book;
   }
+
+  async getFeaturedBooks(query: any) {
+    const popularBooks = await this.getPopularBooks(query);
+    const recentlyAddedBooks = await this.getRecentlyAddedBooks(query);
+    // Assuming you have a method for recommended books
+    const recommendedBooks = await this.getPopularBooks(query); // Placeholder
+
+    return {
+      popularBooks: popularBooks.books,
+      recentlyAddedBooks: recentlyAddedBooks.books,
+      recommendedBooks: recommendedBooks.books,
+    };
+  }
+
+  async getBookCount(): Promise<number> {
+    return await this.bookRepository.countDocuments();
+  }
+
+  async getCategoryCount(): Promise<number> {
+    const categories = await this.bookRepository.getCategories();
+    return categories.length;
+  }
 }

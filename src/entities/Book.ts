@@ -13,7 +13,7 @@ export interface IBook extends Document {
   coverImage?: string;
   publisher?: string;
   publishedDate?: Date;
-  pageCount?: number;y
+  pageCount?: number;
   language: string;
   tags: string[];
   rating?: {
@@ -228,16 +228,16 @@ const bookSchema = new Schema<IBook>(
   {
     timestamps: true,
     toJSON: {
+      virtuals: true,
       transform: function(doc, ret) {
-        ret.id = ret._id.toString();
         delete ret._id;
         delete ret.__v;
         return ret;
       },
     },
     toObject: {
+      virtuals: true,
       transform: function(doc, ret) {
-        ret.id = ret._id.toString();
         delete ret._id;
         delete ret.__v;
         return ret;
@@ -245,6 +245,11 @@ const bookSchema = new Schema<IBook>(
     },
   }
 );
+
+// Add a virtual `id` property.
+bookSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
 
 // Indexes
 bookSchema.index({ title: 'text', author: 'text', description: 'text' });

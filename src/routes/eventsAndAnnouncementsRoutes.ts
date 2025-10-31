@@ -1,30 +1,56 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware';
+import { authenticate, authorize, validateObjectId, handleValidationErrors } from '../middleware';
 import { EventRepository } from '../repositories/EventRepository';
-import { AnnouncementRepository } from '../repositories/AnnouncementRepository';
+import { createEvent, getAllEvents } from '../controllers/EventController';
+import {
+  createAnnouncement,
+  getAllAnnouncements,
+  getAnnouncementById,
+  updateAnnouncement,
+  deleteAnnouncement,
+} from '../controllers/AnnouncementController';
+import { upload } from '../middleware/upload';
+import { UserRole } from '../types';
 
 const router = Router();
 const eventRepository = new EventRepository();
-const announcementRepository = new AnnouncementRepository();
 
+// All routes require authentication
 router.use(authenticate);
 
-router.get('/events', async (req, res) => {
-  try {
-    const { events } = await eventRepository.findAll({});
-    res.json({ events });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching events' });
-  }
-});
+// Event routes
+router.get('/events', getAllEvents);
 
-router.get('/announcements', async (req, res) => {
-  try {
-    const { announcements } = await announcementRepository.findAll({});
-    res.json({ announcements });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching announcements' });
-  }
-});
+router.post('/events', authorize(UserRole.ADMIN), upload.single('image'), createEvent);
+
+// Announcement routes
+router.get('/announcements', getAllAnnouncements);
+router.get(
+  '/announcements/:id',
+  validateObjectId('id'),
+  handleValidationErrors,
+  getAnnouncementById
+);
+router.post(
+  '/announcements',
+  authorize(UserRole.ADMIN),
+  upload.single('image'),
+  createAnnouncement
+);
+router.put(
+  '/announcements/:id',
+  authorize(UserRole.ADMIN),
+  validateObjectId('id'),
+  upload.single('image'),
+  handleValidationErrors,
+  updateAnnouncement
+);
+router.delete(
+  '/announcements/:id',
+  authorize(UserRole.ADMIN),
+  validateObjectId('id'),
+  handleValidationErrors,
+  deleteAnnouncement
+);
 
 export default router;

@@ -16,3 +16,11 @@ export enum BookStatus {
   MAINTENANCE = 'maintenance',
   REMOVED = 'removed',
 }
+
+export enum BookingStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  RETURNED = 'returned',
+  OVERDUE = 'overdue',
+}

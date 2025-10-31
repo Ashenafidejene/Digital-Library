@@ -1,4 +1,5 @@
 import { apiRequest, ApiResponse } from './api';
+import { Book } from './bookService';
 
 // Data interfaces for User Dashboard
 export interface BorrowedBook {
@@ -47,7 +48,7 @@ export interface UserDashboardData {
   reservedBooks: ReservedBook[];
   readingHistory: ReadingHistory[];
   notifications: Notification[];
-  favoriteBooks: string[];
+  favoriteBooks: Book[];
 }
 
 export interface ActionResponse {
@@ -79,8 +80,8 @@ export const userDashboardService = {
     return apiRequest<Notification[]>('/dashboard/notifications');
   },
 
-  async getFavoriteBooks(): Promise<ApiResponse<string[]>> {
-    return apiRequest<string[]>('/dashboard/favorite-books');
+  async getFavoriteBooks(): Promise<ApiResponse<Book[]>> {
+    return apiRequest<Book[]>('/dashboard/favorite-books');
   },
 
   async toggleFavorite(bookId: string): Promise<ActionResponse> {

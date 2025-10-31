@@ -224,7 +224,7 @@ export class UserService {
     if (!user) {
       throw new AppError('User not found', 404);
     }
-    return user.populate('favoriteBooks');
+    return user.favoriteBooks;
   }
 
   async addFavoriteBook(userId: string, bookId: string) {
@@ -250,7 +250,7 @@ export class UserService {
 
     user.favoriteBooks = user.favoriteBooks.filter(
       (id) => id.toString() !== bookId
-    );
+    ) as any;
     await user.save();
     return user;
   }
@@ -264,7 +264,7 @@ export class UserService {
     const isFavorite = user.favoriteBooks.some(id => id.toString() === bookId);
 
     if (isFavorite) {
-      user.favoriteBooks = user.favoriteBooks.filter(id => id.toString() !== bookId);
+      user.favoriteBooks = user.favoriteBooks.filter(id => id.toString() !== bookId) as any;
       await user.save();
       return { success: true, message: 'Book removed from favorites' };
     } else {
@@ -272,5 +272,9 @@ export class UserService {
       await user.save();
       return { success: true, message: 'Book added to favorites' };
     }
+  }
+
+  async getUserCount(): Promise<number> {
+    return await this.userRepository.countDocuments();
   }
 }

@@ -1,17 +1,18 @@
 import { apiService, ApiResponse } from './api';
 
 export interface Book {
+  _id?: string;
   id: string;
   title: string;
   author: string;
-  isbn: string;
+  isbn?: string;
   category: string;
   description: string;
-  publisher: string;
-  publishedDate: string;
-  pageCount: number;
+  publisher?: string;
+  publishedDate?: string;
+  pageCount?: number;
   language: string;
-  location:{
+  location: {
     shelf: string;
     section: string;
     floor?: string;
@@ -21,13 +22,17 @@ export interface Book {
   availability: {
     totalCopies: number;
     availableCopies: number;
-    borrowedCopies: number;
+    reservedCopies?: number;
   };
-  rating?: number;
+  rating?: {
+    average: number;
+    count: number;
+  };
   coverImage?: string;
   tags: string[];
   createdAt: string;
   updatedAt: string;
+  isAvailable?: boolean;
 }
 
 export interface BookQuery {
@@ -57,7 +62,7 @@ export interface BookStats {
 
 export const bookService = {
   // Get all books with filtering and pagination
-  async getBooks(query: BookQuery = {}): Promise<ApiResponse<{ data: Book[]; pagination: any }>> {
+  async getBooks(query: BookQuery = {}): Promise<ApiResponse<Book[]>> {
     const params = new URLSearchParams();
 
     Object.entries(query).forEach(([key, value]) => {
@@ -66,7 +71,17 @@ export const bookService = {
       }
     });
 
-    return apiService.get<{ data: Book[]; pagination: any }>(`/books?${params.toString()}`);
+    const endpoint = `/books?${params.toString()}`;
+    console.log(`[User Book Service] Fetching books from endpoint: ${endpoint}`);
+
+    try {
+      const response = await apiService.get<Book[]>(endpoint);
+      console.log('[User Book Service] Raw API Response:', response);
+      return response;
+    } catch (error) {
+      console.error(`[User Book Service] Error fetching from ${endpoint}:`, error);
+      throw error;
+    }
   },
 
   // Get book by ID
@@ -75,7 +90,7 @@ export const bookService = {
   },
 
   // Search books
-  async searchBooks(searchTerm: string, filters: Partial<BookQuery> = {}): Promise<ApiResponse<{ data: Book[]; pagination: any }>> {
+  async searchBooks(searchTerm: string, filters: Partial<BookQuery> = {}): Promise<ApiResponse<Book[]>> {
     const query = {
       search: searchTerm,
       ...filters,
@@ -84,7 +99,7 @@ export const bookService = {
   },
 
   // Get available books
-  async getAvailableBooks(query: Omit<BookQuery, 'available'> = {}): Promise<ApiResponse<{ data: Book[]; pagination: any }>> {
+  async getAvailableBooks(query: Omit<BookQuery, 'available'> = {}): Promise<ApiResponse<Book[]>> {
     return this.getBooks({ ...query, available: true });
   },
 
@@ -99,7 +114,7 @@ export const bookService = {
   },
 
   // Get books by category
-  async getBooksByCategory(category: string, query: Omit<BookQuery, 'category'> = {}): Promise<ApiResponse<{ data: Book[]; pagination: any }>> {
+  async getBooksByCategory(category: string, query: Omit<BookQuery, 'category'> = {}): Promise<ApiResponse<Book[]>> {
     return this.getBooks({ ...query, category });
   },
 
@@ -114,7 +129,7 @@ export const bookService = {
   },
 
   // Admin functions
-  async getAdminBooks(query: BookQuery = {}): Promise<ApiResponse<{ data: Book[]; pagination: any }>> {
+  async getAdminBooks(query: BookQuery = {}): Promise<ApiResponse<Book[]>> {
     const params = new URLSearchParams();
 
     Object.entries(query).forEach(([key, value]) => {
@@ -123,7 +138,17 @@ export const bookService = {
       }
     });
 
-    return apiService.get<{ data: Book[]; pagination: any }>(`/admin/books?${params.toString()}`);
+    const endpoint = `/admin/books?${params.toString()}`;
+    console.log(`[Admin Book Service] Fetching books from endpoint: ${endpoint}`);
+
+    try {
+      const response = await apiService.get<Book[]>(endpoint);
+      console.log('[Admin Book Service] Raw API Response:', response);
+      return response;
+    } catch (error) {
+      console.error(`[Admin Book Service] Error fetching from ${endpoint}:`, error);
+      throw error;
+    }
   },
 
   async createBook(bookData: Omit<Book, 'id' | 'createdAt' | 'updatedAt'>): Promise<ApiResponse<Book>> {
@@ -162,6 +187,11 @@ export const bookService = {
       },
     });
   },
+};
+
+export const getFeaturedBooks = async (params: any): Promise<{ popularBooks: Book[], recentlyAddedBooks: Book[], recommendedBooks: Book[] }> => {
+  const response = await apiService.get<{ popularBooks: Book[], recentlyAddedBooks: Book[], recommendedBooks: Book[] }>('/books/featured', { params });
+  return response.data;
 };
 
 export default bookService;

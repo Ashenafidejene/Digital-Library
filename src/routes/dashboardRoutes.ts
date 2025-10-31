@@ -1,11 +1,23 @@
 import { Router } from 'express';
 import { DashboardController } from '../controllers/DashboardController';
-import { authenticate } from '../middleware';
+import { authenticate, optionalAuth } from '../middleware';
 
 const router = Router();
 const dashboardController = new DashboardController();
 
-// All dashboard routes require authentication
+/**
+ * @swagger
+ * /api/v1/dashboard/home-stats:
+ *   get:
+ *     summary: Get home page statistics (public)
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Home page stats retrieved successfully
+ */
+router.get('/home-stats', dashboardController.getHomePageStats);
+
+// All dashboard routes below require authentication
 router.use(authenticate);
 
 /**

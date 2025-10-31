@@ -67,10 +67,11 @@ export class AdminService {
   }
 
   async getDashboardStats(): Promise<AdminDashboardStats> {
-    const [userStats, bookStats, categoryStats] = await Promise.all([
+    const [userStats, bookStats, categoryStats, bookingStats] = await Promise.all([
       this.userService.getUserStats(),
       this.bookService.getBookStats(),
       this.bookService.getCategoryStats(),
+      this.bookingRepository.getBookingStats(),
     ]);
 
     // Get new users this month
@@ -111,11 +112,11 @@ export class AdminService {
         ).length,
       },
       bookings: {
-        total: 0, // Will be implemented with booking module
-        pending: 0,
-        approved: 0,
-        rejected: 0,
-        overdue: 0,
+        total: bookingStats.total,
+        pending: bookingStats.pending,
+        approved: bookingStats.approved,
+        rejected: bookingStats.rejected,
+        overdue: bookingStats.overdue,
       },
       categories: categoryStats,
     };
@@ -177,6 +178,10 @@ export class AdminService {
       recentBookings: [], // Will be implemented with booking module
       popularBooks: popularBooks.books,
     };
+  }
+
+  async getAllBooks(query: any): Promise<any> {
+    return this.bookRepository.findAll(query);
   }
 
   async getBorrowingRecords(query: any): Promise<any> {
@@ -262,6 +267,37 @@ export class AdminService {
         percentage: Math.round(memoryPercentage),
       },
     };
+  }
+
+  async getSystemStats(): Promise<any> {
+    const [userStats, bookStats] = await Promise.all([
+      this.userService.getUserStats(),
+      this.bookService.getBookStats(),
+    ]);
+    return { userStats, bookStats };
+  }
+
+  async getAllUsers(query: any): Promise<any> {
+    return this.userService.getAllUsers(query);
+  }
+
+  async blockUser(userId: string): Promise<any> {
+    return this.userService.blockUser(userId);
+  }
+
+  async unblockUser(userId: string): Promise<any> {
+    return this.userService.unblockUser(userId);
+  }
+
+  async createBook(bookData: any): Promise<any> {
+    // Assuming the admin user's ID is available in the request object
+    // For now, I'll use a placeholder ID.
+    const adminId = '60d21b4667d0d8992e610c85'; // Replace with actual admin ID from auth
+    return this.bookService.createBook(bookData, adminId);
+  }
+
+  async updateBookStatus(bookId: string, status: BookStatus): Promise<any> {
+    return this.bookService.updateBookStatus(bookId, status);
   }
 
   async exportUserData(format: 'json' | 'csv' = 'json'): Promise<any> {
@@ -385,7 +421,17 @@ export class AdminService {
     if (!admin) {
       throw new AppError('Admin user not found', 404);
     }
-    return this.announcementRepository.create({ ...announcementData, authorId: adminId, authorName: admin.name });
+    const announcement = await this.announcementRepository.create({ ...announcementData, authorId: adminId, authorName: admin.name });
+    this.socketService.notifyNewAnnouncement(announcement);
+    return announcement;
+  }
+
+  async updateAnnouncement(announcementId: string, announcementData: any): Promise<any> {
+    const announcement = await this.announcementRepository.findById(announcementId);
+    if (!announcement) {
+      throw new AppError('Announcement not found', 404);
+    }
+    return this.announcementRepository.update(announcementId, announcementData);
   }
 
   async deleteAnnouncement(announcementId: string): Promise<void> {

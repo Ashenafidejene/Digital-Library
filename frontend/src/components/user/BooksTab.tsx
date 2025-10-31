@@ -5,7 +5,12 @@ import { FaInfoCircle, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { userDashboardService } from '../../services/userDashboardService';
 
 
-const BooksTab: React.FC = () => {
+interface BooksTabProps {
+  favoriteBookIds: string[];
+  toggleFavorite: (bookId: string) => void;
+}
+
+const BooksTab: React.FC<BooksTabProps> = ({ favoriteBookIds, toggleFavorite }) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,20 +19,30 @@ const BooksTab: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
-  const [favoriteBooks, setFavoriteBooks] = useState<string[]>([]);
 
   const fetchBooks = useCallback(async () => {
     try {
       setLoading(true);
       const response = await bookService.getBooks({
         page,
-        limit: 10,
+        limit: 50,
         search: searchTerm,
         category,
       });
       
-      setBooks(response.data.data);
-      setTotalPages(response.data.pagination.totalPages || 1);
+      console.log('[BooksTab] API Response:', response);
+      const responseData = response.data as any;
+      const booksData = responseData.books || responseData.data || responseData;
+      const normalizedBooks = (booksData || []).map((book: Book) => ({
+        ...book,
+        id: book.id || book._id,
+      })).filter((book: Book) => book.id);
+      
+      console.log('[BooksTab] Normalized Books:', normalizedBooks);
+      setBooks(normalizedBooks);
+      
+      const pagination = responseData.pagination;
+      setTotalPages(pagination?.totalPages || 1);
       setError(null);
     } catch (err) {
       setError('Failed to fetch books. Please try again later.');
@@ -49,34 +64,13 @@ const BooksTab: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const response = await bookService.getCategories();
-        setCategories(response.data);
+        setCategories(response.data || []);
       } catch (err) {
         console.error('Failed to fetch categories', err);
       }
     };
-    const fetchFavoriteBooks = async () => {
-      try {
-        const response = await userDashboardService.getFavoriteBooks();
-        setFavoriteBooks(response.data);
-      } catch (err) {
-        console.error('Failed to fetch favorite books', err);
-      }
-    };
     fetchCategories();
-    fetchFavoriteBooks();
   }, []);
-
-  const handleToggleFavorite = async (bookId: string) => {
-    try {
-      await userDashboardService.toggleFavorite(bookId);
-      setFavoriteBooks(prev => 
-        prev.includes(bookId) ? prev.filter(id => id !== bookId) : [...prev, bookId]
-      );
-    } catch (err) {
-      alert('Failed to update favorite status. Please try again.');
-      console.error(err);
-    }
-  };
 
   const handleReserveBook = async (bookId: string) => {
     try {
@@ -115,28 +109,49 @@ const BooksTab: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {books.map((book) => (
-          <div key={book.id} className="card">
-            {book.coverImage ? (
-              <img src={book.coverImage} alt={book.title} className="w-full h-48 object-cover" />
-            ) : (
-              <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
-  <FaInfoCircle className="text-4xl text-gray-400" />
-</div>
-            )}
-            <div className="p-4">
+          <div key={book.id || book._id} className="card">
+            <div className="relative">
+              {book.coverImage ? (
+                <img src={book.coverImage} alt={book.title} className="w-full h-48 object-cover" />
+              ) : (
+                <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                  <FaInfoCircle className="text-4xl text-gray-400" />
+                </div>
+              )}
+              <button
+                onClick={() => toggleFavorite(book.id)}
+                className="absolute top-2 right-2 btn-icon bg-white/70 hover:bg-white"
+              >
+                {favoriteBookIds.includes(book.id) ? (
+                  <FaHeart className="text-red-500" />
+                ) : (
+                  <FaRegHeart className="text-gray-600" />
+                )}
+              </button>
+            </div>
+            <div className="p-4 flex flex-col flex-grow">
               <h3 className="text-lg font-bold truncate">{book.title}</h3>
               <p className="text-sm text-gray-600">{book.author}</p>
-              <p className="mt-2 text-sm h-20 overflow-hidden text-ellipsis">{book.description}</p>
-              <div className="flex items-center justify-between mt-4">
+              <div className="flex items-center text-xs text-gray-500 mt-1">
+                <span>{book.category}</span>
+                {book.publishedDate && (
+                  <>
+                    <span className="mx-2">|</span>
+                    <span>{new Date(book.publishedDate).getFullYear()}</span>
+                  </>
+                )}
+              </div>
+              <p className="mt-2 text-sm h-20 overflow-hidden text-ellipsis flex-grow">{book.description}</p>
+              <div className="mt-4">
                 {book.status === 'available' ? (
                   <button
                     onClick={() => handleReserveBook(book.id)}
-                    className="btn-primary w-full mr-2"
+                    className="btn-primary w-full"
                   >
                     Reserve
                   </button>
                 ) : (
-                  <div className="text-sm font-semibold text-center w-full mr-2">
+                  <div className="text-sm font-semibold text-center w-full">
                     {book.dueDate ? (
                       <p className="text-yellow-600">
                         Due in {Math.ceil((new Date(book.dueDate).getTime() - new Date().getTime()) / (1000 * 3600 * 24))} days
@@ -146,9 +161,6 @@ const BooksTab: React.FC = () => {
                     )}
                   </div>
                 )}
-                <button onClick={() => handleToggleFavorite(book.id)} className="btn-icon">
-                  {favoriteBooks.includes(book.id) ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
-                </button>
               </div>
             </div>
           </div>

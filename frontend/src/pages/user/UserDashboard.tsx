@@ -22,11 +22,11 @@ import ThemeToggle from '../../components/common/ThemeToggle';
 import LanguageToggle from '../../components/common/LanguageToggle';
 import {
   userDashboardService,
+  BorrowedBook,
   ReservedBook,
   ReadingHistory,
   Notification,
 } from '../../services/userDashboardService';
-import { bookingService, Booking } from '../../services/bookingService';
 import { bookService } from '../../services/bookService';
 import OverviewTab from '../../components/user/OverviewTab';
 import BorrowedBooksTab from '../../components/user/BorrowedBooksTab';
@@ -43,7 +43,7 @@ const UserDashboard: React.FC = () => {
 
   // State management
   const [activeTab, setActiveTab] = useState<'overview' | 'borrowed' | 'reserved' | 'history' | 'profile' | 'books' | 'favorites'>('overview');
-  const [borrowedBooks, setBorrowedBooks] = useState<Booking[]>([]);
+  const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBook[]>([]);
   const [reservedBooks, setReservedBooks] = useState<ReservedBook[]>([]);
   const [readingHistory, setReadingHistory] = useState<ReadingHistory[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -55,23 +55,19 @@ const UserDashboard: React.FC = () => {
     const loadUserData = async () => {
       try {
         setLoading(true);
-        const borrowed = await bookingService.getUserBookings();
+        const { data: borrowed } = await userDashboardService.getBorrowedBooks();
         const { data: reserved } = await userDashboardService.getReservedBooks();
         const { data: history } = await userDashboardService.getReadingHistory();
         const { data: notifications } = await userDashboardService.getNotifications();
-        const { data: favoriteBookIds } = await userDashboardService.getFavoriteBooks();
-        
-        const favoriteBooksDetails = await Promise.all(
-          favoriteBookIds.map(bookId => bookService.getBookById(bookId).then(res => res.data))
-        );
+        const { data: favoriteBooksDetails } = await userDashboardService.getFavoriteBooks();
 
         console.log('Dashboard Data:', { borrowed, reserved, history, notifications, favorites: favoriteBooksDetails });
-        console.log('Borrowed books data:', borrowed.data.data);
+        console.log('Borrowed books data:', borrowed);
         console.log('Reserved books data:', reserved);
         console.log('Reading history data:', history);
         console.log('Favorite books data:', favoriteBooksDetails);
 
-        setBorrowedBooks(borrowed.data.data || []);
+        setBorrowedBooks(borrowed || []);
         setReservedBooks(reserved || []);
         setReadingHistory(history || []);
         setNotifications(notifications || []);
@@ -155,10 +151,9 @@ const UserDashboard: React.FC = () => {
   const toggleFavorite = async (bookId: string) => {
     try {
       await userDashboardService.toggleFavorite(bookId);
-      const { data: favoriteBookIds } = await userDashboardService.getFavoriteBooks();
-      const favoriteBooksDetails = await Promise.all(
-        favoriteBookIds.map(id => bookService.getBookById(id).then(res => res.data))
-      );
+      
+      // Refetch favorite books to ensure the UI is in sync with the database
+      const { data: favoriteBooksDetails } = await userDashboardService.getFavoriteBooks();
       setFavoriteBooks(favoriteBooksDetails || []);
     } catch (err) {
       console.error('Failed to toggle favorite status', err);
@@ -171,8 +166,8 @@ const UserDashboard: React.FC = () => {
       const response = await userDashboardService.renewBook(bookId);
       if (response.success) {
         // Refresh the borrowed books list to get the updated status
-        const borrowed = await bookingService.getUserBookings();
-        setBorrowedBooks(borrowed.data.data || []);
+        const { data: borrowed } = await userDashboardService.getBorrowedBooks();
+        setBorrowedBooks(borrowed || []);
       } else {
         console.error('Failed to renew book:', response.message);
         // Optionally, show an error message to the user
@@ -355,7 +350,12 @@ const UserDashboard: React.FC = () => {
                   <ReadingHistoryTab readingHistory={readingHistory} rateBook={rateBook} />
                 )}
                 {activeTab === 'profile' && <ProfileTab />}
-                {activeTab === 'books' && <BooksTab />}
+                {activeTab === 'books' && (
+                  <BooksTab
+                    favoriteBookIds={favoriteBooks.map(book => book.id)}
+                    toggleFavorite={toggleFavorite}
+                  />
+                )}
                 {activeTab === 'favorites' && (
                   <FavoriteBooksTab
                     favoriteBooks={favoriteBooks}

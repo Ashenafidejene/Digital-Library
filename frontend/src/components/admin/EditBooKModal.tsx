@@ -24,7 +24,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ isOpen, onClose, book, on
     availability: {
       totalCopies: book.availability?.totalCopies || 1,
       availableCopies: book.availability?.availableCopies || 1,
-      borrowedCopies: book.availability?.borrowedCopies || 0, // <-- add this line
+      reservedCopies: book.availability?.reservedCopies || 0,
     },
     location: {
       shelf: book.location?.shelf || '',
@@ -99,7 +99,7 @@ const EditBookModal: React.FC<EditBookModalProps> = ({ isOpen, onClose, book, on
           <div className="grid grid-cols-3 gap-4">
             <InputField name="availability.totalCopies" label="Total Copies" value={formData.availability.totalCopies} onChange={handleChange} type="number" min={1} />
             <InputField name="availability.availableCopies" label="Available Copies" value={formData.availability.availableCopies} onChange={handleChange} type="number" min={0} />
-            <InputField name="availability.borrowedCopies" label="Borrowed Copies" value={formData.availability.borrowedCopies} onChange={handleChange} type="number" min={0} />
+            <InputField name="availability.reservedCopies" label="Reserved Copies" value={formData.availability.reservedCopies} onChange={handleChange} type="number" min={0} />
           </div>
 
           <div className="grid grid-cols-3 gap-4">

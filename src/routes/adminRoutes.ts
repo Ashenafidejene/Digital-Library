@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { AdminController } from '../controllers/AdminController';
+import * as eventController from '../controllers/EventController';
 import {
   authenticate,
   authorize,
@@ -8,6 +9,7 @@ import {
   validateBookCreation,
   handleValidationErrors,
 } from '../middleware';
+import { upload } from '../middleware/upload';
 import { UserRole } from '../types';
 import { body } from 'express-validator';
 
@@ -656,90 +658,6 @@ router.put(
   adminController.bulkUpdateBooks
 );
 
-// Announcement Management Routes
-/**
- * @swagger
- * /api/v1/admin/announcements:
- *   get:
- *     summary: Get all announcements
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Announcements retrieved successfully
- */
-router.get('/announcements', adminController.getAnnouncements);
-
-/**
- * @swagger
- * /api/v1/admin/announcements:
- *   post:
- *     summary: Create a new announcement
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Announcement'
- *     responses:
- *       201:
- *         description: Announcement created successfully
- */
-router.post('/announcements', adminController.createAnnouncement);
-
-/**
- * @swagger
- * /api/v1/admin/announcements/{announcementId}:
- *   delete:
- *     summary: Delete an announcement
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: announcementId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Announcement deleted successfully
- */
-router.delete('/announcements/:announcementId', validateObjectId('announcementId'), handleValidationErrors, adminController.deleteAnnouncement);
-
-/**
- * @swagger
- * /api/v1/admin/announcements/{announcementId}/status:
- *   patch:
- *     summary: Toggle announcement status
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: announcementId
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               status:
- *                 type: string
- *     responses:
- *       200:
- *         description: Announcement status updated successfully
- */
-router.patch('/announcements/:announcementId/status', validateObjectId('announcementId'), handleValidationErrors, adminController.toggleAnnouncementStatus);
-
 // Export Routes
 /**
  * @swagger
@@ -804,7 +722,7 @@ router.get('/export/books', adminController.exportBooks);
  *       200:
  *         description: Events retrieved successfully
  */
-router.get('/events', adminController.getEvents);
+router.get('/events', eventController.getAllEvents);
 
 /**
  * @swagger
@@ -824,7 +742,7 @@ router.get('/events', adminController.getEvents);
  *       201:
  *         description: Event created successfully
  */
-router.post('/events', adminController.createEvent);
+router.post('/events', upload.single('image'), eventController.createEvent);
 
 /**
  * @swagger
@@ -850,7 +768,8 @@ router.post('/events', adminController.createEvent);
  *       200:
  *         description: Event updated successfully
  */
-router.put('/events/:eventId', validateObjectId('eventId'), handleValidationErrors, adminController.updateEvent);
+router.get('/events/:eventId', validateObjectId('eventId'), handleValidationErrors, eventController.getEventById);
+router.put('/events/:eventId', validateObjectId('eventId'), upload.single('image'), handleValidationErrors, eventController.updateEvent);
 
 /**
  * @swagger
@@ -870,6 +789,133 @@ router.put('/events/:eventId', validateObjectId('eventId'), handleValidationErro
  *       200:
  *         description: Event deleted successfully
  */
-router.delete('/events/:eventId', validateObjectId('eventId'), handleValidationErrors, adminController.deleteEvent);
+router.delete('/events/:eventId', validateObjectId('eventId'), handleValidationErrors, eventController.deleteEvent);
+
+// Announcement Management Routes
+/**
+ * @swagger
+ * /api/v1/admin/announcements:
+ *   get:
+ *     summary: Get all announcements
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Announcements retrieved successfully
+ */
+router.get('/announcements', adminController.getAnnouncements);
+
+/**
+ * @swagger
+ * /api/v1/admin/announcements:
+ *   post:
+ *     summary: Create a new announcement
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Announcement'
+ *     responses:
+ *       201:
+ *         description: Announcement created successfully
+ */
+router.post('/announcements', upload.single('image'), adminController.createAnnouncement);
+
+/**
+ * @swagger
+ * /api/v1/admin/announcements/{announcementId}:
+ *   put:
+ *     summary: Update an announcement
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: announcementId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Announcement'
+ *     responses:
+ *       200:
+ *         description: Announcement updated successfully
+ */
+router.put(
+  '/announcements/:announcementId',
+  validateObjectId('announcementId'),
+  upload.single('image'),
+  handleValidationErrors,
+  adminController.updateAnnouncement
+);
+
+/**
+ * @swagger
+ * /api/v1/admin/announcements/{announcementId}:
+ *   delete:
+ *     summary: Delete an announcement
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: announcementId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Announcement deleted successfully
+ */
+router.delete(
+  '/announcements/:announcementId',
+  validateObjectId('announcementId'),
+  handleValidationErrors,
+  adminController.deleteAnnouncement
+);
+
+/**
+ * @swagger
+ * /api/v1/admin/announcements/{announcementId}/status:
+ *   put:
+ *     summary: Toggle announcement status
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: announcementId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [draft, published, archived]
+ *     responses:
+ *       200:
+ *         description: Announcement status updated successfully
+ */
+router.put(
+  '/announcements/:announcementId/status',
+  validateObjectId('announcementId'),
+  handleValidationErrors,
+  adminController.toggleAnnouncementStatus
+);
 
 export default router;

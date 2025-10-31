@@ -1,520 +1,184 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import { AdminService } from '../services/AdminService';
-import { UserService } from '../services/UserService';
-import { BookService } from '../services/BookService';
-import { ResponseUtil } from '../utils/response';
-import { catchAsync } from '../middleware/errorHandler';
-import { AppError, UserStatus, BookStatus } from '../types';
+import { asyncHandler } from '../utils/asyncHandler';
+import { EventRepository } from '../repositories/EventRepository';
+import { AnnouncementRepository } from '../repositories/AnnouncementRepository';
+import { uploadToCloudinary } from '../utils/cloudinary';
+
+const adminService = new AdminService();
+const eventRepository = new EventRepository();
+const announcementRepository = new AnnouncementRepository();
 
 export class AdminController {
-  private adminService: AdminService;
-  private userService: UserService;
-  private bookService: BookService;
-
-  constructor() {
-    this.adminService = new AdminService();
-    this.userService = new UserService();
-    this.bookService = new BookService();
-  }
-
-  getDashboard = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(userId);
-
-    const [stats, activity, systemHealth] = await Promise.all([
-      this.adminService.getDashboardStats(),
-      this.adminService.getSystemActivity(),
-      this.adminService.getSystemHealth(),
-    ]);
-
-    ResponseUtil.success(res, {
-      stats,
-      activity,
-      systemHealth,
-    }, 'Admin dashboard data retrieved successfully');
+  // Dashboard
+  getDashboard = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getDashboardStats();
+    res.status(200).json({ success: true, data });
   });
 
-  getStats = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(userId);
-
-    const stats = await this.adminService.getDashboardStats();
-    ResponseUtil.success(res, stats, 'Admin statistics retrieved successfully');
+  getStats = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getSystemStats();
+    res.status(200).json({ success: true, data });
   });
 
-  getSystemActivity = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(userId);
-
-    const activity = await this.adminService.getSystemActivity();
-    ResponseUtil.success(res, activity, 'System activity retrieved successfully');
+  getSystemActivity = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getSystemActivity();
+    res.status(200).json({ success: true, data });
   });
 
-  getSystemHealth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(userId);
-
-    const health = await this.adminService.getSystemHealth();
-    ResponseUtil.success(res, health, 'System health retrieved successfully');
+  getSystemHealth = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getSystemHealth();
+    res.status(200).json({ success: true, data });
   });
 
-  promoteUserToAdmin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedUser = await this.adminService.promoteUserToAdmin(userId);
-    ResponseUtil.updated(res, updatedUser, 'User promoted to admin successfully');
+  getAuditLog = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getAuditLog(req.query);
+    res.status(200).json({ success: true, data });
   });
 
-  demoteAdminToUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    // Prevent self-demotion
-    if (userId === adminId) {
-      return next(new AppError('You cannot demote yourself', 400));
-    }
-
-    const updatedUser = await this.adminService.demoteAdminToUser(userId);
-    ResponseUtil.updated(res, updatedUser, 'Admin demoted to user successfully');
+  // User Management
+  getAllUsers = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getAllUsers(req.query);
+    res.status(200).json({ success: true, data });
   });
 
-  bulkUpdateUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userIds, status } = req.body;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-      return next(new AppError('User IDs array is required', 400));
-    }
-
-    if (!Object.values(UserStatus).includes(status)) {
-      return next(new AppError('Invalid user status', 400));
-    }
-
-    await this.adminService.bulkUpdateUserStatus(userIds, status);
-    ResponseUtil.success(res, null, `${userIds.length} users updated successfully`);
+  promoteUserToAdmin = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.promoteUserToAdmin(req.params.userId);
+    res.status(200).json({ success: true, data });
   });
 
-  bulkUpdateBooks = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { bookIds, status } = req.body;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    if (!bookIds || !Array.isArray(bookIds) || bookIds.length === 0) {
-      return next(new AppError('Book IDs array is required', 400));
-    }
-
-    if (!Object.values(BookStatus).includes(status)) {
-      return next(new AppError('Invalid book status', 400));
-    }
-
-    await this.adminService.bulkUpdateBookStatus(bookIds, status);
-    ResponseUtil.success(res, null, `${bookIds.length} books updated successfully`);
+  demoteAdminToUser = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.demoteAdminToUser(req.params.userId);
+    res.status(200).json({ success: true, data });
   });
 
-  exportUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { format = 'json' } = req.query;
-    const adminId = req.user?.id;
+  blockUser = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.blockUser(req.params.userId);
+    res.status(200).json({ success: true, data });
+  });
 
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
+  unblockUser = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.unblockUser(req.params.userId);
+    res.status(200).json({ success: true, data });
+  });
 
-    await this.adminService.validateAdminAccess(adminId);
+  getUserBorrowingHistory = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getUserBorrowingHistory(req.params.userId);
+    res.status(200).json({ success: true, data });
+  });
 
-    if (format !== 'json' && format !== 'csv') {
-      return next(new AppError('Invalid format. Use json or csv', 400));
-    }
+  bulkUpdateUsers = asyncHandler(async (req: Request, res: Response) => {
+    await adminService.bulkUpdateUserStatus(req.body.userIds, req.body.status);
+    res.status(200).json({ success: true });
+  });
 
-    const userData = await this.adminService.exportUserData(format as 'json' | 'csv');
+  // Borrowing Management
+  getBorrowingRecords = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getBorrowingRecords(req.query);
+    res.status(200).json({ success: true, data });
+  });
 
-    if (format === 'csv') {
-      res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename=users.csv');
+  approveBorrowingRequest = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.approveBorrowingRequest(req.params.recordId, req.user.id);
+    res.status(200).json({ success: true, data });
+  });
+
+  rejectBorrowingRequest = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.rejectBorrowingRequest(req.params.recordId, req.body.reason, req.user.id);
+    res.status(200).json({ success: true, data });
+  });
+
+  returnBook = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.returnBook(req.params.recordId);
+    res.status(200).json({ success: true, data });
+  });
+
+  // Book Management
+  getAllBooks = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.getAllBooks(req.query);
+    res.status(200).json({ success: true, data });
+  });
+
+  createBook = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.createBook(req.body);
+    res.status(201).json({ success: true, data });
+  });
+
+  updateBookStatus = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.updateBookStatus(req.params.bookId, req.body.status);
+    res.status(200).json({ success: true, data });
+  });
+
+  bulkUpdateBooks = asyncHandler(async (req: Request, res: Response) => {
+    await adminService.bulkUpdateBookStatus(req.body.bookIds, req.body.status);
+    res.status(200).json({ success: true });
+  });
+
+  // Export
+  exportUsers = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.exportUserData(req.query.format as 'json' | 'csv');
+    res.status(200).json({ success: true, data });
+  });
+
+  exportBooks = asyncHandler(async (req: Request, res: Response) => {
+    const data = await adminService.exportBookData(req.query.format as 'json' | 'csv');
+    res.status(200).json({ success: true, data });
+  });
+
+  // Event Management
+  getEvents = asyncHandler(async (req: Request, res: Response) => {
+    const { events } = await eventRepository.findAll(req.query);
+    res.status(200).json({ success: true, data: events });
+  });
+
+  createEvent = asyncHandler(async (req: Request, res: Response) => {
+    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const event = await eventRepository.create({ ...req.body, image });
+    res.status(201).json({ success: true, data: event });
+  });
+
+  updateEvent = asyncHandler(async (req: Request, res: Response) => {
+    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const event = await eventRepository.update(req.params.eventId, { ...req.body, image });
+    res.status(200).json({ success: true, data: event });
+  });
+
+  deleteEvent = asyncHandler(async (req: Request, res: Response) => {
+    await eventRepository.delete(req.params.eventId);
+    res.status(200).json({ success: true, message: 'Event deleted successfully' });
+  });
+
+  // Announcement Management
+  getAnnouncements = asyncHandler(async (req: Request, res: Response) => {
+    const { announcements } = await announcementRepository.findAll(req.query);
+    res.status(200).json({ success: true, data: announcements });
+  });
+
+  createAnnouncement = asyncHandler(async (req: Request, res: Response) => {
+    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const announcement = await announcementRepository.create({ ...req.body, image });
+    res.status(201).json({ success: true, data: announcement });
+  });
+
+  updateAnnouncement = asyncHandler(async (req: Request, res: Response) => {
+    const image = req.file ? await uploadToCloudinary(req.file.path) : undefined;
+    const announcement = await announcementRepository.update(req.params.announcementId, { ...req.body, image });
+    res.status(200).json({ success: true, data: announcement });
+  });
+
+  deleteAnnouncement = asyncHandler(async (req: Request, res: Response) => {
+    await announcementRepository.delete(req.params.announcementId);
+    res.status(200).json({ success: true, message: 'Announcement deleted successfully' });
+  });
+
+  toggleAnnouncementStatus = asyncHandler(async (req: Request, res: Response) => {
+    const announcement = await announcementRepository.findById(req.params.announcementId);
+    if (announcement) {
+      announcement.status = announcement.status === 'published' ? 'draft' : 'published';
+      await announcement.save();
+      res.status(200).json({ success: true, data: announcement });
     } else {
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', 'attachment; filename=users.json');
+      res.status(404).json({ success: false, message: 'Announcement not found' });
     }
-
-    ResponseUtil.success(res, userData, 'User data exported successfully');
-  });
-
-  exportBooks = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { format = 'json' } = req.query;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    if (format !== 'json' && format !== 'csv') {
-      return next(new AppError('Invalid format. Use json or csv', 400));
-    }
-
-    const bookData = await this.adminService.exportBookData(format as 'json' | 'csv');
-
-    if (format === 'csv') {
-      res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', 'attachment; filename=books.csv');
-    } else {
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', 'attachment; filename=books.json');
-    }
-
-    ResponseUtil.success(res, bookData, 'Book data exported successfully');
-  });
-
-  getAuditLog = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const auditLog = await this.adminService.getAuditLog(req.query);
-    ResponseUtil.paginated(
-      res,
-      auditLog.logs,
-      auditLog.pagination,
-      'Audit log retrieved successfully'
-    );
-  });
-
-  // User management endpoints (delegated to UserService)
-  getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const result = await this.userService.getAllUsers(req.query);
-    ResponseUtil.paginated(
-      res,
-      result.users,
-      result.pagination,
-      'Users retrieved successfully'
-    );
-  });
-
-  getBorrowingRecords = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const result = await this.adminService.getBorrowingRecords(req.query);
-    ResponseUtil.success(res, result.bookings || [], 'Borrowing records retrieved successfully');
-  });
-
-  blockUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedUser = await this.userService.blockUser(userId);
-    ResponseUtil.updated(res, updatedUser, 'User blocked successfully');
-  });
-
-  unblockUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedUser = await this.userService.unblockUser(userId);
-    ResponseUtil.updated(res, updatedUser, 'User unblocked successfully');
-  });
-
-  getUserBorrowingHistory = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.params;
-    const adminId = req.user?.id;
-    //console.log("here is useId" , userId ,"and admin id",adminId);
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const history = await this.adminService.getUserBorrowingHistory(userId);
-    console.log("this is the history",history);
-    ResponseUtil.success(res, history, 'User borrowing history retrieved successfully');
-  });
-
-  // Book management endpoints (delegated to BookService)
-  createBook = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req);
-    console.log(res);
-    console.log(next);
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const bookData = req.body;
-    const book = await this.bookService.createBook(bookData, adminId);
-
-    ResponseUtil.created(res, book, 'Book created successfully');
-  });
-
-  getAllBooks = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-    
-    const result = await this.bookService.getAllBooks(req.query);
-  //  console.log("this book ", result.books);
-    ResponseUtil.paginated(
-      res,
-      result.books,
-      result.pagination,
-      'Books retrieved successfully'
-    );
-  });
-
-  updateBookStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { bookId } = req.params;
-    const { status } = req.body;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    if (!Object.values(BookStatus).includes(status)) {
-      return next(new AppError('Invalid book status', 400));
-    }
-
-    const updatedBook = await this.bookService.updateBookStatus(bookId, status);
-    ResponseUtil.updated(res, updatedBook, 'Book status updated successfully');
-  });
-
-  approveBorrowingRequest = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { recordId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedRecord = await this.adminService.approveBorrowingRequest(recordId, adminId);
-    ResponseUtil.success(res, updatedRecord, 'Borrowing request approved successfully');
-  });
-
-  rejectBorrowingRequest = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { recordId } = req.params;
-    const { reason } = req.body;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedRecord = await this.adminService.rejectBorrowingRequest(recordId, reason, adminId);
-    ResponseUtil.success(res, updatedRecord, 'Borrowing request rejected successfully');
-  });
-
-  returnBook = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { recordId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedRecord = await this.adminService.returnBook(recordId);
-    ResponseUtil.success(res, updatedRecord, 'Book returned successfully');
-  });
-
-  // Announcement management endpoints
-  getAnnouncements = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const result = await this.adminService.getAnnouncements(req.query);
-    ResponseUtil.success(res, result.announcements || [], 'Announcements retrieved successfully');
-  });
-
-  createAnnouncement = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const announcementData = req.body;
-    const announcement = await this.adminService.createAnnouncement(announcementData, adminId);
-
-    ResponseUtil.created(res, announcement, 'Announcement created successfully');
-  });
-
-  deleteAnnouncement = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { announcementId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    await this.adminService.deleteAnnouncement(announcementId);
-    ResponseUtil.success(res, null, 'Announcement deleted successfully');
-  });
-
-  toggleAnnouncementStatus = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { announcementId } = req.params;
-    const { status } = req.body;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedAnnouncement = await this.adminService.toggleAnnouncementStatus(announcementId, status);
-    ResponseUtil.updated(res, updatedAnnouncement, 'Announcement status updated successfully');
-  });
-
-  // Event management endpoints
-  getEvents = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const result = await this.adminService.getEvents(req.query);
-    ResponseUtil.success(res, result.events || [], 'Events retrieved successfully');
-  });
-
-  createEvent = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const eventData = req.body;
-    const event = await this.adminService.createEvent(eventData, adminId);
-
-    ResponseUtil.created(res, event, 'Event created successfully');
-  });
-
-  updateEvent = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { eventId } = req.params;
-    const eventData = req.body;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    const updatedEvent = await this.adminService.updateEvent(eventId, eventData);
-    ResponseUtil.updated(res, updatedEvent, 'Event updated successfully');
-  });
-
-  deleteEvent = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { eventId } = req.params;
-    const adminId = req.user?.id;
-
-    if (!adminId) {
-      return next(new AppError('User not authenticated', 401));
-    }
-
-    await this.adminService.validateAdminAccess(adminId);
-
-    await this.adminService.deleteEvent(eventId);
-    ResponseUtil.success(res, null, 'Event deleted successfully');
   });
 }

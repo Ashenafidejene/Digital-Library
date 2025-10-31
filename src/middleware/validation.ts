@@ -170,6 +170,8 @@ export const validateBookUpdate = [
 // Booking validation schemas
 export const validateBookingCreation = [
   body('bookId')
+    .notEmpty()
+    .withMessage('Book ID is required')
     .custom((value) => {
       if (!mongoose.Types.ObjectId.isValid(value)) {
         throw new Error('Invalid book ID format');
@@ -209,8 +211,8 @@ export const validatePaginationQuery = [
     .withMessage('Page must be a positive integer'),
   query('limit')
     .optional()
-    .isInt({ min: 1, max: 100 })
-    .withMessage('Limit must be between 1 and 100'),
+    .isInt({ min: 1, max: 1000 })
+    .withMessage('Limit must be between 1 and 1000'),
   query('sortBy')
     .optional()
     .isString()

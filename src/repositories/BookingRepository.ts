@@ -75,16 +75,13 @@ export class BookingRepository {
   }
 
   public async findByUserId(userId: string, query: BookingQuery) {
-    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const { page = 1, limit = 1000, sortBy = 'createdAt', sortOrder = 'desc' } = query;
     const skip = (page - 1) * limit;
 
     const dbQuery: any = {
       userId: new Types.ObjectId(userId),
+      status: query.status || { $in: [BookingStatus.APPROVED, BookingStatus.OVERDUE] },
     };
-
-    if (query.status) {
-      dbQuery.status = query.status;
-    }
 
     const [records, totalItems] = await Promise.all([
       (Booking as any)
