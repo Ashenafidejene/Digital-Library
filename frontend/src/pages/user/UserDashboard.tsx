@@ -210,31 +210,31 @@ const UserDashboard: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-neutral-50 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16">
             {/* Logo and User Info */}
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-                <BookOpenIcon className="w-6 h-6 text-white" />
+            <div className="flex items-center min-w-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <BookOpenIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div className="ml-3">
-                <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+              <div className="ml-2 sm:ml-3 min-w-0">
+                <h1 className="text-sm sm:text-lg font-semibold text-neutral-900 dark:text-neutral-100 truncate">
                   {t('header.libraryName')}
                 </h1>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 truncate hidden sm:block">
                   Welcome, {user?.name}
                 </p>
               </div>
             </div>
 
             {/* Notifications and Actions */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3">
               {/* Notifications */}
               <div className="relative">
-                <button className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200">
-                  <BellIcon className="w-6 h-6 text-neutral-600 dark:text-neutral-400" />
+                <button className="p-1.5 sm:p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200">
+                  <BellIcon className="w-5 h-5 sm:w-6 sm:h-6 text-neutral-600 dark:text-neutral-400" />
                   {notifications.filter(n => !n.read).length > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-4 h-4 sm:w-5 sm:h-5 bg-primary-500 text-white text-[10px] sm:text-xs rounded-full flex items-center justify-center">
                       {notifications.filter(n => !n.read).length}
                     </span>
                   )}
@@ -245,20 +245,20 @@ const UserDashboard: React.FC = () => {
               <LanguageToggle />
               <Link
                 to="/events-announcements"
-                className="btn-outline text-sm"
+                className="btn-outline text-xs sm:text-sm hidden md:inline-flex"
               >
                 Events & Announcements
               </Link>
               <Link
                 to="/"
-                className="btn-outline text-sm"
+                className="btn-outline text-xs sm:text-sm px-2 sm:px-4"
               >
-                <ArrowLeftIcon className="w-4 h-4 mr-2" />
-                Back to Home
+                <ArrowLeftIcon className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Back to Home</span>
               </Link>
               <button
                 onClick={logout}
-                className="btn-primary text-sm"
+                className="btn-primary text-xs sm:text-sm px-2 sm:px-4"
               >
                 Logout
               </button>
@@ -268,26 +268,26 @@ const UserDashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Welcome Section */}
-          <motion.div variants={itemVariants} className="mb-8">
-            <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+          <motion.div variants={itemVariants} className="mb-6 sm:mb-8">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-1 sm:mb-2">
               Welcome back, {user?.name}!
             </h1>
-            <p className="text-neutral-600 dark:text-neutral-400">
+            <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400">
               Manage your library account, track your books, and discover new reads.
             </p>
           </motion.div>
 
           {/* Navigation Tabs */}
-          <motion.div variants={itemVariants} className="mb-8">
+          <motion.div variants={itemVariants} className="mb-6 sm:mb-8">
             <div className="border-b border-neutral-200 dark:border-neutral-700">
-              <nav className="-mb-px flex space-x-8 overflow-x-auto">
+              <nav className="-mb-px flex space-x-4 sm:space-x-6 md:space-x-8 overflow-x-auto scrollbar-hide">
                 {[
                   { id: 'overview', label: 'Overview', icon: BookOpenIcon },
                   { id: 'borrowed', label: 'Borrowed Books', icon: ClockIcon },
@@ -300,14 +300,15 @@ const UserDashboard: React.FC = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
+                    className={`flex items-center py-3 sm:py-4 px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap transition-colors duration-200 ${
                       activeTab === tab.id
                         ? 'border-primary-500 text-primary-600 dark:text-primary-400'
                         : 'border-transparent text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-600'
                     }`}
                   >
-                    <tab.icon className="w-5 h-5 mr-2" />
-                    {tab.label}
+                    <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
                   </button>
                 ))}
               </nav>

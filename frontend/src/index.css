@@ -27,6 +27,16 @@
     background-color: rgb(107 114 128);
   }
   
+  /* Hide scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
   /* Dark mode scrollbar */
   .dark .scrollbar-thin {
     scrollbar-color: rgb(75 85 99) transparent;
@@ -125,8 +135,8 @@ body {
     @apply bg-primary-100 dark:bg-primary-900/50 text-primary-900 dark:text-primary-100;
   }
   
-  /* Smooth transitions for theme switching */
-  * {
+  /* Smooth transitions for theme switching - but not for all properties to improve performance */
+  .theme-transition {
     @apply transition-colors duration-300;
   }
   
@@ -202,6 +212,29 @@ body {
   .text-responsive-3xl {
     @apply text-3xl sm:text-4xl;
   }
+  
+  /* Mobile-first responsive padding */
+  .p-responsive {
+    @apply p-3 sm:p-4 md:p-6 lg:p-8;
+  }
+  
+  .px-responsive {
+    @apply px-3 sm:px-4 md:px-6 lg:px-8;
+  }
+  
+  .py-responsive {
+    @apply py-3 sm:py-4 md:py-6 lg:py-8;
+  }
+  
+  /* Responsive gaps */
+  .gap-responsive {
+    @apply gap-3 sm:gap-4 md:gap-6;
+  }
+  
+  /* Touch-friendly tap targets for mobile */
+  .tap-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
 }
 
 /* Print styles */
@@ -212,5 +245,33 @@ body {
   
   .print-only {
     display: block !important;
+  }
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  /* Prevent text from being too small on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Optimize touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Optimize for tablet viewing */
+  .container {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }

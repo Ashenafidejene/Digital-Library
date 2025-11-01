@@ -70,16 +70,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center min-w-0">
             <div className="flex-shrink-0 flex items-center">
-              <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-                <BookOpenIcon className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500 rounded-lg flex items-center justify-center">
+                <BookOpenIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div className="ml-3 hidden sm:block">
-                <h1 className="text-xl font-bold text-neutral-900 dark:text-neutral-100">
+              <div className="ml-2 sm:ml-3 hidden xs:block">
+                <h1 className="text-sm sm:text-xl font-bold text-neutral-900 dark:text-neutral-100 truncate">
                   {t('header.libraryName')}
                 </h1>
               </div>
@@ -116,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           </div>
 
           {/* Right side buttons */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1 sm:space-x-3">
             {/* Theme Toggle */}
             <ThemeToggle />
 
@@ -211,16 +211,16 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="lg:hidden pb-3">
+        <div className="lg:hidden pb-2 sm:pb-3">
           <form onSubmit={handleSearch} className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <MagnifyingGlassIcon className="h-5 w-5 text-neutral-400" />
+            <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
+              <MagnifyingGlassIcon className="h-4 w-4 sm:h-5 sm:w-5 text-neutral-400" />
             </div>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200"
+              className="block w-full pl-8 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 text-sm border border-neutral-300 dark:border-neutral-600 rounded-lg bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200"
               placeholder={t('header.searchPlaceholder')}
             />
           </form>

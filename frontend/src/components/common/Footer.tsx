@@ -69,47 +69,47 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="bg-neutral-900 dark:bg-neutral-950 text-neutral-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 sm:py-12">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
         >
           {/* Library Info */}
-          <motion.div variants={itemVariants} className="lg:col-span-1">
-            <div className="flex items-center mb-4">
-              <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-                <BookOpenIcon className="w-6 h-6 text-white" />
+          <motion.div variants={itemVariants} className="sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center mb-3 sm:mb-4">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500 rounded-lg flex items-center justify-center">
+                <BookOpenIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <div className="ml-3">
-                <h3 className="text-xl font-bold text-white">
+              <div className="ml-2 sm:ml-3">
+                <h3 className="text-base sm:text-xl font-bold text-white">
                   {t('header.libraryName')}
                 </h3>
               </div>
             </div>
-            <p className="text-neutral-400 mb-6 leading-relaxed">
+            <p className="text-sm sm:text-base text-neutral-400 mb-4 sm:mb-6 leading-relaxed">
               {language === 'am' ? 'ከ 1995 ዓም ጀምሮ የየካ ክፍለ ከተማ ህዝብን በእውቀም፣ በሀብቶች እና በትምህርታዊ ፕሮግራሞች እናገልግላለን።' : language === 'om' ? 'Bara 1995 jalqabee hawaasa Aanaa Magaalaa Yeekaa beekumsa, qabeenya fi sagantaalee barnootaan tajaajilaa jirra.' : 'Serving the Yeka Sub City community with knowledge, resources, and educational programs since 1995.'}
             </p>
             
             {/* Contact Info */}
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <MapPinIcon className="w-5 h-5 text-primary-400 mr-3 flex-shrink-0" />
-                <span className="text-sm">{t('footer.address')}</span>
+            <div className="space-y-2 sm:space-y-3">
+              <div className="flex items-start">
+                <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm">{t('footer.address')}</span>
               </div>
               <div className="flex items-center">
-                <PhoneIcon className="w-5 h-5 text-primary-400 mr-3 flex-shrink-0" />
-                <span className="text-sm">{t('footer.phone')}</span>
+                <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0" />
+                <span className="text-xs sm:text-sm">{t('footer.phone')}</span>
               </div>
               <div className="flex items-center">
-                <EnvelopeIcon className="w-5 h-5 text-primary-400 mr-3 flex-shrink-0" />
-                <span className="text-sm">{t('footer.email')}</span>
+                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0" />
+                <span className="text-xs sm:text-sm break-all">{t('footer.email')}</span>
               </div>
-              <div className="flex items-center">
-                <ClockIcon className="w-5 h-5 text-primary-400 mr-3 flex-shrink-0" />
-                <span className="text-sm">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
+              <div className="flex items-start">
+                <ClockIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
               </div>
             </div>
           </motion.div>
@@ -117,15 +117,15 @@ const Footer: React.FC = () => {
           {/* Footer Links */}
           {footerSections.map((section, index) => (
             <motion.div key={section.title} variants={itemVariants}>
-              <h4 className="text-lg font-semibold text-white mb-4">
+              <h4 className="text-sm sm:text-lg font-semibold text-white mb-3 sm:mb-4">
                 {section.title}
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-1.5 sm:space-y-2">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-neutral-400 hover:text-primary-400 transition-colors duration-200 text-sm"
+                      className="text-neutral-400 hover:text-primary-400 transition-colors duration-200 text-xs sm:text-sm block"
                     >
                       {link.name}
                     </Link>
@@ -142,22 +142,22 @@ const Footer: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="mt-12 pt-8 border-t border-neutral-800"
+          className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-neutral-800"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-sm text-neutral-400 mb-4 md:mb-0">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
+            <div className="text-xs sm:text-sm text-neutral-400 text-center sm:text-left">
               {t('footer.copyright')}
             </div>
-            <div className="flex space-x-6">
+            <div className="flex space-x-4 sm:space-x-6">
               <a
                 href="/privacy"
-                className="text-sm text-neutral-400 hover:text-primary-400 transition-colors duration-200"
+                className="text-xs sm:text-sm text-neutral-400 hover:text-primary-400 transition-colors duration-200"
               >
                 {t('footer.privacy')}
               </a>
               <a
                 href="/terms"
-                className="text-sm text-neutral-400 hover:text-primary-400 transition-colors duration-200"
+                className="text-xs sm:text-sm text-neutral-400 hover:text-primary-400 transition-colors duration-200"
               >
                 {t('footer.terms')}
               </a>

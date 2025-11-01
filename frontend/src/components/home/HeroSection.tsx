@@ -65,7 +65,7 @@ const HeroSection: React.FC = () => {
         }} />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+      <div className="relative max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-32">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -75,7 +75,7 @@ const HeroSection: React.FC = () => {
           {/* Left Content */}
           <div className="text-center lg:text-left">
             <motion.div variants={itemVariants}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-neutral-100 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-neutral-900 dark:text-neutral-100 leading-tight">
                 <span className="block">{t('home.hero.title').split(' ').slice(0, 3).join(' ')}</span>
                 <span className="block text-gradient">
                   {t('home.hero.title').split(' ').slice(3).join(' ')}
@@ -85,17 +85,17 @@ const HeroSection: React.FC = () => {
 
             <motion.p
               variants={itemVariants}
-              className="mt-6 text-lg sm:text-xl text-neutral-600 dark:text-neutral-300 leading-relaxed max-w-2xl mx-auto lg:mx-0"
+              className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg lg:text-xl text-neutral-600 dark:text-neutral-300 leading-relaxed max-w-2xl mx-auto lg:mx-0"
             >
               {t('home.hero.subtitle')}
             </motion.p>
 
             <motion.div
               variants={itemVariants}
-              className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+              className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start"
             >
               <button
-                className="btn-primary text-lg px-8 py-3 group"
+                className="btn-primary text-sm sm:text-base lg:text-lg px-6 sm:px-8 py-2.5 sm:py-3 group w-full sm:w-auto"
                 onClick={() => {
                   const searchSection = document.getElementById('search-section');
                   if (searchSection) {
@@ -104,10 +104,10 @@ const HeroSection: React.FC = () => {
                 }}
               >
                 {t('home.hero.cta')}
-                <ArrowRightIcon className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                <ArrowRightIcon className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform duration-200" />
               </button>
               <button
-                className="btn-outline text-lg px-8 py-3"
+                className="btn-outline text-sm sm:text-base lg:text-lg px-6 sm:px-8 py-2.5 sm:py-3 w-full sm:w-auto"
                 onClick={() => navigate('/login')}
               >
                 {t('home.hero.membershipCta')}
@@ -117,29 +117,29 @@ const HeroSection: React.FC = () => {
             {/* Stats */}
             <motion.div
               variants={itemVariants}
-              className="mt-12 grid grid-cols-3 gap-6 text-center lg:text-left"
+              className="mt-8 sm:mt-10 md:mt-12 grid grid-cols-3 gap-3 sm:gap-4 md:gap-6 text-center lg:text-left"
             >
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">
                   {stats ? `${(stats.totalBooks / 1000).toFixed(1)}K+` : '...'}
                 </div>
-                <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
                   {t('home.stats.booksAvailable')}
                 </div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">
                   {stats ? `${(stats.totalMembers / 1000).toFixed(1)}K+` : '...'}
                 </div>
-                <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
                   {t('home.stats.activeMembers')}
                 </div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-primary-600 dark:text-primary-400">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-primary-600 dark:text-primary-400">
                   {stats ? `${stats.totalCategories}+` : '...'}
                 </div>
-                <div className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                <div className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mt-0.5 sm:mt-1">
                   {t('home.stats.categories')}
                 </div>
               </div>
@@ -147,13 +147,13 @@ const HeroSection: React.FC = () => {
           </div>
 
           {/* Right Content - Illustration */}
-          <div className="relative">
+          <div className="relative mt-8 lg:mt-0">
             <motion.div
               variants={itemVariants}
               className="relative z-10"
             >
               {/* Main Illustration Container */}
-              <div className="relative w-full max-w-lg mx-auto">
+              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 {/* Background Circle */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-full transform rotate-6"></div>
                 
@@ -161,47 +161,47 @@ const HeroSection: React.FC = () => {
                 <motion.div
                   variants={floatingVariants}
                   animate="animate"
-                  className="absolute top-4 right-4 w-16 h-16 bg-white dark:bg-neutral-800 rounded-xl shadow-lg flex items-center justify-center"
+                  className="absolute top-2 sm:top-4 right-2 sm:right-4 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
                 >
-                  <BookOpenIcon className="w-8 h-8 text-primary-500" />
+                  <BookOpenIcon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary-500" />
                 </motion.div>
 
                 <motion.div
                   variants={floatingVariants}
                   animate="animate"
                   style={{ animationDelay: '1s' }}
-                  className="absolute bottom-8 left-4 w-14 h-14 bg-white dark:bg-neutral-800 rounded-xl shadow-lg flex items-center justify-center"
+                  className="absolute bottom-4 sm:bottom-8 left-2 sm:left-4 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
                 >
-                  <UsersIcon className="w-7 h-7 text-success-500" />
+                  <UsersIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-success-500" />
                 </motion.div>
 
                 <motion.div
                   variants={floatingVariants}
                   animate="animate"
                   style={{ animationDelay: '2s' }}
-                  className="absolute top-1/2 left-0 w-12 h-12 bg-white dark:bg-neutral-800 rounded-xl shadow-lg flex items-center justify-center"
+                  className="absolute top-1/2 left-0 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white dark:bg-neutral-800 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
                 >
-                  <GlobeAltIcon className="w-6 h-6 text-warning-500" />
+                  <GlobeAltIcon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-warning-500" />
                 </motion.div>
 
                 {/* Central Image Placeholder */}
-                <div className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl p-8 mx-8">
-                  <div className="aspect-square bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl flex items-center justify-center">
+                <div className="relative bg-white dark:bg-neutral-800 rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mx-4 sm:mx-6 md:mx-8">
+                  <div className="aspect-square bg-gradient-to-br from-primary-100 to-primary-200 dark:from-primary-900/30 dark:to-primary-800/30 rounded-lg sm:rounded-xl flex items-center justify-center">
                     <div className="text-center">
-                      <BookOpenIcon className="w-20 h-20 text-primary-500 mx-auto mb-4" />
-                      <div className="space-y-2">
-                        <div className="h-3 bg-primary-200 dark:bg-primary-700 rounded w-3/4 mx-auto"></div>
-                        <div className="h-3 bg-primary-200 dark:bg-primary-700 rounded w-1/2 mx-auto"></div>
-                        <div className="h-3 bg-primary-200 dark:bg-primary-700 rounded w-2/3 mx-auto"></div>
+                      <BookOpenIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 text-primary-500 mx-auto mb-2 sm:mb-3 md:mb-4" />
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <div className="h-2 sm:h-2.5 md:h-3 bg-primary-200 dark:bg-primary-700 rounded w-3/4 mx-auto"></div>
+                        <div className="h-2 sm:h-2.5 md:h-3 bg-primary-200 dark:bg-primary-700 rounded w-1/2 mx-auto"></div>
+                        <div className="h-2 sm:h-2.5 md:h-3 bg-primary-200 dark:bg-primary-700 rounded w-2/3 mx-auto"></div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Decorative Elements */}
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-primary-500 rounded-full opacity-20"></div>
-                <div className="absolute -bottom-2 -right-2 w-6 h-6 bg-success-500 rounded-full opacity-30"></div>
-                <div className="absolute top-1/4 -right-6 w-4 h-4 bg-warning-500 rounded-full opacity-25"></div>
+                <div className="absolute -top-2 sm:-top-4 -left-2 sm:-left-4 w-6 h-6 sm:w-8 sm:h-8 bg-primary-500 rounded-full opacity-20"></div>
+                <div className="absolute -bottom-1 sm:-bottom-2 -right-1 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-success-500 rounded-full opacity-30"></div>
+                <div className="absolute top-1/4 -right-3 sm:-right-6 w-3 h-3 sm:w-4 sm:h-4 bg-warning-500 rounded-full opacity-25"></div>
               </div>
             </motion.div>
           </div>

@@ -180,18 +180,18 @@ const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       {/* Sidebar Navigation */}
        {/* <DashboardNavigation activeTab={activeTab} setActiveTab={setActiveTab} />  */}
 
       {/* Main Content */}
-      <div className="flex-1 p-6">
+      <div className="w-full p-3 sm:p-4 md:p-6">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-1 sm:mb-2">
             Admin Dashboard
           </h1>
-          <p className="text-neutral-600 dark:text-neutral-400">
+          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400">
             Welcome back, {user?.name || 'Admin'}
           </p>
         </div>
@@ -207,14 +207,14 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'books' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
                 Manage Books
               </h2>
               <button
                 onClick={handleShowAddBookModal}
-                className="btn-primary flex items-center space-x-2"
+                className="btn-primary flex items-center justify-center space-x-2 text-sm sm:text-base"
               >
                 <span>Add New Book</span>
               </button>
@@ -228,12 +228,12 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'users' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
                 Manage Users
               </h2>
-              <button className="btn-primary flex items-center space-x-2">
+              <button className="btn-primary flex items-center justify-center space-x-2 text-sm sm:text-base">
                 <span>Add New User</span>
               </button>
             </div>
@@ -259,12 +259,12 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'events' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
                 Events Management
               </h2>
-              <button className="btn-primary flex items-center space-x-2">
+              <button className="btn-primary flex items-center justify-center space-x-2 text-sm sm:text-base">
                 <span>Create New Event</span>
               </button>
             </div>
@@ -277,35 +277,35 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'settings' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
+          <div className="space-y-4 sm:space-y-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-neutral-100">
               System Settings
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               {/* Library Settings */}
               <div className="card">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-3 sm:mb-4">
                   Library Settings
                 </h3>
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                       Library Name
                     </label>
                     <input
                       type="text"
                       defaultValue="Yeka Sub-City Library"
-                      className="input-field"
+                      className="input-field text-sm sm:text-base"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                       Default Loan Period (days)
                     </label>
                     <input
                       type="number"
                       defaultValue="14"
-                      className="input-field"
+                      className="input-field text-sm sm:text-base"
                     />
                   </div>
                 </div>
@@ -313,7 +313,7 @@ const AdminDashboard: React.FC = () => {
 
               {/* User Profile Settings */}
               <div className="card">
-                <h3 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-3 sm:mb-4">
                   Admin Profile
                 </h3>
                 <ProfileTab

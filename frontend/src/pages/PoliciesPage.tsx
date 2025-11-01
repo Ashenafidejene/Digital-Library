@@ -44,14 +44,14 @@ const PoliciesPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-900">
       <Header />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-4xl font-bold text-neutral-900 dark:text-neutral-100 mb-12">{data.title}</h1>
+      <main className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-12">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 sm:mb-12">{data.title}</h1>
         
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {data.policies.map((policy, index) => (
             <div key={index} className="card">
-              <h2 className="text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3">{policy.title}</h2>
-              <p className="text-lg text-neutral-700 dark:text-neutral-300">{policy.text}</p>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-2 sm:mb-3">{policy.title}</h2>
+              <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300">{policy.text}</p>
             </div>
           ))}
         </div>
