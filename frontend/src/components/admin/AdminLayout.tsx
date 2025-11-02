@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import {
   HomeIcon,
   BookOpenIcon,
@@ -29,6 +30,19 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, currentPage = 'dash
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { t } = useLanguage();
   const { theme } = useTheme();
+  const navigate = useNavigate();
+
+  const handleProfileClick = () => {
+    navigate('/admin/profile');
+  };
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      navigate('/login');
+    }
+  };
 
   // Sidebar navigation - only dashboard
   const sidebarNavigation = [
@@ -261,13 +275,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, currentPage = 'dash
 
               {/* Profile dropdown */}
               <div className="relative hidden sm:block">
-                <button className="flex items-center p-1.5 sm:p-2 rounded-full text-neutral-400 hover:text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200">
+                <button 
+                  onClick={handleProfileClick}
+                  className="flex items-center p-1.5 sm:p-2 rounded-full text-neutral-400 hover:text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200"
+                  title="View Profile"
+                >
                   <UserCircleIcon className="h-6 w-6 sm:h-8 sm:w-8" />
                 </button>
               </div>
 
               {/* Logout */}
-              <button className="p-1.5 sm:p-2 rounded-full text-neutral-400 hover:text-primary-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200">
+              <button 
+                onClick={handleLogout}
+                className="p-1.5 sm:p-2 rounded-full text-neutral-400 hover:text-primary-500 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200"
+                title="Logout"
+              >
                 <ArrowRightOnRectangleIcon className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
             </div>
