@@ -918,4 +918,8 @@ router.put(
   adminController.toggleAnnouncementStatus
 );
 
+// Settings Routes
+router.get('/settings', adminController.getSettings);
+router.put('/settings', adminController.updateSettings);
+
 export default router;
