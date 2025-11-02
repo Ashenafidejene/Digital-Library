@@ -4,6 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { EventRepository } from '../repositories/EventRepository';
 import { AnnouncementRepository } from '../repositories/AnnouncementRepository';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { Settings } from '../entities/Settings';
 
 const adminService = new AdminService();
 const eventRepository = new EventRepository();
@@ -182,5 +183,25 @@ export class AdminController {
     } else {
       res.status(404).json({ success: false, message: 'Announcement not found' });
     }
+  });
+
+  // Settings Management
+  getSettings = asyncHandler(async (req: Request, res: Response) => {
+    let settings = await Settings.findOne();
+    if (!settings) {
+      settings = await Settings.create({});
+    }
+    res.status(200).json({ success: true, data: settings });
+  });
+
+  updateSettings = asyncHandler(async (req: Request, res: Response) => {
+    let settings = await Settings.findOne();
+    if (!settings) {
+      settings = await Settings.create(req.body);
+    } else {
+      Object.assign(settings, req.body);
+      await settings.save();
+    }
+    res.status(200).json({ success: true, data: settings, message: 'Settings updated successfully' });
   });
 }
