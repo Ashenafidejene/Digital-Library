@@ -25,28 +25,32 @@ const BooksTab: React.FC<BooksTabProps> = ({ favoriteBookIds, toggleFavorite }) 
       setLoading(true);
       const response = await bookService.getBooks({
         page,
-        limit: 50,
+        limit: 10,
         search: searchTerm,
         category,
       });
       
-      console.log('[BooksTab] API Response:', response);
-      const responseData = response.data as any;
-      const booksData = responseData.books || responseData.data || responseData;
-      const normalizedBooks = (booksData || []).map((book: Book) => ({
-        ...book,
-        id: book.id || book._id,
-      })).filter((book: Book) => book.id);
+      console.log('[BooksTab] Full API Response:', JSON.stringify(response, null, 2));
       
-      console.log('[BooksTab] Normalized Books:', normalizedBooks);
+      // Handle response structure: response.data contains the books array
+      const booksData = Array.isArray(response.data) ? response.data : [];
+      const normalizedBooks = booksData
+        .filter((book: any) => book.id || book._id)
+        .map((book: any) => ({
+          ...book,
+          id: book.id || book._id,
+        })) as Book[];
+      
+      console.log('[BooksTab] Books count:', normalizedBooks.length);
+      console.log('[BooksTab] Pagination data:', response.pagination);
+      console.log('[BooksTab] Total pages:', response.pagination?.totalPages);
+      
       setBooks(normalizedBooks);
-      
-      const pagination = responseData.pagination;
-      setTotalPages(pagination?.totalPages || 1);
+      setTotalPages(response.pagination?.totalPages || 1);
       setError(null);
     } catch (err) {
       setError('Failed to fetch books. Please try again later.');
-      console.error(err);
+      console.error('[BooksTab] Error:', err);
     } finally {
       setLoading(false);
     }
@@ -169,20 +173,51 @@ const BooksTab: React.FC<BooksTabProps> = ({ favoriteBookIds, toggleFavorite }) 
 
       {loading && <div className="text-center mt-6">Loading books...</div>}
 
-      {!loading && books.length > 0 && (
-        <div className="flex justify-center items-center space-x-4 mt-6">
+      {!loading && books.length > 0 && totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-6">
           <button
-            onClick={() => setPage(p => Math.max(p - 1, 1))}
+            onClick={() => setPage(Math.max(page - 1, 1))}
             disabled={page === 1}
-            className="btn-secondary"
+            className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
-          <span>Page {page} of {totalPages}</span>
+          
+          {page > 1 && (
+            <button
+              onClick={() => setPage(page - 1)}
+              className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700"
+            >
+              {page - 1}
+            </button>
+          )}
+          
+          <button className="px-3 py-2 text-sm font-medium bg-primary-600 text-white rounded-md">
+            {page}
+          </button>
+          
+          {page < totalPages && (
+            <button
+              onClick={() => setPage(page + 1)}
+              className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700"
+            >
+              {page + 1}
+            </button>
+          )}
+          
+          {page + 1 < totalPages && (
+            <button
+              onClick={() => setPage(page + 2)}
+              className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700"
+            >
+              {page + 2}
+            </button>
+          )}
+          
           <button
-            onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+            onClick={() => setPage(Math.min(page + 1, totalPages))}
             disabled={page === totalPages}
-            className="btn-secondary"
+            className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>
