@@ -96,7 +96,7 @@ export class BookRepository {
     ]);
 
     const pagination = PaginationUtil.calculatePagination(totalBooks, page, limit);
-
+    
     return {
       books,
       pagination,
@@ -207,18 +207,51 @@ export class BookRepository {
   }
 
   async getBookStats() {
-    const [totalBooks, availableBooks, bookedBooks, maintenanceBooks] = await Promise.all([
+    const [totalBooks, availableBooks, bookedBooks, maintenanceBooks, copyStats, allBooks] = await Promise.all([
       Book.countDocuments({}),
       Book.countDocuments({ status: BookStatus.AVAILABLE }),
       Book.countDocuments({ status: BookStatus.BOOKED }),
       Book.countDocuments({ status: BookStatus.MAINTENANCE }),
+      Book.aggregate([
+        {
+          $match: {
+            'availability.totalCopies': { $type: 'number', $gte: 0, $lte: 1000 },
+            'availability.availableCopies': { $type: 'number', $gte: 0, $lte: 1000 }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalCopies: { $sum: '$availability.totalCopies' },
+            availableCopies: { $sum: '$availability.availableCopies' },
+          }
+        }
+      ]),
+      Book.find({}).select('title availability').limit(10)
     ]);
+
+    const copies = copyStats[0] || { totalCopies: 0, availableCopies: 0 };
+
+    console.log('📊 Book Stats Debug:');
+    console.log('Total Books:', totalBooks);
+    console.log('All Sample Books:', allBooks.map(b => ({
+      title: b.title,
+      totalCopies: b.availability?.totalCopies,
+      totalCopiesType: typeof b.availability?.totalCopies,
+      availableCopies: b.availability?.availableCopies,
+      availableCopiesType: typeof b.availability?.availableCopies
+    })));
+    console.log('Aggregated Total Copies:', copies.totalCopies);
+    console.log('Aggregated Available Copies:', copies.availableCopies);
 
     return {
       totalBooks,
       availableBooks,
       bookedBooks,
       maintenanceBooks,
+      totalCopies: copies.totalCopies,
+      availableCopies: copies.availableCopies,
+      borrowedCopies: copies.totalCopies - copies.availableCopies,
     };
   }
 
