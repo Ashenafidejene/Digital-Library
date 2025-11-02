@@ -80,11 +80,8 @@ const UserDashboard: React.FC = () => {
         setLoading(false);
       }
     };
-
     loadUserData();
-
-    const intervalId = setInterval(loadUserData, 30000); // Poll every 30 seconds
-
+    const intervalId = setInterval(loadUserData, 180000000); // Poll every 30 minute
     return () => clearInterval(intervalId);
   }, []);
 
