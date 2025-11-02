@@ -141,9 +141,9 @@ export class BookingService {
   }
 
   async getUserBookings(userId: string, query: BookingQuery) {
-    console.log(`Fetching bookings for userId: ${userId}`);
-    const bookings = await this.bookingRepository.findByUserId(userId, { ...query, status: BookingStatus.APPROVED });
-    console.log(`Found bookings for userId ${userId}:`, bookings);
+    //console.log(`Fetching bookings for userId: ${userId}`);
+    const bookings = await this.bookingRepository.findByUserId(userId, { ...query, status: query.status });
+    //console.log(`Found bookings for userId ${userId}:`, bookings);
     return bookings;
   }
 
