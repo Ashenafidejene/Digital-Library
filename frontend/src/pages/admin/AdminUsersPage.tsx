@@ -77,11 +77,12 @@ const AdminUsersPage: React.FC = () => {
     const usersData = Array.isArray(usersResponse.data) ? usersResponse.data : (usersResponse.data?.users || usersResponse.data?.data || []);
 
     // ✅ 2. Fetch borrowing records through the service (optional but recommended)
-    let borrowingRecords: RawBorrowingRecord[] = [];
+    let borrowingRecords: any[] = [];
     try {
       const borrowingResponse = await userService.getBorrowingRecords();
-      if (borrowingResponse.success) {
-        borrowingRecords = borrowingResponse.data.records || [];
+      console.log("this data borrowing ", borrowingResponse);
+      if (borrowingResponse.success && Array.isArray(borrowingResponse.data)) {
+        borrowingRecords = borrowingResponse.data;
       }
     } catch (err) {
       console.warn('Could not fetch borrowing records:', err);
@@ -100,8 +101,8 @@ const AdminUsersPage: React.FC = () => {
         .map((record) => ({
           id: record.id,
           bookId: record.bookId,
-          bookTitle: record.bookTitle,
-          bookAuthor: record.bookAuthor,
+          bookTitle: record.book?.title || 'Unknown',
+          bookAuthor: record.book?.author || 'Unknown',
           borrowDate: record.borrowDate || '',
           dueDate: record.dueDate || '',
           daysLeft: record.dueDate ? calculateDaysLeft(record.dueDate) : 0,
@@ -118,8 +119,8 @@ const AdminUsersPage: React.FC = () => {
         .map((record) => ({
           id: record.id,
           bookId: record.bookId,
-          bookTitle: record.bookTitle,
-          bookAuthor: record.bookAuthor,
+          bookTitle: record.book?.title || 'Unknown',
+          bookAuthor: record.book?.author || 'Unknown',
           requestDate: record.requestDate,
           status: record.status as 'pending' | 'approved' | 'rejected',
           priority: record.priority || 1,
@@ -132,7 +133,7 @@ const AdminUsersPage: React.FC = () => {
       const clearanceStatus: "blocked" | "pending" | "clear" =
         overdueBooks > 0
           ? "blocked"
-          : pendingRequests.length > 0
+          : currentBorrowings.length > 0 || pendingRequests.length > 0
           ? "pending"
           : "clear";
 
@@ -198,16 +199,25 @@ const AdminUsersPage: React.FC = () => {
   /**
    * Add new admin to the system
    */
-  const handleAddAdmin = async (adminData: { name: string; email: string; phone?: string }) => {
+  const handleAddAdmin = async (adminData: { name: string; email: string; phone?: string; }) => {
     try {
-      const response = await userService.addAdmin(adminData);
+      // Temporarily generate username and password until backend is updated
+      const submissionData = {
+        ...adminData,
+        username: adminData.email.split('@')[0] + Math.random().toString(36).substring(2, 7),
+        password: Math.random().toString(36).slice(-8),
+      };
+
+      const response = await userService.addAdmin(submissionData);
       if (response.success) {
         setUsers((prev) => [response.data, ...prev]);
         setIsAddModalOpen(false);
         fetchUsers();
+        alert('Admin created successfully!');
       }
     } catch (error) {
       console.error("Failed to create admin:", error);
+      alert('Failed to create admin. Please try again.');
     }
   };
 
@@ -834,12 +844,12 @@ const EditUserModal: React.FC<{
   const AddAdminModal: React.FC<{
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (adminData: { name: string; email: string; phone?: string }) => void;
+    onSubmit: (adminData: { name: string; email: string; phone?: string; }) => void;
   }> = ({ isOpen, onClose, onSubmit }) => {
     const [formData, setFormData] = useState({
       name: '',
       email: '',
-      phone: ''
+      phone: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -853,6 +863,8 @@ const EditUserModal: React.FC<{
         return;
       }
 
+
+
       // Basic email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
@@ -865,7 +877,7 @@ const EditUserModal: React.FC<{
         await onSubmit({
           name: formData.name.trim(),
           email: formData.email.trim(),
-          phone: formData.phone.trim() || undefined
+          phone: formData.phone.trim() || undefined,
         });
 
         // Reset form
@@ -933,7 +945,6 @@ const EditUserModal: React.FC<{
                 disabled={isSubmitting}
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
                 Phone Number
@@ -963,7 +974,6 @@ const EditUserModal: React.FC<{
                 </div>
               </div>
             </div>
-
             <div className="flex justify-end space-x-3 mt-6">
               <button
                 type="button"
