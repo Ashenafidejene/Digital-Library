@@ -26,6 +26,9 @@ const AdminAnnouncementsPage: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
   const { t } = useLanguage();
   const { user } = useAuth();
 
@@ -85,6 +88,46 @@ const AdminAnnouncementsPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to create announcement:', error);
       alert(`Failed to create announcement: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  /**
+   * View announcement details
+   */
+  const handleViewAnnouncement = (announcement: Announcement) => {
+    setSelectedAnnouncement(announcement);
+    setIsViewModalOpen(true);
+  };
+
+  /**
+   * Edit announcement
+   */
+  const handleEditAnnouncement = (announcement: Announcement) => {
+    setSelectedAnnouncement(announcement);
+    setIsEditModalOpen(true);
+  };
+
+  /**
+   * Update announcement
+   */
+  const handleUpdateAnnouncement = async (id: string, data: Omit<Partial<Announcement>, 'image'> & { image?: File }) => {
+    try {
+      const response = await AdminAnnouncementService.updateAnnouncement(id, data);
+      if (response.success) {
+        setAnnouncements(prevAnnouncements =>
+          prevAnnouncements.map(announcement =>
+            announcement.id === id ? response.data : announcement
+          )
+        );
+        setIsEditModalOpen(false);
+        setSelectedAnnouncement(null);
+        alert('Announcement updated successfully');
+      } else {
+        alert(`Failed to update announcement: ${response.message}`);
+      }
+    } catch (error) {
+      console.error('Failed to update announcement:', error);
+      alert(`Failed to update announcement: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -340,12 +383,14 @@ const AdminAnnouncementsPage: React.FC = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
+                        onClick={() => handleViewAnnouncement(announcement)}
                         className="text-neutral-600 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors duration-200"
                         title="View Details"
                       >
                         <EyeIcon className="w-5 h-5" />
                       </button>
                       <button
+                        onClick={() => handleEditAnnouncement(announcement)}
                         className="text-neutral-600 dark:text-neutral-400 hover:text-warning-600 dark:hover:text-warning-400 transition-colors duration-200"
                         title="Edit Announcement"
                       >
@@ -422,6 +467,27 @@ const AdminAnnouncementsPage: React.FC = () => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAddAnnouncement={handleAddAnnouncement}
+      />
+
+      {/* View Announcement Modal */}
+      <ViewAnnouncementModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedAnnouncement(null);
+        }}
+        announcement={selectedAnnouncement}
+      />
+
+      {/* Edit Announcement Modal */}
+      <EditAnnouncementModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedAnnouncement(null);
+        }}
+        onUpdateAnnouncement={handleUpdateAnnouncement}
+        announcement={selectedAnnouncement}
       />
     </div>
   );
