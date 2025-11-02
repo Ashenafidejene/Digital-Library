@@ -33,6 +33,8 @@ const AdminBooksPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalBooks, setTotalBooks] = useState(0);
+  const [totalAvailable, setTotalAvailable] = useState(0);
   const { t } = useLanguage();
 
   // Sorting function
@@ -78,13 +80,10 @@ const AdminBooksPage: React.FC = () => {
       setLoading(true);
       const response = await bookService.getAdminBooks({
         page,
-        limit: 500, // A sufficiently large number to fetch all books
+        limit: 10,
         search: searchQuery,
         category: selectedCategory,
       });
-      console.log('Fetched books data:', response.data);
-
-      console.log('📚 Books API Response:', response);
 
       const responseData = response.data as any;
       const booksData = responseData.books || responseData.data || responseData;
@@ -93,25 +92,18 @@ const AdminBooksPage: React.FC = () => {
         id: book.id || book._id,
       })).filter((book: Book) => book.id);
 
-      console.log('📚 Extracted books data:', booksData);
-      console.log('📚 First book sample:', booksData[0]);
-      console.log('📚 First book ID:', booksData[0]?.id, 'Type:', typeof booksData[0]?.id);
-
-      // Apply sorting to the fetched books
       const sortedBooks = sortBooks(normalizedBooks);
-      console.log('📚 Sorted books:', sortedBooks);
-      console.log('📚 First sorted book ID:', sortedBooks[0]?.id, 'Type:', typeof sortedBooks[0]?.id);
-      console.log('📚 All book IDs:', sortedBooks.map((b:Book) => ({ id: b.id, title: b.title })));
       setBooks(sortedBooks);
       setTotalPages(responseData.pagination?.totalPages || 1);
+      setTotalBooks(responseData.pagination?.totalItems || 0);
+      setTotalAvailable(responseData.totalAvailable || 0);
     } catch (error) {
       console.error('Failed to fetch books:', error);
-      // Set empty array on error to prevent map errors
       setBooks([]);
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, selectedCategory, sortBooks]);
+  }, [page, searchQuery, selectedCategory, sortBooks]);
 
   useEffect(() => {
     fetchCategories();
@@ -128,6 +120,11 @@ const AdminBooksPage: React.FC = () => {
   useEffect(() => {
     setPage(1);
   }, [searchQuery, selectedCategory]);
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const fetchCategories = async () => {
     try {
@@ -536,20 +533,53 @@ const AdminBooksPage: React.FC = () => {
             )}
           </div>
         )}
-        {!loading && books.length > 0 && (
-          <div className="flex justify-center items-center space-x-4 mt-6">
+        {!loading && books.length > 0 && totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-6 px-6 py-4 border-t border-neutral-200 dark:border-neutral-700">
             <button
-              onClick={() => setPage(p => Math.max(p - 1, 1))}
+              onClick={() => handlePageChange(Math.max(page - 1, 1))}
               disabled={page === 1}
-              className="btn-secondary"
+              className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Previous
             </button>
-            <span>Page {page} of {totalPages}</span>
+            
+            {page > 1 && (
+              <button
+                onClick={() => handlePageChange(page - 1)}
+                className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700"
+              >
+                {page - 1}
+              </button>
+            )}
+            
             <button
-              onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+              className="px-3 py-2 text-sm font-medium bg-primary-600 text-white rounded-md"
+            >
+              {page}
+            </button>
+            
+            {page < totalPages && (
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700"
+              >
+                {page + 1}
+              </button>
+            )}
+            
+            {page + 1 < totalPages && (
+              <button
+                onClick={() => handlePageChange(page + 2)}
+                className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700"
+              >
+                {page + 2}
+              </button>
+            )}
+            
+            <button
+              onClick={() => handlePageChange(Math.min(page + 1, totalPages))}
               disabled={page === totalPages}
-              className="btn-secondary"
+              className="px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
             </button>
@@ -561,7 +591,7 @@ const AdminBooksPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="card">
           <div className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-            {books?.length || 0}
+            {totalBooks}
           </div>
           <div className="text-sm text-neutral-600 dark:text-neutral-400">
             Total Books
@@ -569,7 +599,7 @@ const AdminBooksPage: React.FC = () => {
         </div>
         <div className="card">
           <div className="text-2xl font-bold text-success-600 dark:text-success-400">
-            {books?.filter(book => book.status === 'available').length || 0}
+            {totalAvailable}
           </div>
           <div className="text-sm text-neutral-600 dark:text-neutral-400">
             Available
