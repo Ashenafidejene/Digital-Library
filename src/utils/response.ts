@@ -38,7 +38,7 @@ export class ResponseUtil {
     this.success(res, null, message, 200);
   }
 
-  static paginated<T>(res: Response, data: T, message = 'Success', pagination: any) {
+  static paginated<T>(res: Response, data: T, pagination: any, message = 'Success') {
     this.success(res, data, message, 200, pagination);
   }
 }

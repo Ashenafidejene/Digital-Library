@@ -3,6 +3,7 @@ import { AdminService } from '../services/AdminService';
 import { BookService } from '../services/BookService';
 import { UserService } from '../services/UserService';
 import { BookingService } from '../services/BookingService';
+import { ReportService } from '../services/ReportService';
 import { ResponseUtil } from '../utils/response';
 import { catchAsync } from '../middleware/errorHandler';
 import { UserRole, BookingStatus } from '../types';
@@ -13,12 +14,14 @@ export class DashboardController {
   private bookService: BookService;
   private userService: UserService;
   private bookingService: BookingService;
+  private reportService: ReportService;
 
   constructor() {
     this.adminService = new AdminService();
     this.bookService = new BookService();
     this.userService = new UserService();
     this.bookingService = new BookingService();
+    this.reportService = new ReportService();
   }
 
   // GET /api/v1/dashboard/overview
@@ -227,8 +230,7 @@ export class DashboardController {
       return next(new AppError('Unauthorized', 403));
     }
 
-    const reportData = await this.adminService.generateReport();
-    ResponseUtil.success(res, reportData, 'Report generated successfully');
+    await this.reportService.generateLibraryReport(res);
   });
 
   // GET /api/v1/dashboard/home-stats

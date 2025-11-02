@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
                 </h3>
               </div>
             </div>
-            <p className="text-sm sm:text-base text-neutral-400 mb-4 sm:mb-6 leading-relaxed">
+            <p className="text-sm sm:text-base text-neutral-400 mb-4 sm:mb-6 leading-relaxed break-words">
               {language === 'am' ? 'ከ 1995 ዓም ጀምሮ የየካ ክፍለ ከተማ ህዝብን በእውቀም፣ በሀብቶች እና በትምህርታዊ ፕሮግራሞች እናገልግላለን።' : language === 'om' ? 'Bara 1995 jalqabee hawaasa Aanaa Magaalaa Yeekaa beekumsa, qabeenya fi sagantaalee barnootaan tajaajilaa jirra.' : 'Serving the Yeka Sub City community with knowledge, resources, and educational programs since 1995.'}
             </p>
             
@@ -97,19 +97,19 @@ const Footer: React.FC = () => {
             <div className="space-y-2 sm:space-y-3">
               <div className="flex items-start">
                 <MapPinIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm">{t('footer.address')}</span>
+                <span className="text-xs sm:text-sm break-words">{t('footer.address')}</span>
               </div>
-              <div className="flex items-center">
-                <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0" />
-                <span className="text-xs sm:text-sm">{t('footer.phone')}</span>
+              <div className="flex items-start">
+                <PhoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                <span className="text-xs sm:text-sm break-words">{t('footer.phone')}</span>
               </div>
-              <div className="flex items-center">
-                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0" />
+              <div className="flex items-start">
+                <EnvelopeIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
                 <span className="text-xs sm:text-sm break-all">{t('footer.email')}</span>
               </div>
               <div className="flex items-start">
                 <ClockIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-400 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
-                <span className="text-xs sm:text-sm">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
+                <span className="text-xs sm:text-sm break-words">{language === 'am' ? 'ሰኞ-አርብ: 8ሰዓት-8ሰዓት, ቅዳሜ-እሁድ: 9ሰዓት-6ሰዓት' : language === 'om' ? 'Wiixata-Jimaata: 8:00-20:00, Sanbata-Dilbata: 9:00-18:00' : 'Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM'}</span>
               </div>
             </div>
           </motion.div>
@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
           {/* Footer Links */}
           {footerSections.map((section, index) => (
             <motion.div key={section.title} variants={itemVariants}>
-              <h4 className="text-sm sm:text-lg font-semibold text-white mb-3 sm:mb-4">
+              <h4 className="text-sm sm:text-lg font-semibold text-white mb-3 sm:mb-4 break-words">
                 {section.title}
               </h4>
               <ul className="space-y-1.5 sm:space-y-2">
@@ -125,7 +125,7 @@ const Footer: React.FC = () => {
                   <li key={link.name}>
                     <Link
                       to={link.href}
-                      className="text-neutral-400 hover:text-primary-400 transition-colors duration-200 text-xs sm:text-sm block"
+                      className="text-neutral-400 hover:text-primary-400 transition-colors duration-200 text-xs sm:text-sm block break-words"
                     >
                       {link.name}
                     </Link>

@@ -87,12 +87,12 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex space-x-4 lg:space-x-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className="text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200"
+                className="text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 px-2 lg:px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap"
               >
                 {item.name}
               </Link>
@@ -242,7 +242,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className="block px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-md transition-colors duration-200"
+                  className="block px-3 py-2 text-base font-medium text-neutral-700 dark:text-neutral-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-md transition-colors duration-200 break-words"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -250,7 +250,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch }) => {
               ))}
               
               {/* Mobile Auth Section */}
-              <div className="pt-4 pb-2 border-t border-neutral-200 dark:border-neutral-700 space-y-2">
+              <div className="pt-4 pb-2 border-t border-neutral-200 dark:border-neutral-700 space-y-2 mt-2">
                 {isAuthenticated ? (
                   <>
                     <Link

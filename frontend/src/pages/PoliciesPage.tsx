@@ -50,8 +50,8 @@ const PoliciesPage: React.FC = () => {
         <div className="space-y-6 sm:space-y-8">
           {data.policies.map((policy, index) => (
             <div key={index} className="card">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-2 sm:mb-3">{policy.title}</h2>
-              <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300">{policy.text}</p>
+              <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-2 sm:mb-3 break-words">{policy.title}</h2>
+              <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed break-words">{policy.text}</p>
             </div>
           ))}
         </div>

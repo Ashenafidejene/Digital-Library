@@ -32,7 +32,10 @@ export const getBorrowedBooks = async (token: string, searchQuery: string, selec
     headers: { Authorization: `Bearer ${token}` },
     params,
   });
-  return response.data.data.records || [];
+  //console.log(response.data.data.records);
+  console.log("this the data i am expect")
+  console.log(response);
+  return response.data.data.bookings || [];
 };
 
 export const approveRequest = async (recordId: string, token: string): Promise<any> => {

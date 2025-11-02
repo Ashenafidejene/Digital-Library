@@ -235,6 +235,22 @@ body {
   .tap-target {
     @apply min-h-[44px] min-w-[44px];
   }
+  
+  /* Text overflow handling for multi-language support */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .hyphens-auto {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+  
+  /* Prevent layout shift from long words */
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+  }
 }
 
 /* Print styles */

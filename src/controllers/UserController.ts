@@ -54,7 +54,7 @@ export class UserController {
   getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const query = req.query;
     const result = await this.userService.getAllUsers(query);
-
+    //console.log("you are right",result);
     ResponseUtil.paginated(
       res,
       result.users,

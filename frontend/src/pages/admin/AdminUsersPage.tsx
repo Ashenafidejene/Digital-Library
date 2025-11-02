@@ -74,7 +74,7 @@ const AdminUsersPage: React.FC = () => {
       throw new Error(usersResponse.message || 'Failed to fetch users');
     }
     console.log("this data user ",usersResponse);
-    const usersData = usersResponse.data.data || [];
+    const usersData = Array.isArray(usersResponse.data) ? usersResponse.data : (usersResponse.data?.users || usersResponse.data?.data || []);
 
     // ✅ 2. Fetch borrowing records through the service (optional but recommended)
     let borrowingRecords: RawBorrowingRecord[] = [];
@@ -88,14 +88,14 @@ const AdminUsersPage: React.FC = () => {
     }
 
     // ✅ 3. Enhance users with borrowing info
-    const enhancedUsers = usersData.map((user: User) => {
+    const enhancedUsers = usersData.map((user: any) => {
       const userBorrowings = borrowingRecords.filter(
-        (record) => record.userId === user.id
+        (record) => record.userId === user._id || record.userId === user.id
       );
 
       const currentBorrowings: BorrowedBook[] = userBorrowings
         .filter(
-          (record) => record.status === 'borrowed' || record.status === 'active'
+          (record) => record.status === 'borrowed' || record.status === 'active' || record.status === 'approved'
         )
         .map((record) => ({
           id: record.id,
@@ -129,7 +129,6 @@ const AdminUsersPage: React.FC = () => {
         (b) => b.status === 'overdue'
       ).length;
 
-      // Fix: Explicitly type clearanceStatus as the union type expected by User
       const clearanceStatus: "blocked" | "pending" | "clear" =
         overdueBooks > 0
           ? "blocked"
@@ -138,14 +137,23 @@ const AdminUsersPage: React.FC = () => {
           : "clear";
 
       return {
-        ...user,
+        id: user._id || user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phoneNumber || user.phone,
+        role: user.role as 'user' | 'admin',
+        status: user.status as 'active' | 'suspended' | 'pending',
+        membershipType: 'basic' as 'basic' | 'premium' | 'student',
+        joinDate: user.createdAt,
+        lastActive: user.lastLogin || user.updatedAt || user.createdAt,
         borrowedBooks: currentBorrowings.length,
+        totalBorrows: userBorrowings.length,
         overdueBooks,
         pendingBookings: pendingRequests.length,
-        clearanceStatus, // now correctly typed
+        clearanceStatus,
         currentBorrowings,
         pendingRequests,
-      };
+      } as User;
     });
 
     // ✅ 4. Update state
@@ -154,17 +162,17 @@ const AdminUsersPage: React.FC = () => {
 
     // ✅ 5. Compute stats
     const stats = {
-      totalActiveUsers: enhancedUsers.filter((u: User) => u.status === 'active').length,
+      totalActiveUsers: enhancedUsers.filter((u) => u.status === 'active').length,
       totalBorrowedBooks: enhancedUsers.reduce(
-        (sum: number, u: User) => sum + u.borrowedBooks,
+        (sum, u) => sum + u.borrowedBooks,
         0
       ),
       totalOverdueBooks: enhancedUsers.reduce(
-        (sum: number, u: User) => sum + (u.overdueBooks || 0),
+        (sum, u) => sum + (u.overdueBooks || 0),
         0
       ),
       totalPendingRequests: enhancedUsers.reduce(
-        (sum: number, u: User) => sum + (u.pendingBookings || 0),
+        (sum, u) => sum + (u.pendingBookings || 0),
         0
       ),
     };

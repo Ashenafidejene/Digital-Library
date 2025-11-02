@@ -74,7 +74,9 @@ export class AdminController {
 
   // Borrowing Management
   getBorrowingRecords = asyncHandler(async (req: Request, res: Response) => {
+   
     const data = await adminService.getBorrowingRecords(req.query);
+    console.log("you are right you are here",data);
     res.status(200).json({ success: true, data });
   });
 

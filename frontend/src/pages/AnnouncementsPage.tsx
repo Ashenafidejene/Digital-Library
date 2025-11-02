@@ -85,7 +85,7 @@ const AnnouncementsPage: React.FC = () => {
               <motion.div
                 key={announcement.id}
                 variants={itemVariants}
-                className="card-hover group cursor-pointer"
+                className="card-hover group cursor-pointer flex flex-col h-full"
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.2 }}
               >
@@ -100,14 +100,14 @@ const AnnouncementsPage: React.FC = () => {
                   </span>
                   <MegaphoneIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary-500" />
                 </div>
-                <h3 className="text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 line-clamp-2">
+                <h3 className="text-base sm:text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 line-clamp-2 break-words min-h-[3rem]">
                   {announcement.title}
                 </h3>
-                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mb-3 sm:mb-4 line-clamp-3 sm:line-clamp-4">
+                <p className="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mb-3 sm:mb-4 line-clamp-3 sm:line-clamp-4 leading-relaxed break-words flex-grow">
                   {announcement.content}
                 </p>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400">
-                  <span>{new Date(announcement.publishDate).toLocaleDateString()}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0 text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400 mt-auto">
+                  <span className="break-words">{new Date(announcement.publishDate).toLocaleDateString()}</span>
                   <span className="text-neutral-600 dark:text-neutral-400 truncate">by {announcement.authorName}</span>
                 </div>
               </motion.div>

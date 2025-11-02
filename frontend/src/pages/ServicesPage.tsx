@@ -53,12 +53,12 @@ const ServicesPage: React.FC = () => {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {data.services.map((service, index) => (
-            <div key={index} className="card-hover">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
+            <div key={index} className="card-hover flex flex-col h-full">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center mb-3 sm:mb-4 flex-shrink-0">
                 <service.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary-600 dark:text-primary-400" />
               </div>
-              <h3 className="text-base sm:text-lg md:text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2 sm:mb-3">{service.title}</h3>
-              <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400">{service.desc}</p>
+              <h3 className="text-base sm:text-lg md:text-xl font-semibold text-neutral-900 dark:text-neutral-100 mb-2 sm:mb-3 min-h-[3rem] sm:min-h-[3.5rem]">{service.title}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">{service.desc}</p>
             </div>
           ))}
         </div>

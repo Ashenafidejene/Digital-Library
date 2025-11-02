@@ -61,29 +61,29 @@ const AboutPage: React.FC = () => {
         
         <div className="space-y-6 sm:space-y-8">
           <section>
-            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4">{data.mission}</h2>
-            <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300">{data.missionText}</p>
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4 break-words">{data.mission}</h2>
+            <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed break-words">{data.missionText}</p>
           </section>
 
           <section>
-            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4">{data.vision}</h2>
-            <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300">{data.visionText}</p>
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4 break-words">{data.vision}</h2>
+            <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed break-words">{data.visionText}</p>
           </section>
 
           <section>
-            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4">{data.history}</h2>
-            <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300">{data.historyText}</p>
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4 break-words">{data.history}</h2>
+            <p className="text-sm sm:text-base md:text-lg text-neutral-700 dark:text-neutral-300 leading-relaxed break-words">{data.historyText}</p>
           </section>
 
           <section>
-            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4">{data.values}</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold text-primary-600 dark:text-primary-400 mb-3 sm:mb-4 break-words">{data.values}</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
               {[data.value1, data.value2, data.value3, data.value4].map((value, index) => (
-                <div key={index} className="card text-center">
+                <div key={index} className="card text-center flex flex-col items-center justify-center h-full">
                   <div className="text-3xl sm:text-4xl mb-2 sm:mb-4">
                     {['📚', '👥', '🎓', '💡'][index]}
                   </div>
-                  <h3 className="text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100">{value}</h3>
+                  <h3 className="text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100 break-words text-center">{value}</h3>
                 </div>
               ))}
             </div>

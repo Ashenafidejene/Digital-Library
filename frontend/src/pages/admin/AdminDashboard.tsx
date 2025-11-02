@@ -180,21 +180,7 @@ const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
-      {/* Sidebar Navigation */}
-       {/* <DashboardNavigation activeTab={activeTab} setActiveTab={setActiveTab} />  */}
-
-      {/* Main Content */}
-      <div className="w-full p-3 sm:p-4 md:p-6">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-1 sm:mb-2">
-            Admin Dashboard
-          </h1>
-          <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400">
-            Welcome back, {user?.name || 'Admin'}
-          </p>
-        </div>
+    <div>
 
         {/* Content */}
         {activeTab === 'overview' && (
@@ -326,15 +312,14 @@ const AdminDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Add Book Modal */}
-        {showAddBookModal && (
-          <SimpleAddBookModal
-            isOpen={showAddBookModal}
-            onClose={handleCloseAddBookModal}
-            onSubmit={handleAddBookSubmit}
-          />
-        )}
-      </div>
+      {/* Add Book Modal */}
+      {showAddBookModal && (
+        <SimpleAddBookModal
+          isOpen={showAddBookModal}
+          onClose={handleCloseAddBookModal}
+          onSubmit={handleAddBookSubmit}
+        />
+      )}
     </div>
   );
 };

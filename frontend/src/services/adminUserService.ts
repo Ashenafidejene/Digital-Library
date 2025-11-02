@@ -80,7 +80,8 @@ export interface PaginatedBorrowingResponse {
 
 // API response for paginated users
 export interface PaginatedUsersResponse {
-  data: User[];
+  users?: User[];
+  data?: User[];
   pagination: {
     currentPage: number;
     totalPages: number;
@@ -92,10 +93,7 @@ export interface PaginatedUsersResponse {
 }
 
 export const userService = {
-     /**
-   * Fetch users (with query params)
-   */
-async getUsers(
+  async getUsers(
     query: Record<string, string | number | undefined> = {}
   ): Promise<ApiResponse<PaginatedUsersResponse>> {
     const params = new URLSearchParams();
@@ -106,52 +104,34 @@ async getUsers(
       }
     });
 
-    return apiService.get<PaginatedUsersResponse>(`/admin/users?${params.toString()}`);
+    return apiService.get<PaginatedUsersResponse>(`/users?${params.toString()}`);
   },
-   /**
-   * Fetch borrowing records
-   */
-  async getBorrowingRecords(): Promise<ApiResponse<PaginatedBorrowingResponse>> {
-    return apiService.get<PaginatedBorrowingResponse>(`/admin/borrowing`);
-  },
-  /**
-   * Add new admin
-   */
-  async addAdmin(adminData: { name: string; email: string; phone?: string }): Promise<ApiResponse<User>> {
-    const adminUserData = {
-      ...adminData,
-      role: 'admin',
-      status: 'active',
-      membershipType: 'premium',
-      borrowedBooks: 0,
-      totalBorrows: 0,
-      overdueBooks: 0,
-      pendingBookings: 0,
-      clearanceStatus: 'clear',
-    };
 
-    return apiService.post<User>(`/admin/users`, adminUserData);
+  async getBorrowingRecords(): Promise<ApiResponse<PaginatedBorrowingResponse>> {
+    return apiService.get<PaginatedBorrowingResponse>(`/bookings`);
   },
-  /**
-   * Delete a user
-   */
+
+  async addAdmin(adminData: { name: string; email: string; phone?: string }): Promise<ApiResponse<User>> {
+    return apiService.post<User>(`/auth/register`, {
+      ...adminData,
+      password: 'Admin@123',
+      role: 'admin'
+    });
+  },
+
   async deleteUser(userId: string): Promise<ApiResponse<any>> {
-    return apiService.delete(`/admin/users/${userId}`);
+    return apiService.delete(`/users/${userId}`);
   },
-   /**
-   * Issue a book
-   */
+
   async issueBook(userId: string, bookId: string, dueDate: string): Promise<ApiResponse<any>> {
-    return apiService.post(`/admin/borrowing/issue`, {
-      userId,
+    return apiService.post(`/bookings`, {
       bookId,
+      userId,
       dueDate,
     });
   },
-  /**
-   * Return a book
-   */
+
   async returnBook(borrowingId: string): Promise<ApiResponse<any>> {
-    return apiService.post(`/admin/borrowing/return/${borrowingId}`);
+    return apiService.post(`/bookings/${borrowingId}/return`);
   },
 }
