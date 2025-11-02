@@ -64,8 +64,8 @@ export class BookController {
       ResponseUtil.paginated(
         res,
         result.books,
-        'Books retrieved successfully',
-        result.pagination
+        result.pagination,
+        'Books retrieved successfully'
       );
     } catch (error) {
       console.error('[User Book Controller] Error in getAllBooks:', error);
@@ -80,8 +80,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      'Available books retrieved successfully',
-      result.pagination
+      result.pagination,
+      'Available books retrieved successfully'
     );
   });
 
@@ -92,8 +92,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      'Popular books retrieved successfully',
-      result.pagination
+      result.pagination,
+      'Popular books retrieved successfully'
     );
   });
 
@@ -104,8 +104,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      'Recently added books retrieved successfully',
-      result.pagination
+      result.pagination,
+      'Recently added books retrieved successfully'
     );
   });
 
@@ -121,8 +121,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      'Book search completed successfully',
-      result.pagination
+      result.pagination,
+      'Book search completed successfully'
     );
   });
 
@@ -133,8 +133,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      `Books in category ${category} retrieved successfully`,
-      result.pagination
+      result.pagination,
+      `Books in category ${category} retrieved successfully`
     );
   });
 
@@ -150,8 +150,8 @@ export class BookController {
     ResponseUtil.paginated(
       res,
       result.books,
-      `Books with status ${status} retrieved successfully`,
-      result.pagination
+      result.pagination,
+      `Books with status ${status} retrieved successfully`
     );
   });
 
