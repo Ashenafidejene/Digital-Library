@@ -26,6 +26,7 @@ import AdminBorrowingPage from './pages/admin/AdminBorrowingPage';
 import AdminAnnouncementsPage from './pages/admin/AdminAnnouncementsPage';
 import AdminEventsPage from './pages/admin/AdminEventsPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
+import AdminProfilePage from './pages/admin/AdminProfilePage';
 
 // Layout Components
 import AdminLayout from './components/admin/AdminLayout';
@@ -139,6 +140,16 @@ function App() {
                     <ProtectedRoute requireAdmin>
                       <AdminLayout currentPage="settings">
                         <AdminSettingsPage />
+                      </AdminLayout>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/profile"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <AdminLayout currentPage="profile">
+                        <AdminProfilePage />
                       </AdminLayout>
                     </ProtectedRoute>
                   }
