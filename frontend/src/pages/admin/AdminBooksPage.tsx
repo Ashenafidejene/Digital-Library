@@ -34,6 +34,7 @@ const AdminBooksPage: React.FC = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalBooks, setTotalBooks] = useState(0);
+  const [totalCopies, setTotalCopies] = useState(0);
   const [totalAvailable, setTotalAvailable] = useState(0);
   const { t } = useLanguage();
 
@@ -78,14 +79,17 @@ const AdminBooksPage: React.FC = () => {
   const fetchBooks = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await bookService.getAdminBooks({
-        page,
-        limit: 10,
-        search: searchQuery,
-        category: selectedCategory,
-      });
+      const [booksResponse, statsResponse] = await Promise.all([
+        bookService.getAdminBooks({
+          page,
+          limit: 10,
+          search: searchQuery,
+          category: selectedCategory,
+        }),
+        bookService.getBookStats()
+      ]);
 
-      const responseData = response.data as any;
+      const responseData = booksResponse.data as any;
       const booksData = responseData.books || responseData.data || responseData;
       const normalizedBooks = (booksData || []).map((book: Book) => ({
         ...book,
@@ -96,7 +100,14 @@ const AdminBooksPage: React.FC = () => {
       setBooks(sortedBooks);
       setTotalPages(responseData.pagination?.totalPages || 1);
       setTotalBooks(responseData.pagination?.totalItems || 0);
-      setTotalAvailable(responseData.totalAvailable || 0);
+      
+      const stats = statsResponse.data as any;
+      console.log('📊 Stats Response:', stats);
+      console.log('📊 Total Copies from API:', stats.totalCopies);
+      console.log('📊 Available Copies from API:', stats.availableCopies);
+      console.log('📊 Total Books from API:', stats.totalBooks);
+      setTotalCopies(stats.totalCopies || 0);
+      setTotalAvailable(stats.availableCopies || 0);
     } catch (error) {
       console.error('Failed to fetch books:', error);
       setBooks([]);
@@ -598,27 +609,27 @@ const AdminBooksPage: React.FC = () => {
           </div>
         </div>
         <div className="card">
+          <div className="text-2xl font-bold text-primary-600 dark:text-primary-400">
+            {totalCopies}
+          </div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            Total Copies
+          </div>
+        </div>
+        <div className="card">
           <div className="text-2xl font-bold text-success-600 dark:text-success-400">
             {totalAvailable}
           </div>
           <div className="text-sm text-neutral-600 dark:text-neutral-400">
-            Available
+            Available Copies
           </div>
         </div>
         <div className="card">
           <div className="text-2xl font-bold text-warning-600 dark:text-warning-400">
-            {books?.filter(book => book.status === 'borrowed').length || 0}
+            {totalCopies - totalAvailable}
           </div>
           <div className="text-sm text-neutral-600 dark:text-neutral-400">
-            Borrowed
-          </div>
-        </div>
-        <div className="card">
-          <div className="text-2xl font-bold text-neutral-600 dark:text-neutral-400">
-            {categories.length}
-          </div>
-          <div className="text-sm text-neutral-600 dark:text-neutral-400">
-            Categories
+            Borrowed Copies
           </div>
         </div>
       </div>
