@@ -23,12 +23,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requireAdmin 
   }
 
   if (!isAuthenticated) {
-    // Redirect to login page with return url
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    // Redirect to unauthorized page
+    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
 
   if (requireAdmin && !isAdmin) {
-    // Redirect to unauthorized page or user dashboard
+    // Redirect to user dashboard if not admin
     return <Navigate to="/dashboard" replace />;
   }
 

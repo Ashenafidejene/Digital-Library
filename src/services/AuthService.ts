@@ -1,9 +1,11 @@
 import { UserRepository } from '../repositories/UserRepository';
 import { SocketService } from './SocketService';
+import { EmailService } from './EmailService';
 import { IUser } from '../entities/User';
 import { AppError, AuthTokens, UserRole } from '../types';
 import { JWTUtil } from '../utils/jwt';
 import { env } from '../config/env';
+import crypto from 'crypto';
 
 export interface RegisterData {
   name: string;
@@ -209,24 +211,38 @@ export class AuthService {
       return;
     }
 
-    // In a real application, you would:
-    // 1. Generate a password reset token
-    // 2. Save it to the database with expiration
-    // 3. Send email with reset link
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     
-    // For now, we'll just log it
-    console.log(`Password reset requested for: ${email}`);
+    // Save hashed token and expiration (1 hour)
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000);
+    await user.save();
+
+    // Send email
+    const emailService = new EmailService();
+    await emailService.sendPasswordResetEmail(email, resetToken, user.name);
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
-    // In a real application, you would:
-    // 1. Verify the reset token
-    // 2. Check if it's not expired
-    // 3. Find user by token
-    // 4. Update password
-    // 5. Clear the reset token
+    // Hash the token to compare with stored hash
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
     
-    throw new AppError('Password reset functionality not implemented', 501);
+    // Find user with valid reset token
+    const user = await this.userRepository.findByResetToken(hashedToken);
+    if (!user || !user.resetPasswordExpires || user.resetPasswordExpires < new Date()) {
+      throw new AppError('Invalid or expired reset token', 400);
+    }
+
+    // Update password
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    // Clear all refresh tokens to force re-login
+    await this.userRepository.clearRefreshTokens(user._id.toString());
   }
 
   async createDefaultAdmin(): Promise<void> {

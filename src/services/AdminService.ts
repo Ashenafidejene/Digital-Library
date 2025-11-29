@@ -289,6 +289,14 @@ export class AdminService {
     return this.userService.unblockUser(userId);
   }
 
+  async resetUserPassword(userId: string, newPassword: string): Promise<any> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+    return await this.userService.resetPassword(userId, newPassword);
+  }
+
   async createBook(bookData: any): Promise<any> {
     // Assuming the admin user's ID is available in the request object
     // For now, I'll use a placeholder ID.

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ReadingHistory } from '../../services/userDashboardService';
-import { ArrowPathIcon, StarIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/outline';
+import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
+import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 
 interface ReadingHistoryTabProps {
   readingHistory: ReadingHistory[];
@@ -29,20 +31,50 @@ const ReadingHistoryTab: React.FC<ReadingHistoryTabProps> = ({ readingHistory, r
     });
   };
 
+  const [hoveredRating, setHoveredRating] = useState<{ [key: string]: number | null }>({}); 
+
+  const handleRatingClick = (historyId: string, rating: number) => {
+    const confirmed = window.confirm(`Are you sure you want to give ${rating} star${rating > 1 ? 's' : ''}?`);
+    if (confirmed) {
+      rateBook(historyId, rating);
+    }
+  };
+
   const renderStars = (rating: number | undefined, historyId: string) => {
+    const currentHover = hoveredRating[historyId];
+    const hasRating = rating && rating > 0;
+    
     return (
-      <div className="flex">
-        {Array.from({ length: 5 }, (_, index) => (
-          <StarIcon
-            key={index}
-            className={`w-5 h-5 cursor-pointer ${
-              rating && index < rating
-                ? 'text-yellow-400 fill-current'
-                : 'text-neutral-300 dark:text-neutral-600'
-            }`}
-            onClick={() => rateBook(historyId, index + 1)}
-          />
-        ))}
+      <div 
+        className="flex gap-1"
+        onMouseLeave={() => !hasRating && setHoveredRating({ ...hoveredRating, [historyId]: null })}
+      >
+        {Array.from({ length: 5 }, (_, index) => {
+          const starNumber = index + 1;
+          const isFilled = currentHover ? starNumber <= currentHover : rating && starNumber <= rating;
+          
+          return isFilled ? (
+            <StarSolidIcon
+              key={index}
+              className={`w-5 h-5 text-yellow-400 transition-colors ${
+                hasRating ? 'cursor-not-allowed opacity-100' : 'cursor-pointer hover:text-yellow-500'
+              }`}
+              onMouseEnter={() => !hasRating && setHoveredRating({ ...hoveredRating, [historyId]: starNumber })}
+              onClick={() => !hasRating && handleRatingClick(historyId, starNumber)}
+            />
+          ) : (
+            <StarOutlineIcon
+              key={index}
+              className={`w-5 h-5 transition-colors ${
+                hasRating 
+                  ? 'text-neutral-300 dark:text-neutral-600 cursor-not-allowed' 
+                  : 'text-neutral-300 dark:text-neutral-600 cursor-pointer hover:text-yellow-400'
+              }`}
+              onMouseEnter={() => !hasRating && setHoveredRating({ ...hoveredRating, [historyId]: starNumber })}
+              onClick={() => !hasRating && handleRatingClick(historyId, starNumber)}
+            />
+          );
+        })}
       </div>
     );
   };

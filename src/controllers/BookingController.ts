@@ -232,4 +232,21 @@ export class BookingController {
       `${updatedCount} bookings marked as overdue`
     );
   });
+
+  rateBooking = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const { rating } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return next(new AppError('User not authenticated', 401));
+    }
+
+    if (!rating || rating < 1 || rating > 5) {
+      return next(new AppError('Rating must be between 1 and 5', 400));
+    }
+
+    const updatedBooking = await this.bookingService.rateBooking(id, userId, rating);
+    ResponseUtil.updated(res, updatedBooking, 'Book rated successfully');
+  });
 }

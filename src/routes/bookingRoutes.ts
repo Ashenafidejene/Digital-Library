@@ -560,4 +560,54 @@ router.put(
   bookingController.cancelBooking
 );
 
+/**
+ * @swagger
+ * /api/v1/bookings/{id}/rate:
+ *   put:
+ *     summary: Rate a returned book
+ *     tags: [Bookings]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - rating
+ *             properties:
+ *               rating:
+ *                 type: integer
+ *                 minimum: 1
+ *                 maximum: 5
+ *     responses:
+ *       200:
+ *         description: Book rated successfully
+ *       400:
+ *         description: Invalid rating or book not returned
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Can only rate own bookings
+ *       404:
+ *         description: Booking not found
+ */
+router.put(
+  '/:id/rate',
+  validateObjectId('id'),
+  [
+    body('rating').notEmpty().withMessage('Rating is required')
+      .isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
+    handleValidationErrors,
+  ],
+  bookingController.rateBooking
+);
+
 export default router;

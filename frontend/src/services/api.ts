@@ -191,7 +191,10 @@ export const apiService = {
         statusCode: error.response.status,
       };
     } else if (error.request) {
-      // Network error
+      // Network error - redirect to connection error page
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/connection-error')) {
+        window.location.href = '/connection-error';
+      }
       return {
         message: 'Network error. Please check your connection.',
         statusCode: 0,
@@ -214,15 +217,16 @@ export const apiRequest = async <T>(
 
   try {
     let response;
+    const parsedBody = body ? JSON.parse(body) : undefined;
     switch (method.toUpperCase()) {
       case 'GET':
         response = await api.get<ApiResponse<T>>(url);
         break;
       case 'POST':
-        response = await api.post<ApiResponse<T>>(url, body ? body : undefined);
+        response = await api.post<ApiResponse<T>>(url, parsedBody);
         break;
       case 'PUT':
-        response = await api.put<ApiResponse<T>>(url, body ? body : undefined);
+        response = await api.put<ApiResponse<T>>(url, parsedBody);
         break;
       case 'DELETE':
         response = await api.delete<ApiResponse<T>>(url);

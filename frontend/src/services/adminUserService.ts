@@ -134,4 +134,8 @@ export const userService = {
   async returnBook(borrowingId: string): Promise<ApiResponse<any>> {
     return apiService.post(`/bookings/${borrowingId}/return`);
   },
+
+  async resetUserPassword(userId: string, newPassword: string): Promise<ApiResponse<any>> {
+    return apiService.put(`/admin/users/${userId}/reset-password`, { newPassword });
+  },
 }

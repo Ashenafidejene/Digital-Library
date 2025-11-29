@@ -73,6 +73,13 @@ export class AdminController {
     res.status(200).json({ success: true });
   });
 
+  resetUserPassword = asyncHandler(async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const { newPassword } = req.body;
+    const data = await adminService.resetUserPassword(userId, newPassword);
+    res.status(200).json({ success: true, data, message: 'Password reset successfully' });
+  });
+
   // Borrowing Management
   getBorrowingRecords = asyncHandler(async (req: Request, res: Response) => {
    

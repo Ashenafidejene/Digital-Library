@@ -189,17 +189,22 @@ const UserDashboard: React.FC = () => {
     }
   };
 
-  const rateBook = async (historyId: string, rating: number) => {
+  const rateBook = async (bookingId: string, rating: number) => {
     try {
-      const response = await userDashboardService.rateBook(historyId, rating);
+      console.log('[UserDashboard] Rating book:', { bookingId, rating });
+      const response = await userDashboardService.rateBook(bookingId, rating);
+      console.log('[UserDashboard] Rate book response:', response);
       if (response.success) {
         const history = await userDashboardService.getReadingHistory();
         setReadingHistory(history.data);
+        console.log('[UserDashboard] Reading history updated');
       } else {
         console.error('Failed to rate book:', response.message);
+        alert('Failed to rate book: ' + response.message);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('An error occurred while rating the book', err);
+      alert('Error rating book: ' + (err.message || 'Unknown error'));
     }
   };
 

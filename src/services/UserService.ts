@@ -277,4 +277,15 @@ export class UserService {
   async getUserCount(): Promise<number> {
     return await this.userRepository.countDocuments();
   }
+
+  async resetPassword(userId: string, newPassword: string): Promise<IUser> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new AppError('User not found', 404);
+    }
+
+    user.password = newPassword;
+    await user.save();
+    return user;
+  }
 }

@@ -26,6 +26,8 @@ export interface IUser extends Document {
   favoriteBooks: [{ type: Schema.Types.ObjectId, ref: 'Book' }];
   lastLogin?: Date;
   refreshTokens: string[];
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
 
@@ -103,6 +105,14 @@ const userSchema = new Schema<IUser>(
       type: String,
       select: false, // Don't include refresh tokens in queries by default
     }],
+    resetPasswordToken: {
+      type: String,
+      select: false,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      select: false,
+    },
   },
   {
     timestamps: true,

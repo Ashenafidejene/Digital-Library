@@ -105,12 +105,12 @@ export const userDashboardService = {
     return response;
   },
   
-  async rateBook(historyId: string, rating: number): Promise<ActionResponse> {
-    const response = await apiRequest<ActionResponse>(`/user/history/${historyId}/rate`, {
-        method: 'POST',
+  async rateBook(bookingId: string, rating: number): Promise<ActionResponse> {
+    const response = await apiRequest<any>(`/bookings/${bookingId}/rate`, {
+        method: 'PUT',
         body: JSON.stringify({ rating }),
     });
-    return response;
+    return { success: response.success, message: response.message, data: response.data };
   },
 
   async markNotificationAsRead(notificationId: string): Promise<ActionResponse> {

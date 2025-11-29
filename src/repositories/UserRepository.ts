@@ -31,6 +31,10 @@ export class UserRepository {
     return await User.findById(id).select('+refreshTokens');
   }
 
+  async findByResetToken(hashedToken: string): Promise<IUser | null> {
+    return await User.findOne({ resetPasswordToken: hashedToken }).select('+resetPasswordToken +resetPasswordExpires');
+  }
+
   async update(id: string, updateData: Partial<IUser>): Promise<IUser | null> {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return null;

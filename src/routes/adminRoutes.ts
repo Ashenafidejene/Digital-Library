@@ -349,6 +349,52 @@ router.put(
   adminController.bulkUpdateUsers
 );
 
+/**
+ * @swagger
+ * /api/v1/admin/users/{userId}/reset-password:
+ *   put:
+ *     summary: Reset user password (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - newPassword
+ *             properties:
+ *               newPassword:
+ *                 type: string
+ *                 minLength: 6
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: User not found
+ */
+router.put(
+  '/users/:userId/reset-password',
+  validateObjectId('userId'),
+  [
+    body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    handleValidationErrors,
+  ],
+  adminController.resetUserPassword
+);
+
 // Borrowing Management
 /**
  * @swagger

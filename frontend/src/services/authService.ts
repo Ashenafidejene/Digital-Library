@@ -192,6 +192,16 @@ export const authService = {
     const user = this.getStoredUser();
     return user?.status === 'active';
   },
+
+  // Forgot password
+  async forgotPassword(email: string): Promise<void> {
+    await apiService.post('/auth/forgot-password', { email });
+  },
+
+  // Reset password
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    await apiService.post('/auth/reset-password', { token, newPassword });
+  },
 };
 
 export default authService;

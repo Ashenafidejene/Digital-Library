@@ -16,6 +16,7 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -26,6 +27,17 @@ const LoginPage: React.FC = () => {
 
   const from = location.state?.from?.pathname || '/';
 
+  // Load saved credentials on mount
+  React.useEffect(() => {
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    const savedPassword = localStorage.getItem('rememberedPassword');
+    if (savedEmail && savedPassword) {
+      setEmail(savedEmail);
+      setPassword(savedPassword);
+      setRememberMe(true);
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -35,6 +47,16 @@ const LoginPage: React.FC = () => {
     try {
       await login({ email, password });
       console.log('[Login Page] Login successful, navigating to:', from);
+      
+      // Save or clear credentials based on Remember Me
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email);
+        localStorage.setItem('rememberedPassword', password);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+        localStorage.removeItem('rememberedPassword');
+      }
+      
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error('[Login Page] Login failed:', error);
@@ -158,6 +180,8 @@ const LoginPage: React.FC = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-neutral-300 dark:border-neutral-600 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-neutral-700 dark:text-neutral-300">
@@ -194,7 +218,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             {/* Demo Accounts */}
-            <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+            {/* <div className="mt-6 p-4 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
               <h4 className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                 Demo Accounts:
               </h4>
@@ -206,7 +230,7 @@ const LoginPage: React.FC = () => {
                   <strong>User:</strong> user@example.com / user123
                 </div>
               </div>
-            </div>
+            </div> */}
           </form>
 
           {/* Sign Up Link */}

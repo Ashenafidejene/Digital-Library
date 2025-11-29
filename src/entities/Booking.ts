@@ -21,6 +21,7 @@ export interface IBooking extends Document {
   maxRenewals: number;
   fineAmount: number;
   finePaid: boolean;
+  rating?: number;
   metadata: {
     requestSource: 'web' | 'mobile' | 'admin';
     ipAddress?: string;
@@ -124,6 +125,11 @@ const bookingSchema = new Schema<IBooking>(
     finePaid: {
       type: Boolean,
       default: false,
+    },
+    rating: {
+      type: Number,
+      min: [1, 'Rating must be at least 1'],
+      max: [5, 'Rating cannot exceed 5'],
     },
     metadata: {
       requestSource: {

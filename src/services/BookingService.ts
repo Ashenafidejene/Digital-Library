@@ -357,4 +357,28 @@ export class BookingService {
 
     return updatedBooking;
   }
+
+  async rateBooking(id: string, userId: string, rating: number): Promise<IBooking> {
+    const booking = await this.bookingRepository.findById(id);
+    if (!booking) {
+      throw new AppError('Booking not found', 404);
+    }
+
+    // Check if user owns this booking
+    if (booking.userId.toString() !== userId) {
+      throw new AppError('You can only rate your own bookings', 403);
+    }
+
+    // Only allow rating of returned bookings
+    if (booking.status !== BookingStatus.RETURNED) {
+      throw new AppError('You can only rate returned books', 400);
+    }
+
+    const updatedBooking = await this.bookingRepository.update(id, { rating });
+    if (!updatedBooking) {
+      throw new AppError('Failed to rate booking', 500);
+    }
+
+    return updatedBooking;
+  }
 }

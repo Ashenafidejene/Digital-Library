@@ -17,6 +17,11 @@ import PoliciesPage from './pages/PoliciesPage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import NotFoundPage from './pages/NotFoundPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
+import ConnectionErrorPage from './pages/ConnectionErrorPage';
 import UserDashboard from './pages/user/UserDashboard';
 import EventsAndAnnouncementsPage from './pages/user/EventsAndAnnouncementsPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -54,6 +59,10 @@ function App() {
                 {/* Auth Routes */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                <Route path="/connection-error" element={<ConnectionErrorPage />} />
 
                 {/* Protected User Routes */}
                 <Route
@@ -154,6 +163,9 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+
+                {/* 404 - Catch all unmatched routes */}
+                <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </div>
           </Router>
